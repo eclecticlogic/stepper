@@ -1,0 +1,9 @@
+
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+<suite name="Main" verbose="1">
+	<test name="ezra">
+		<packages>
+			<package name="com.eclecticlogic.ezra" />
+		</packages>
+	</test>
+</suite> 
