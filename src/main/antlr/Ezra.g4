@@ -108,7 +108,6 @@ value
    | array          #valueArr
    | 'true'         #valueTrue
    | 'false'        #valueFalse
-   | 'null'         #valueNull
 ;
 
 

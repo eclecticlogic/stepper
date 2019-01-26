@@ -1,4 +1,4 @@
-package com.test;
+package com.eclecticlogic.ezra.machine;
 
 public enum StateType {
     PASS("Pass"),
