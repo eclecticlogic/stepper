@@ -1,0 +1,18 @@
+
+stepperShell(stateMachine) ::= <<
+{
+    "startAt": "<stateMachine.startState>",
+    "States": {
+        <stateDefinition(rest(stateMachine.states), first(stateMachine.states))>
+    }
+}
+>>
+
+stateDefinition(states, current) ::= <<
+    <if(current)>
+        <current.jsonRepresentation>
+    <endif>
+    <if(states)>
+    , <stateDefinition(rest(states), first(states))>
+    <endif>
+>>
