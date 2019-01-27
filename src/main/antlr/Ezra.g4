@@ -16,8 +16,16 @@ forStatement
     ;
 
 ifStatement
-    : 'if' '(' expr ')' statementBlock
-        ('else' 'if' '(' expr ')' statementBlock)* ('else' statementBlock)?
+    : 'if' '(' ifCondition ')' statementBlock
+        (keywordElse statementBlock | keywordElse ifStatement)?
+    ;
+
+ifCondition
+    : expr
+    ;
+
+keywordElse
+    : 'else'
     ;
 
 whileStatement
