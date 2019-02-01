@@ -1,17 +1,17 @@
-package com.eclecticlogic.ezra.machine;
+package com.eclecticlogic.stepper.state;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 import java.util.Stack;
 
-public class AttributableStepState extends AbstractStepState {
+public class AttributableState extends AbstractState {
 
     private String currentAttribute;
-    JsonArray array;
-    Stack<JsonObject> currentStack = new Stack<>();
+    private JsonArray array;
+    private final Stack<JsonObject> currentStack = new Stack<>();
 
-    public AttributableStepState() {
+    AttributableState() {
         currentStack.push(json);
     }
 
@@ -47,24 +47,20 @@ public class AttributableStepState extends AbstractStepState {
     }
 
 
-    public void startObject() {
+    public void handleObject(Runnable closure) {
         JsonObject temp = new JsonObject();
         currentStack.peek().add(currentAttribute, temp);
         currentStack.push(temp);
-    }
-
-
-    public void stopObject() {
+        closure.run();
         currentStack.pop();
     }
 
 
-    public void startArray() {
+    public void handleArray(Runnable closure) {
         array = new JsonArray();
         currentStack.peek().add(currentAttribute, array);
-    }
-
-    public void endArray() {
+        closure.run();
         array = null;
     }
 }
+

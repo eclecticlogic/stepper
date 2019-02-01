@@ -22,7 +22,8 @@ sourceSets {
 
 dependencies {
     antlr ("org.antlr", "antlr4", "4.7.2")
-    compile ("org.antlr", "ST4", "4.1")
+    implementation ("org.antlr", "ST4", "4.1")
+    implementation("com.google.guava", "guava", "27.0.1-jre")
     implementation ("com.google.code.gson", "gson", "2.8.5")
     testCompile("junit", "junit", "4.12")
 }
@@ -33,13 +34,13 @@ configure<JavaPluginConvention> {
 
 tasks {
     generateGrammarSource {
-        arguments.addAll(listOf("-package", "com.eclecticlogic.ezra.antlr"))
+        arguments.addAll(listOf("-visitor", "-package", "com.eclecticlogic.stepper.antlr"))
 
         doLast {
             copy {
                 from("build/generated-src/antlr/main/")
                 include("*.*")
-                into("build/generated-src/antlr/main/com/eclecticlogic/ezra/antlr")
+                into("build/generated-src/antlr/main/com/eclecticlogic/stepper/antlr")
             }
             project.delete(fileTree("build/generated-src/antlr/main").include("*.*"))
         }

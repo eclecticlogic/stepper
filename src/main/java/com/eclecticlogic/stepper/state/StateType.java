@@ -1,4 +1,4 @@
-package com.eclecticlogic.ezra.machine;
+package com.eclecticlogic.stepper.state;
 
 public enum StateType {
     PASS("Pass"),

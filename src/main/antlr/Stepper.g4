@@ -1,5 +1,5 @@
 
-grammar Ezra;
+grammar Stepper;
 
 program
     : statement+
@@ -16,41 +16,32 @@ forStatement
     ;
 
 ifStatement
-    : 'if' '(' ifCondition ')' statementBlock
-        (keywordElse statementBlock | keywordElse ifStatement)?
-    ;
-
-ifCondition
-    : expr
-    ;
-
-keywordElse
-    : 'else'
+    : IF '(' ifCondition=expr ')' ifBlock=statementBlock
+        (ELSE elseBlock=statementBlock)?
     ;
 
 whileStatement
+
     : 'while' '(' expr ')' statementBlock
     ;
 
-// basic structures
-
 statementBlock
     : '{' statement+ '}'
+    | statement
     ;
 
 statement
-    : assignment
-    | task
-    | eachStatement
-    | forStatement
-    | ifStatement
-    | whileStatement
+    : assignment                        #statementAssignment
+    | task                              #statementTask
+    | eachStatement                     #statementEach
+    | forStatement                      #statementFor
+    | ifStatement                       #statementIf
+    | whileStatement                    #statementWhile
     ;
 
 assignment
     : dereference '=' task              #assignmentTask
     | dereference '=' expr ';'          #assignmentExpr
-    | indexingDereference '=' expr ';'  #assignmentIndexingExpr
     ;
 
 expr
@@ -95,27 +86,19 @@ task
     : 'task' '{' pair (',' pair)* '}'
 ;
 
-obj
-   : '{' pair (',' pair)* '}'
-   | '{' '}'
-;
-
 pair
     : ATTR ':' value
 ;
 
-array
-   : '[' value (',' value)* ']'
-   | '[' ']'
-;
-
 value
-   : ATTR           #valueAttr
-   | NUMBER         #valueNum
-   | obj            #valueObj
-   | array          #valueArr
-   | 'true'         #valueTrue
-   | 'false'        #valueFalse
+   : ATTR                               #valueAttr
+   | NUMBER                             #valueNum
+   | '{' pair (',' pair)* '}'           #valueObj
+   | '{' '}'                            #valueObjEmpty
+   | '[' value (',' value)* ']'         #valueArr
+   | '[' ']'                            #valueArrEmpty
+   | 'true'                             #valueTrue
+   | 'false'                            #valueFalse
 ;
 
 
@@ -133,10 +116,7 @@ STRING
    : '"' (ESC | SAFECODEPOINT)* '"'
    ;
 
-ID
-    : ALPHA (ALPHA | DIGIT)*
-    ;
-
+// operators
 MUL: '*';
 DIV: '/';
 ADD: '+';
@@ -149,6 +129,14 @@ LE: '<=';
 LT: '<';
 GE: '>=';
 GT: '>';
+
+// keywords
+IF: 'if';
+ELSE: 'else';
+
+ID
+    : ALPHA (ALPHA | DIGIT)*
+    ;
 
 fragment ESC
    : '\\' (["\\/bfnrt])

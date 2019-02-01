@@ -1,4 +1,4 @@
-package com.eclecticlogic.ezra.machine;
+package com.eclecticlogic.stepper.state;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -6,22 +6,24 @@ import com.google.gson.JsonObject;
 
 import java.text.MessageFormat;
 
-public abstract class AbstractStepState implements StepState {
+public abstract class AbstractState implements State {
 
-    String stateName;
+    private static int stateNameCounter;
 
-    AbstractStepState next;
+    private String stateName;
 
     JsonObject json = new JsonObject();
 
+    AbstractState() {
+        stateName = String.format("state%03d", stateNameCounter++);
+    }
 
-    public String getStateName() {
+
+    @Override
+    public String getName() {
         return stateName;
     }
 
-    public void setStateName(String stateName) {
-        this.stateName = stateName;
-    }
 
     @Override
     public String getJsonRepresentation() {
@@ -30,7 +32,7 @@ public abstract class AbstractStepState implements StepState {
     }
 
 
-    public void setType(StateType type) {
+    void setType(StateType type) {
         json.addProperty("Type", type.getName());
     }
 
@@ -38,5 +40,8 @@ public abstract class AbstractStepState implements StepState {
         json.addProperty("ResultPath", value);
     }
 
+    public void setNextState(String value) {
+        json.addProperty("Next", value);
+    }
 
 }

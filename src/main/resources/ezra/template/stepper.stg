@@ -1,18 +1,18 @@
 
-stepperShell(root) ::= <<
+stepperShell(program) ::= <<
 {
-    "startAt": "<root.startState>",
+    "startAt": "<program.startState>",
     "States": {
-        <constructDefinition(rest(root.constructs), first(root.constructs))>
+        <constructDefinition(rest(program.states), first(program.states))>
     }
 }
 >>
 
-constructDefinition(constructs, current) ::= <<
+constructDefinition(states, current) ::= <<
     <if(current)>
         <current.jsonRepresentation>
     <endif>
-    <if(constructs)>
-    , <constructDefinition(rest(constructs), first(constructs))>
+    <if(states)>
+    , <constructDefinition(rest(states), first(states))>
     <endif>
 >>
