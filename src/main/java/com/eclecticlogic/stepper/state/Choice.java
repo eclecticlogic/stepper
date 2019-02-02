@@ -1,41 +1,40 @@
 package com.eclecticlogic.stepper.state;
 
+import com.google.gson.JsonObject;
+
 public class Choice extends AttributableState {
 
-    private String variable;
-
-    public Choice() {
-        setType(StateType.CHOICE);
-    }
+    private JsonObject objIf, objElse;
 
     public Choice(String variable) {
-        this.variable = variable;
-    }
-
-
-    public void setup(String ifState, String elseState) {
+        setType(StateType.CHOICE);
         captureAttribute("Choices");
         handleArray(() -> {
             // if
-            handleObject(() -> {
+            objIf = handleObject(() -> {
                 captureAttribute("Variable");
                 setProperty("$." + variable);
                 captureAttribute("BooleanEquals");
                 setProperty(true);
-                captureAttribute("Next");
-                setProperty(ifState);
             });
 
             // else
-            handleObject(() -> {
+            objElse = handleObject(() -> {
                 captureAttribute("Variable");
                 setProperty("$." + variable);
                 captureAttribute("BooleanEquals");
                 setProperty(false);
-                captureAttribute("Next");
-                setProperty(elseState);
             });
         });
+    }
 
+
+    public void setIfNextState(String value) {
+        objIf.addProperty("Next", value);
+    }
+
+
+    public void setElseNextState(String value) {
+        objElse.addProperty("Next", value);
     }
 }

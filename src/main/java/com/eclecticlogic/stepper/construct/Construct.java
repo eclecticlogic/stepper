@@ -37,4 +37,21 @@ public abstract class Construct {
     }
 
 
+    protected abstract String getFirstStateName();
+
+
+    protected abstract void setNextStateName(String name);
+
+
+    public abstract void weave();
+
+
+    Construct getLastInChain(Construct input) {
+        Construct next = input;
+        while (next.getNext() != null) {
+            next = next.getNext();
+        }
+        return next;
+    }
+
 }

@@ -1,6 +1,7 @@
 package com.eclecticlogic.stepper.state;
 
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import java.util.Stack;
@@ -8,12 +9,14 @@ import java.util.Stack;
 public class AttributableState extends AbstractState {
 
     private String currentAttribute;
-    private JsonArray array;
-    private final Stack<JsonObject> currentStack = new Stack<>();
+    private JsonElement current;
+    private final Stack<JsonElement> currentStack = new Stack<>();
+
 
     AttributableState() {
-        currentStack.push(json);
+        current = json;
     }
+
 
     public void captureAttribute(String attr) {
         currentAttribute = attr;
@@ -21,46 +24,59 @@ public class AttributableState extends AbstractState {
 
 
     public void setProperty(boolean value) {
-        if (array == null) {
-            currentStack.peek().addProperty(currentAttribute, value);
+        if (current instanceof JsonObject) {
+            ((JsonObject)current).addProperty(currentAttribute, value);
         } else {
-            array.add(value);
+            ((JsonArray)current).add(value);
         }
     }
 
 
     public void setProperty(String value) {
-        if (array == null) {
-            currentStack.peek().addProperty(currentAttribute, value);
+        if (current instanceof JsonObject) {
+            ((JsonObject)current).addProperty(currentAttribute, value);
         } else {
-            array.add(value);
+            ((JsonArray)current).add(value);
         }
     }
 
 
     public void setProperty(Number value) {
-        if (array == null) {
-            currentStack.peek().addProperty(currentAttribute, value);
+        if (current instanceof JsonObject) {
+            ((JsonObject)current).addProperty(currentAttribute, value);
         } else {
-            array.add(value);
+            ((JsonArray)current).add(value);
         }
     }
 
 
-    public void handleObject(Runnable closure) {
-        JsonObject temp = new JsonObject();
-        currentStack.peek().add(currentAttribute, temp);
-        currentStack.push(temp);
+    public JsonObject handleObject(Runnable closure) {
+        JsonObject obj = new JsonObject();
+        if (current instanceof JsonObject) {
+            ((JsonObject)current).add(currentAttribute, obj);
+        } else {
+            ((JsonArray)current).add(obj);
+        }
+        currentStack.push(current);
+        current = obj;
         closure.run();
-        currentStack.pop();
+        current = currentStack.pop();
+        return obj;
     }
 
 
-    public void handleArray(Runnable closure) {
-        array = new JsonArray();
-        currentStack.peek().add(currentAttribute, array);
+    public JsonArray handleArray(Runnable closure) {
+        JsonArray array = new JsonArray();
+        if (current instanceof JsonObject) {
+            ((JsonObject)current).add(currentAttribute, array);
+        } else {
+            ((JsonArray)current).add(array);
+        }
+        currentStack.push(current);
+        current = array;
         closure.run();
-        array = null;
+        current = currentStack.pop();
+        return array;
     }
 }
 

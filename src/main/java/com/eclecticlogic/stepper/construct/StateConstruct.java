@@ -4,13 +4,39 @@ import com.eclecticlogic.stepper.state.State;
 
 import java.util.List;
 
-public class StateConstruct extends Construct {
+public class StateConstruct<T extends State> extends Construct {
 
-    private final State state;
+    private final T state;
 
 
-    public StateConstruct(State state) {
+    public StateConstruct(T state) {
         this.state = state;
+    }
+
+
+    protected T getState() {
+        return state;
+    }
+
+
+    @Override
+    protected String getFirstStateName() {
+        return state.getName();
+    }
+
+
+    @Override
+    protected void setNextStateName(String name) {
+        state.setNextState(name);
+    }
+
+
+    @Override
+    public void weave() {
+        if (getNext() != null) {
+            state.setNextState(getNext().getFirstStateName());
+            getNext().weave();
+        }
     }
 
 

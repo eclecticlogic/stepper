@@ -21,8 +21,9 @@ public class Test {
 
         StepperVisitor visitor = new StepperVisitor();
         ProgramConstruct program = visitor.visitProgram(parser.program());
+        program.weave();
 
-        STGroup group = new STGroupFile("ezra/template/stepper.stg");
+        STGroup group = new STGroupFile("stepper/template/stepper.stg");
         ST st = group.getInstanceOf("stepperShell");
         st.add("program", program);
         String s = st.render();

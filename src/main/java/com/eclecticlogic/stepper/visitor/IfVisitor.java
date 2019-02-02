@@ -22,7 +22,6 @@ public class IfVisitor extends StepperBaseVisitor<IfConstruct> {
             construct.setFirstElse(elseBlockVisitor.visit(ctx.elseBlock));
         }
 
-        construct.setup();
         return construct;
     }
 

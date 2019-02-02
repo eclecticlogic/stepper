@@ -38,7 +38,7 @@ public class IfConstruct extends Construct {
     }
 
 
-    public void setup() {
+    void setup() {
         conditionTask.captureAttribute("Parameters");
         conditionTask.handleObject(() ->
                 conditionDeferences.forEach(it -> {
@@ -49,6 +49,47 @@ public class IfConstruct extends Construct {
         conditionTask.captureAttribute("Resource");
         conditionTask.setProperty("lambda arn for condition");
         conditionTask.setResultPath("$." + choiceVariable);
+        conditionTask.setNextState(choice.getName());
+
+        choice.setIfNextState(firstIf.getFirstStateName());
+        String elseName = "none";
+        if (firstElse != null) {
+            elseName = firstElse.getFirstStateName();
+        } else if (getNext() != null) {
+            elseName = getNext().getFirstStateName();
+        }
+        choice.setElseNextState(elseName);
+    }
+
+
+    @Override
+    protected String getFirstStateName() {
+        return conditionTask.getName();
+    }
+
+
+    @Override
+    protected void setNextStateName(String name) {
+        getLastInChain(firstIf).setNextStateName(name);
+        if (firstElse != null) {
+            getLastInChain(firstElse).setNextStateName(name);
+        } else {
+            choice.setElseNextState(name);
+        }
+    }
+
+
+    @Override
+    public void weave() {
+        setup();
+        firstIf.weave();
+        if (firstElse != null) {
+            firstElse.weave();
+        }
+        if (getNext() != null) {
+            getNext().weave();
+            setNextStateName(getNext().getFirstStateName());
+        }
     }
 
 
