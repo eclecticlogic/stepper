@@ -21,7 +21,6 @@ ifStatement
     ;
 
 whileStatement
-
     : 'while' '(' expr ')' statementBlock
     ;
 

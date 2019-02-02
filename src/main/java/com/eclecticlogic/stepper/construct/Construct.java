@@ -1,6 +1,5 @@
 package com.eclecticlogic.stepper.construct;
 
-import com.eclecticlogic.stepper.etc.Constants;
 import com.eclecticlogic.stepper.state.State;
 import com.google.common.collect.Lists;
 
@@ -24,7 +23,7 @@ public abstract class Construct {
 
 
     String getNextDynamicVariable() {
-        return Constants.VARIABLE_NAME + String.format("%03d", dynamicVariableCounter++);
+        return String.format("var__%03d", dynamicVariableCounter++);
     }
 
 

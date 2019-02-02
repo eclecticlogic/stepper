@@ -1,7 +1,7 @@
 
 stepperShell(program) ::= <<
 {
-    "startAt": "<program.firstStateName>",
+    "StartAt": "<program.firstStateName>",
     "States": {
         <constructDefinition(rest(program.states), first(program.states))>
     }
