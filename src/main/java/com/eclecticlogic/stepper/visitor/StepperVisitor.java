@@ -12,6 +12,12 @@ public class StepperVisitor extends StepperBaseVisitor<ProgramConstruct> {
     public ProgramConstruct visitProgram(StepperParser.ProgramContext ctx) {
         ProgramConstruct program = new ProgramConstruct();
         Construct current = program;
+
+        program.setProgramName(ctx.ID().getText());
+        for (StepperParser.AnnotationContext anCtx : ctx.annotation()) {
+            program.addAnnotation(anCtx.ID().getText(), anCtx.scalar().getText());
+        }
+
         for (StepperParser.StatementContext stCtx : ctx.statement()) {
             StatementVisitor visitor = new StatementVisitor();
             Construct c = visitor.visit(stCtx);

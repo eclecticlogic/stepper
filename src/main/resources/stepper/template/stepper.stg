@@ -1,6 +1,7 @@
 
 stepperShell(program) ::= <<
 {
+    <programAttributes(rest(program.machineAttributes), first(program.machineAttributes))>
     "StartAt": "<program.firstStateName>",
     "States": {
         <constructDefinition(rest(program.states), first(program.states))>
@@ -8,10 +9,13 @@ stepperShell(program) ::= <<
 }
 >>
 
+programAttributes(attributes, attrib) ::= <<
+<attrib>,
+<if(attributes)><programAttributes(rest(attributes), first(attributes))><endif>
+>>
+
 constructDefinition(states, current) ::= <<
-    <if(current)>
-        <current.jsonRepresentation>
-    <endif>
+    <current.jsonRepresentation>
     <if(states)>
     , <constructDefinition(rest(states), first(states))>
     <endif>

@@ -2,10 +2,14 @@
 grammar Stepper;
 
 program
-    : statement+
+    : annotation* 'state' programName=ID '{' statement+ '}'
     ;
 
 // control statements
+
+annotation
+    : '@' ID '(' scalar ')'
+    ;
 
 eachStatement
     : 'each' '(' ID 'in' ID ('.' ID)* ('[' expr ']')? ')' statementBlock
@@ -44,11 +48,8 @@ assignment
     ;
 
 expr
-    : STRING
-    | NUMBER
-    | 'true'
-    | 'false'
-    | 'null'
+    : scalar
+    | NULL
     | dereference
     | indexingDereference
     | methodCall ('.' (dereference | indexingDereference | methodCall))*
@@ -86,20 +87,26 @@ task
 ;
 
 pair
-    : ATTR ':' value
+    : STRING ':' value
 ;
 
 value
-   : ATTR                               #valueAttr
+   : STRING                             #valueString
    | NUMBER                             #valueNum
    | '{' pair (',' pair)* '}'           #valueObj
    | '{' '}'                            #valueObjEmpty
    | '[' value (',' value)* ']'         #valueArr
    | '[' ']'                            #valueArrEmpty
-   | 'true'                             #valueTrue
-   | 'false'                            #valueFalse
+   | TRUE                               #valueTrue
+   | FALSE                              #valueFalse
 ;
 
+scalar
+    : STRING
+    | NUMBER
+    | TRUE
+    | FALSE
+    ;
 
 // lexer rules
 
@@ -107,13 +114,10 @@ NUMBER
    : '-'? INT ('.' [0-9] +)? EXP?
    ;
 
-ATTR
-    : STRING
-    ;
-
 STRING
    : '"' (ESC | SAFECODEPOINT)* '"'
    ;
+
 
 // operators
 MUL: '*';
@@ -130,6 +134,9 @@ GE: '>=';
 GT: '>';
 
 // keywords
+TRUE: 'true';
+FALSE: 'false';
+NULL: 'null';
 IF: 'if';
 ELSE: 'else';
 

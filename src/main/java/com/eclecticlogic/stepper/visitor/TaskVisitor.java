@@ -11,6 +11,7 @@ public class TaskVisitor extends StepperBaseVisitor<Task> {
 
     private Task task;
 
+
     @Override
     public Task visitTask(StepperParser.TaskContext ctx) {
         task = new Task();
@@ -21,14 +22,15 @@ public class TaskVisitor extends StepperBaseVisitor<Task> {
 
     @Override
     public Task visitPair(StepperParser.PairContext ctx) {
-        task.captureAttribute(ctx.ATTR().getText().replaceAll("\"", ""));
+        task.captureAttribute(ctx.STRING().getText().replaceAll("\"", ""));
         visit(ctx.value());
         return null;
     }
 
+
     @Override
-    public Task visitValueAttr(StepperParser.ValueAttrContext ctx) {
-        task.setProperty(ctx.ATTR().getText().replaceAll("\"", ""));
+    public Task visitValueString(StepperParser.ValueStringContext ctx) {
+        task.setProperty(ctx.STRING().getText().replaceAll("\"", ""));
         return null;
     }
 
@@ -50,11 +52,13 @@ public class TaskVisitor extends StepperBaseVisitor<Task> {
         return null;
     }
 
+
     @Override
     public Task visitValueFalse(StepperParser.ValueFalseContext ctx) {
         task.setProperty(false);
         return null;
     }
+
 
     @Override
     public Task visitValueObj(StepperParser.ValueObjContext ctx) {
@@ -65,7 +69,8 @@ public class TaskVisitor extends StepperBaseVisitor<Task> {
 
     @Override
     public Task visitValueObjEmpty(StepperParser.ValueObjEmptyContext ctx) {
-        task.handleObject(() -> {});
+        task.handleObject(() -> {
+        });
         return null;
     }
 
