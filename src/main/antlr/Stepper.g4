@@ -45,6 +45,8 @@ statement
 assignment
     : dereference '=' task              #assignmentTask
     | dereference '=' expr ';'          #assignmentExpr
+    | dereference '=' jsonObject        #assignmentJson
+    | dereference '=' '[' value (',' value)* ']'    #assignmentJsonArray
     ;
 
 expr
@@ -81,10 +83,13 @@ dereference
     : ID ('.' ID )*
     ;
 
-// task
 task
-    : 'task' '{' pair (',' pair)* '}'
-;
+    : 'task' jsonObject
+    ;
+
+jsonObject
+    : '{' pair (',' pair)* '}'
+    ;
 
 pair
     : STRING ':' value

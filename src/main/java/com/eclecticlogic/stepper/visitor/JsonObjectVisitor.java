@@ -2,27 +2,32 @@ package com.eclecticlogic.stepper.visitor;
 
 import com.eclecticlogic.stepper.antlr.StepperBaseVisitor;
 import com.eclecticlogic.stepper.antlr.StepperParser;
+import com.eclecticlogic.stepper.state.AttributableState;
 import com.eclecticlogic.stepper.state.Task;
 
 import java.text.NumberFormat;
 import java.text.ParseException;
 
-public class TaskVisitor extends StepperBaseVisitor<Task> {
+public class JsonObjectVisitor extends StepperBaseVisitor<AttributableState> {
 
-    private Task task;
+    private AttributableState state;
 
 
-    @Override
-    public Task visitTask(StepperParser.TaskContext ctx) {
-        task = new Task();
-        ctx.pair().forEach(this::visit);
-        return task;
+    public JsonObjectVisitor(AttributableState state) {
+        this.state = state;
     }
 
 
     @Override
-    public Task visitPair(StepperParser.PairContext ctx) {
-        task.captureAttribute(ctx.STRING().getText().replaceAll("\"", ""));
+    public AttributableState visitJsonObject(StepperParser.JsonObjectContext ctx) {
+        ctx.pair().forEach(this::visit);
+        return state;
+    }
+
+
+    @Override
+    public AttributableState visitPair(StepperParser.PairContext ctx) {
+        state.captureAttribute(ctx.STRING().getText().replaceAll("\"", ""));
         visit(ctx.value());
         return null;
     }
@@ -30,7 +35,7 @@ public class TaskVisitor extends StepperBaseVisitor<Task> {
 
     @Override
     public Task visitValueString(StepperParser.ValueStringContext ctx) {
-        task.setProperty(ctx.STRING().getText().replaceAll("\"", ""));
+        state.setProperty(ctx.STRING().getText().replaceAll("\"", ""));
         return null;
     }
 
@@ -38,7 +43,7 @@ public class TaskVisitor extends StepperBaseVisitor<Task> {
     @Override
     public Task visitValueNum(StepperParser.ValueNumContext ctx) {
         try {
-            task.setProperty(NumberFormat.getInstance().parse(ctx.NUMBER().getText()));
+            state.setProperty(NumberFormat.getInstance().parse(ctx.NUMBER().getText()));
         } catch (ParseException e) {
             throw new RuntimeException(e);
         }
@@ -48,28 +53,28 @@ public class TaskVisitor extends StepperBaseVisitor<Task> {
 
     @Override
     public Task visitValueTrue(StepperParser.ValueTrueContext ctx) {
-        task.setProperty(true);
+        state.setProperty(true);
         return null;
     }
 
 
     @Override
     public Task visitValueFalse(StepperParser.ValueFalseContext ctx) {
-        task.setProperty(false);
+        state.setProperty(false);
         return null;
     }
 
 
     @Override
     public Task visitValueObj(StepperParser.ValueObjContext ctx) {
-        task.handleObject(() -> ctx.pair().forEach(this::visit));
+        state.handleObject(() -> ctx.pair().forEach(this::visit));
         return null;
     }
 
 
     @Override
     public Task visitValueObjEmpty(StepperParser.ValueObjEmptyContext ctx) {
-        task.handleObject(() -> {
+        state.handleObject(() -> {
         });
         return null;
     }
@@ -77,14 +82,14 @@ public class TaskVisitor extends StepperBaseVisitor<Task> {
 
     @Override
     public Task visitValueArr(StepperParser.ValueArrContext ctx) {
-        task.handleArray(() -> ctx.value().forEach(this::visit));
+        state.handleArray(() -> ctx.value().forEach(this::visit));
         return null;
     }
 
 
     @Override
     public Task visitValueArrEmpty(StepperParser.ValueArrEmptyContext ctx) {
-        task.handleArray(() -> {
+        state.handleArray(() -> {
         });
         return null;
     }

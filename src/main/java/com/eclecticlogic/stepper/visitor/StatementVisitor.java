@@ -2,16 +2,19 @@ package com.eclecticlogic.stepper.visitor;
 
 import com.eclecticlogic.stepper.antlr.StepperBaseVisitor;
 import com.eclecticlogic.stepper.antlr.StepperParser;
-import com.eclecticlogic.stepper.construct.StateConstruct;
 import com.eclecticlogic.stepper.construct.Construct;
+import com.eclecticlogic.stepper.construct.StateConstruct;
+import com.eclecticlogic.stepper.state.Task;
 
 public class StatementVisitor extends StepperBaseVisitor<Construct> {
 
 
     @Override
     public Construct visitStatementTask(StepperParser.StatementTaskContext ctx) {
-        TaskVisitor visitor = new TaskVisitor();
-        return new StateConstruct(visitor.visit(ctx.task()));
+        Task task = new Task();
+        JsonObjectVisitor visitor = new JsonObjectVisitor(task);
+        visitor.visit(ctx.task().jsonObject());
+        return new StateConstruct(task);
     }
 
 
