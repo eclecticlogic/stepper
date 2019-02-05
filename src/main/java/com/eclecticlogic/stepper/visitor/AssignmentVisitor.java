@@ -29,4 +29,17 @@ public class AssignmentVisitor extends StepperBaseVisitor<State> {
         pass.setResultPath("$." + ctx.dereference().getText());
         return pass;
     }
+
+
+    @Override
+    public State visitAssignmentJsonArray(StepperParser.AssignmentJsonArrayContext ctx) {
+        Pass pass = new Pass();
+        pass.captureAttribute("Result");
+        pass.handleArray(() -> {
+            JsonObjectVisitor visitor = new JsonObjectVisitor(pass);
+            visitor.visit(ctx);
+        });
+        pass.setResultPath("$." + ctx.dereference().getText());
+        return pass;
+    }
 }
