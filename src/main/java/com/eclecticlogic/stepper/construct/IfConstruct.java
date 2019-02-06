@@ -9,7 +9,7 @@ import java.util.List;
 
 public class IfConstruct extends Construct {
 
-    private String conditionText;
+    private String conditionText; // TODO
     private List<String> conditionDeferences;
     private Construct firstIf, firstElse;
 
