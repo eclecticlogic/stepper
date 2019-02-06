@@ -21,7 +21,7 @@ public class StatementVisitor extends StepperBaseVisitor<Construct> {
     @Override
     public Construct visitStatementAssignment(StepperParser.StatementAssignmentContext ctx) {
         AssignmentVisitor visitor = new AssignmentVisitor();
-        return new StateConstruct(visitor.visit(ctx.assignment()));
+        return visitor.visit(ctx.assignment());
     }
 
 

@@ -52,9 +52,7 @@ assignment
 expr
     : scalar
     | NULL
-    | dereference
-    | indexingDereference
-    | methodCall ('.' (dereference | indexingDereference | methodCall))*
+    | expressionStatement
     | expr MUL expr
     | expr DIV expr
     | expr ADD expr
@@ -70,13 +68,18 @@ expr
     | expr GT expr
     ;
 
+expressionStatement
+    : dereference indexingDereference? ('.' expressionStatement)?
+    | methodCall indexingDereference? ('.' expressionStatement)?
+    ;
+
 methodCall
-    : dereference '(' ')'
-    | dereference '(' expr (',' expr)* ')'
+    : ID '(' ')'
+    | ID '(' expr (',' expr)* ')'
     ;
 
 indexingDereference
-    : dereference '[' expr ']'
+    : '[' expr ']'
     ;
 
 dereference
