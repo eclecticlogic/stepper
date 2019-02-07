@@ -1,0 +1,22 @@
+
+scaffolding(code) ::= <<
+
+exports.handler = async (event) => {
+    <branch(first(code.branches), rest(code.branches))>
+};
+
+>>
+
+
+branch(call, other) ::= <<
+
+    if (event.cmd == "<call.trigger>") {
+
+        const response = {
+
+        };
+        return response;
+    }
+
+    <if(other)><branch(first(other), rest(other)><endif>
+>>
