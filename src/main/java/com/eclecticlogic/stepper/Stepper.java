@@ -1,4 +1,4 @@
-package com.test;
+package com.eclecticlogic.stepper;
 
 import com.eclecticlogic.stepper.antlr.StepperLexer;
 import com.eclecticlogic.stepper.antlr.StepperParser;
@@ -11,10 +11,10 @@ import org.stringtemplate.v4.ST;
 import org.stringtemplate.v4.STGroup;
 import org.stringtemplate.v4.STGroupFile;
 
-public class Test {
+public class Stepper {
 
     public static void main(String[] args) throws Exception {
-        CharStream input = CharStreams.fromFileName("c:/users/kabram/Downloads/test.txt");
+        CharStream input = CharStreams.fromFileName(args[0]);
         StepperLexer lexer = new StepperLexer(input);
         CommonTokenStream tokens = new CommonTokenStream(lexer);
         StepperParser parser = new StepperParser(tokens);
