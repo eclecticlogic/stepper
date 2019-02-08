@@ -31,6 +31,6 @@ branch(call, other) ::= <<
 
 
 genInputs(input, other) ::= <<
-<input> = event.<input>;
+var <input> = event.<input>;
 <if(other)><genInputs(first(other), rest(other))><endif>
 >>
