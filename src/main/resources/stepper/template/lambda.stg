@@ -5,7 +5,7 @@ exports.handler = async (event) => {
     <if(first(code.branches))>
     <branch(first(code.branches), rest(code.branches))>
     <endif>
-    else return null;
+    else return {"error": "no branch matched"};
 };
 
 >>
@@ -31,6 +31,6 @@ branch(call, other) ::= <<
 
 
 genInputs(input, other) ::= <<
-    <input> = event.<input>;
-    <if(other)><genInputs(first(other), rest(other))><endif>
+<input> = event.<input>;
+<if(other)><genInputs(first(other), rest(other))><endif>
 >>

@@ -8,6 +8,8 @@ import com.google.common.collect.Maps;
 import java.util.List;
 import java.util.Map;
 
+import static com.eclecticlogic.stepper.etc.Constants.COMMAND_VAR;
+
 public class ExpressionConstruct extends StateConstruct<Task> {
 
     private String expression;
@@ -41,7 +43,7 @@ public class ExpressionConstruct extends StateConstruct<Task> {
 
         task.captureAttribute("Parameters");
         task.handleObject(() -> {
-            task.captureAttribute("cmd__sm");
+            task.captureAttribute(COMMAND_VAR);
             task.setProperty(task.getName());
 
             symbols.forEach(it -> {

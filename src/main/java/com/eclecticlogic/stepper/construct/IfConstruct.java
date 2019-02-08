@@ -1,5 +1,6 @@
 package com.eclecticlogic.stepper.construct;
 
+import com.eclecticlogic.stepper.etc.LambdaBranch;
 import com.eclecticlogic.stepper.etc.WeaveContext;
 import com.eclecticlogic.stepper.state.Choice;
 import com.eclecticlogic.stepper.state.State;
@@ -8,10 +9,12 @@ import com.google.common.collect.Lists;
 
 import java.util.List;
 
+import static com.eclecticlogic.stepper.etc.Constants.COMMAND_VAR;
+
 public class IfConstruct extends Construct {
 
-    private String conditionText; // TODO
-    private List<String> conditionDeferences;
+    private String conditionText;
+    private List<String> symbols;
     private Construct firstIf, firstElse;
 
     private Task conditionTask = new Task();
@@ -24,8 +27,8 @@ public class IfConstruct extends Construct {
     }
 
 
-    public void setConditionDeferences(List<String> conditionDeferences) {
-        this.conditionDeferences = conditionDeferences;
+    public void setSymbols(List<String> conditionDeferences) {
+        this.symbols = conditionDeferences;
     }
 
 
@@ -39,13 +42,27 @@ public class IfConstruct extends Construct {
     }
 
 
-    void setup() {
+    void setupLambda(WeaveContext context) {
+        final LambdaBranch branch = new LambdaBranch();
+        branch.setCommandName(conditionTask.getName());
+        branch.setInputs(symbols);
+        branch.setOutputExpression(conditionText);
+        context.getLambdaHelper().getBranches().add(branch);
+    }
+
+
+    void setup(WeaveContext context) {
+        setupLambda(context);
         conditionTask.captureAttribute("Parameters");
-        conditionTask.handleObject(() ->
-                conditionDeferences.forEach(it -> {
-                    conditionTask.captureAttribute(it + ".$");
-                    conditionTask.setProperty("$." + it);
-                }));
+        conditionTask.handleObject(() -> {
+            conditionTask.captureAttribute(COMMAND_VAR);
+            conditionTask.setProperty(conditionTask.getName());
+
+            symbols.forEach(it -> {
+                conditionTask.captureAttribute(it + ".$");
+                conditionTask.setProperty("$." + it);
+            });
+        });
 
         conditionTask.captureAttribute("Resource");
         conditionTask.setProperty("@@@lambda_helper_arn@@@");
@@ -82,7 +99,7 @@ public class IfConstruct extends Construct {
 
     @Override
     public void weave(WeaveContext context) {
-        setup();
+        setup(context);
         firstIf.weave(context);
         if (firstElse != null) {
             firstElse.weave(context);

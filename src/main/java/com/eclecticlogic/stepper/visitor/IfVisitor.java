@@ -12,7 +12,7 @@ public class IfVisitor extends StepperBaseVisitor<IfConstruct> {
         construct.setCondition(ctx.ifCondition.getText());
 
         DereferencingVisitor defVisitor = new DereferencingVisitor();
-        construct.setConditionDeferences(defVisitor.visit(ctx.ifCondition));
+        construct.setSymbols(defVisitor.visit(ctx.ifCondition));
 
         StatementBlockVisitor ifBlockVisitor = new StatementBlockVisitor();
         construct.setFirstIf(ifBlockVisitor.visit(ctx.ifBlock));
