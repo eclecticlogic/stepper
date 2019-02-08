@@ -1,5 +1,6 @@
 package com.eclecticlogic.stepper.construct;
 
+import com.eclecticlogic.stepper.etc.WeaveContext;
 import com.eclecticlogic.stepper.state.State;
 
 import java.util.List;
@@ -32,10 +33,10 @@ public class StateConstruct<T extends State> extends Construct {
 
 
     @Override
-    public void weave() {
+    public void weave(WeaveContext context) {
         if (getNext() != null) {
             state.setNextState(getNext().getFirstStateName());
-            getNext().weave();
+            getNext().weave(context);
         }
     }
 

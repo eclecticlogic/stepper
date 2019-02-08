@@ -1,5 +1,6 @@
 package com.eclecticlogic.stepper.construct;
 
+import com.eclecticlogic.stepper.etc.WeaveContext;
 import com.eclecticlogic.stepper.state.State;
 import com.google.common.collect.Lists;
 
@@ -29,8 +30,8 @@ public class ProgramConstruct extends Construct {
 
 
     @Override
-    public void weave() {
-        getNext().weave();
+    public void weave(WeaveContext context) {
+        getNext().weave(context);
     }
 
 

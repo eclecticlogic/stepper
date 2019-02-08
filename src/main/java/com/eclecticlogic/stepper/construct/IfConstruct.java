@@ -1,5 +1,6 @@
 package com.eclecticlogic.stepper.construct;
 
+import com.eclecticlogic.stepper.etc.WeaveContext;
 import com.eclecticlogic.stepper.state.Choice;
 import com.eclecticlogic.stepper.state.State;
 import com.eclecticlogic.stepper.state.Task;
@@ -47,7 +48,7 @@ public class IfConstruct extends Construct {
                 }));
 
         conditionTask.captureAttribute("Resource");
-        conditionTask.setProperty("lambda arn for condition");
+        conditionTask.setProperty("@@@lambda_helper_arn@@@");
         conditionTask.setResultPath("$." + choiceVariable);
         conditionTask.setNextState(choice.getName());
 
@@ -80,14 +81,14 @@ public class IfConstruct extends Construct {
 
 
     @Override
-    public void weave() {
+    public void weave(WeaveContext context) {
         setup();
-        firstIf.weave();
+        firstIf.weave(context);
         if (firstElse != null) {
-            firstElse.weave();
+            firstElse.weave(context);
         }
         if (getNext() != null) {
-            getNext().weave();
+            getNext().weave(context);
             setNextStateName(getNext().getFirstStateName());
         }
     }

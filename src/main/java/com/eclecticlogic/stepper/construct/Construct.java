@@ -1,5 +1,6 @@
 package com.eclecticlogic.stepper.construct;
 
+import com.eclecticlogic.stepper.etc.WeaveContext;
 import com.eclecticlogic.stepper.state.State;
 import com.google.common.collect.Lists;
 
@@ -42,7 +43,7 @@ public abstract class Construct {
     protected abstract void setNextStateName(String name);
 
 
-    public abstract void weave();
+    public abstract void weave(WeaveContext context);
 
 
     Construct getLastInChain(Construct input) {
