@@ -35,9 +35,7 @@ state MyState {
 			"Resource": "arn:aws:states:::sqs:sendMessage"
 		}
 	}
-
 }
-
 
 ```    
 
@@ -144,24 +142,21 @@ exports.handler = async (event) => {
             return response;
         }
 
+        if (event.cmd__sm == "state003") {
 
-            if (event.cmd__sm == "state003") {
+            var array1 = event.array1;
 
-                var array1 = event.array1;
+            const response = array1[array1.length/2].toUpperCase();
+            return response;
+        }
 
-                const response = array1[array1.length/2].toUpperCase();
-                return response;
-            }
+        if (event.cmd__sm == "state005") {
 
+            var array1 = event.array1;
 
-                if (event.cmd__sm == "state005") {
-
-                    var array1 = event.array1;
-
-                    const response = array1[0].toUpperCase();
-                    return response;
-                }
-
+            const response = array1[0].toUpperCase();
+            return response;
+        }
 
     else return {"error": "no branch matched"};
 };
