@@ -1,10 +1,3 @@
-@-moz-document domain("github.com") {
-  .highlight > pre, pre > code {
-    max-height: 200px !important;
-    overflow-y: auto !important;
-  }
-}
-
 Stepper
 ====
 
@@ -52,10 +45,6 @@ the stepper framework generates the following State Machine ASL JSON:
 
 ```json
 {
-    "Comment": "this is a comment",
-    "TimeoutSeconds": 3600,
-    "Version": "1.0",
-
     "StartAt": "state000",
     "States": {
             "state000": {
