@@ -128,6 +128,44 @@ the stepper framework generates the following State Machine ASL JSON:
 }
 ```
 
+It also produces the following Lambda helper function (referened as `testInput` above).
+
+```Javascript
+
+exports.handler = async (event) => {
+
+        if (event.cmd__sm == "state001") {
+
+            var array1 = event.array1;
+
+            const response = array1.length>=5;
+            return response;
+        }
+
+
+            if (event.cmd__sm == "state003") {
+
+                var array1 = event.array1;
+
+                const response = array1[array1.length/2].toUpperCase();
+                return response;
+            }
+
+
+                if (event.cmd__sm == "state005") {
+
+                    var array1 = event.array1;
+
+                    const response = array1[0].toUpperCase();
+                    return response;
+                }
+
+
+    else return {"error": "no branch matched"};
+};
+
+
+```
 The code is at `0.1-SNAPSHOT` version and currently only supports `tasks`, `if` statement and assignment expressions. 
 The plan is to add the following features for the 1.0 release:
 
