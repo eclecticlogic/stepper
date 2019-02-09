@@ -128,7 +128,9 @@ the stepper framework generates the following State Machine ASL JSON:
 }
 ```
 
-It also produces the following Lambda helper function (referened as `testInput` above).
+The ASL produced has a placeholder `Resource` reference for the Lambda helper required. In a future release
+the lambda could be auto-registered and the arn populated. For now, the framework produces the lambda code
+as shown below and you have to register and populate the reference. 
 
 ```Javascript
 
