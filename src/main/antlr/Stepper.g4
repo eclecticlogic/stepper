@@ -11,12 +11,9 @@ annotation
     : '@' ID '(' scalar ')'
     ;
 
-eachStatement
-    : 'each' '(' ID 'in' ID ('.' ID)* ('[' expr ']')? ')' statementBlock
-    ;
-
 forStatement
-    : 'for' '(' ID '=' expr 'to' expr ')' statementBlock
+    : 'for' '(' var=ID '=' expr ';' limiting=expr ';' (incVar=ID complexAssign)? delta=expr ')' statementBlock
+    | 'for' '(' ID 'in' expr ')' statementBlock
     ;
 
 ifStatement
@@ -28,6 +25,13 @@ whileStatement
     : 'while' '(' expr ')' statementBlock
     ;
 
+whenStatement
+    : 'when' '{'
+        ('case' caseExpr=expr ':' statementBlock)+
+        ('else' statementBlock)?
+    '}'
+    ;
+
 statementBlock
     : '{' statement+ '}'
     | statement
@@ -36,23 +40,27 @@ statementBlock
 statement
     : assignment                        #statementAssignment
     | task                              #statementTask
-    | eachStatement                     #statementEach
     | forStatement                      #statementFor
     | ifStatement                       #statementIf
     | whileStatement                    #statementWhile
+    | whenStatement                     #statementWhen
     ;
 
 assignment
-    : dereference '=' task              #assignmentTask
-    | dereference '=' expr ';'          #assignmentExpr
-    | dereference '=' jsonObject        #assignmentJson
-    | dereference '=' '[' value (',' value)* ']'    #assignmentJsonArray
+    : dereference ASSIGN task SEMICOLON?                           #assignmentTask
+    | dereference complexAssign expr ';'                           #assignmentExpr
+    | dereference ASSIGN jsonObject SEMICOLON?                     #assignmentJson
+    | dereference ASSIGN '[' value (',' value)* ']' SEMICOLON?     #assignmentJsonArray
     ;
 
 expr
     : scalar
     | NULL
     | expressionStatement
+    | expr INCR
+    | expr DECR
+    | INCR expr
+    | DECR expr
     | expr MUL expr
     | expr DIV expr
     | expr ADD expr
@@ -61,7 +69,7 @@ expr
     | expr AND expr
     | expr OR expr
     | NOT expr
-    | expr EQUALS expr
+    | expr EQUALITY expr
     | expr LE expr
     | expr LT expr
     | expr GE expr
@@ -101,12 +109,12 @@ pair
 value
    : STRING                             #valueString
    | NUMBER                             #valueNum
+   | TRUE                               #valueTrue
+   | FALSE                              #valueFalse
    | '{' pair (',' pair)* '}'           #valueObj
    | '{' '}'                            #valueObjEmpty
    | '[' value (',' value)* ']'         #valueArr
    | '[' ']'                            #valueArrEmpty
-   | TRUE                               #valueTrue
-   | FALSE                              #valueFalse
 ;
 
 scalar
@@ -114,6 +122,10 @@ scalar
     | NUMBER
     | TRUE
     | FALSE
+    ;
+
+complexAssign
+    : (ASSIGN | PLUSASSIGN | MINUSASSIGN | MULTASSIGN | DIVASSIGN)
     ;
 
 // lexer rules
@@ -128,6 +140,8 @@ STRING
 
 
 // operators
+INCR: '++';
+DECR: '--';
 MUL: '*';
 DIV: '/';
 ADD: '+';
@@ -135,11 +149,16 @@ SUB: '-';
 AND: '&&';
 OR: '||';
 NOT: '!';
-EQUALS: '==';
+EQUALITY: '==';
 LE: '<=';
 LT: '<';
 GE: '>=';
 GT: '>';
+ASSIGN: '=';
+PLUSASSIGN: '+=';
+MINUSASSIGN: '-=';
+MULTASSIGN: '*=';
+DIVASSIGN: '/=';
 
 // keywords
 TRUE: 'true';
@@ -147,6 +166,9 @@ FALSE: 'false';
 NULL: 'null';
 IF: 'if';
 ELSE: 'else';
+
+// symbols
+SEMICOLON: ';';
 
 ID
     : ALPHA (ALPHA | DIGIT)*

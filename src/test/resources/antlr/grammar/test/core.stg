@@ -1,0 +1,131 @@
+
+testValueNested() ::= <<
+{
+    "test": {
+        "a": ["b", {
+            "t": {},
+            "u": "v",
+            "w": [false, 1]
+        }, "c"],
+        "d": {
+            "e": true,
+            "f": false
+       }
+    }
+}
+
+>>
+
+testTask() ::= <<
+
+    task {
+		"Resource": "arn:aws:states:::sqs:sendMessage",
+      	"Parameters": {
+        	"MessageBody": "$.dynamo.Item.Message.S",
+        	"QueueUrl": "https://sqs.us-east-1.amazonaws.com/123456789012/sqsconnector-SQSQueue-QVGQBW134PWK"
+      	}
+	}
+
+>>
+
+testAssignmentTask() ::= <<
+
+    abc = task {
+		"Resource": "arn:aws:states:::sqs:sendMessage",
+      	"Parameters": {
+        	"MessageBody": "$.dynamo.Item.Message.S",
+        	"QueueUrl": "https://sqs.us-east-1.amazonaws.com/123456789012/sqsconnector-SQSQueue-QVGQBW134PWK"
+      	}
+	}
+
+>>
+
+testAssignmentJson() ::= <<
+    result = {
+        "test": {
+            "a": ["b", {
+                "t": {},
+                "u": "v",
+                "w": [false, 1]
+            }, "c"],
+            "d": {
+                "e": true,
+                "f": false
+           }
+        }
+    }
+
+>>
+
+testForClassic1() ::= <<
+    for (i = 0; i \< c * 4; i++) {
+        a = b;
+    }
+>>
+testForClassic2() ::= <<
+    for (i = 0; i \< c * 4; i = i+3) {
+        a = b;
+    }
+>>
+
+testForIteration() ::= <<
+    for (i in json.array) {
+        a = b;
+    }
+>>
+
+testIf1() ::= <<
+    if (c * 3 > 4)
+        a = b;
+>>
+testIf2() ::= <<
+    if (c * 3 > 4) {
+        a = b;
+    }
+>>
+testIf3() ::= <<
+    if (c * 3 > 4)
+        a = b;
+    else if (d > 0) {
+        b = 5;
+    } else {
+        c = 6
+    }
+>>
+
+testWhile() ::= <<
+    while (a > b) {
+        c = task {
+            "a": "b"
+        }
+    }
+>>
+
+testWhen1() ::= <<
+    when {
+        case a > b: task { "a": "b" }
+    }
+>>
+testWhen2() ::= <<
+    when {
+        case a > b: task { "a": "b" }
+        case c > d: {
+            a1 = 1;
+            a2 = 2;
+        }
+        else d = 10;
+    }
+>>
+testWhen3() ::= <<
+    when {
+        case a > b: task { "a": "b" }
+        case c > d: {
+            a1 = 1;
+            a2 = 2;
+        }
+        else {
+            d1 = 10;
+            d2 = 20;
+        }
+    }
+>>
