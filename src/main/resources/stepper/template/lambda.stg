@@ -16,6 +16,7 @@ branch(call, other) ::= <<
     if (event.cmd__sm == "<call.commandName>") {
 
         <genInputs(first(call.inputs), rest(call.inputs))>
+        <if(call.computation)><call.computation><endif>
         <if(call.outputExpression)>
         const response = <call.outputExpression>;
         <else>
@@ -33,4 +34,15 @@ branch(call, other) ::= <<
 genInputs(input, other) ::= <<
 var <input> = event.<input>;
 <if(other)><genInputs(first(other), rest(other))><endif>
+>>
+
+
+forIterationBody(expr, index) ::= <<
+    var i = <index>.idx + 1;
+    var r = null;
+    if (i \< <expr>.length) {
+        r = { "idx": i, "var": <expr>[i], "exists": true }
+    } else {
+        r = { "exists": false }
+    }
 >>

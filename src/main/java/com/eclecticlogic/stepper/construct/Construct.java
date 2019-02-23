@@ -11,6 +11,10 @@ public abstract class Construct {
     private static int dynamicVariableCounter;
     private Construct next;
 
+
+    /**
+     * @return Should return all the states in the given construct and states in the construct that follows this.
+     */
     public abstract List<State> getStates();
 
 
@@ -43,6 +47,10 @@ public abstract class Construct {
     protected abstract void setNextStateName(String name);
 
 
+    /**
+     * @param context Implementors are expected to wire up the ASL json nodes and then call weave on any
+     *                constructs they directly manage and call weave on the next construct (getNext() != null).
+     */
     public abstract void weave(WeaveContext context);
 
 

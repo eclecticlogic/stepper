@@ -12,8 +12,8 @@ annotation
     ;
 
 forStatement
-    : 'for' '(' var=ID '=' expr ';' limiting=expr ';' (incVar=ID complexAssign)? delta=expr ')' statementBlock
-    | 'for' '(' ID 'in' expr ')' statementBlock
+    : 'for' '(' var=ID '=' expr ';' limiting=expr ';' (incVar=ID complexAssign)? delta=expr ')' statementBlock #forClassic
+    | 'for' '(' ID 'in' iterable=expr ')' statementBlock     #forIteration
     ;
 
 ifStatement

@@ -7,7 +7,7 @@ public class LambdaBranch {
 
     private String commandName;
     private List<String> inputs;
-    private Map<String, String> outputs;
+    private String computation;
     private String outputExpression;
 
     public String getCommandName() {
@@ -30,13 +30,13 @@ public class LambdaBranch {
     }
 
 
-    public Map<String, String> getOutputs() {
-        return outputs;
+    public String getComputation() {
+        return computation;
     }
 
 
-    public void setOutputs(Map<String, String> outputs) {
-        this.outputs = outputs;
+    public void setComputation(String computation) {
+        this.computation = computation;
     }
 
 

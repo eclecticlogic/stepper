@@ -35,4 +35,11 @@ public class StatementVisitor extends StepperBaseVisitor<Construct> {
         IfVisitor visitor = new IfVisitor();
         return visitor.visit(ctx.ifStatement());
     }
+
+
+    @Override
+    public Construct visitStatementFor(StepperParser.StatementForContext ctx) {
+        ForVisitor visitor = new ForVisitor();
+        return visitor.visit(ctx.forStatement());
+    }
 }
