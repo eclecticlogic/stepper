@@ -8,15 +8,20 @@ import com.eclecticlogic.stepper.construct.StateConstruct;
 import com.eclecticlogic.stepper.state.Pass;
 import com.eclecticlogic.stepper.state.Task;
 
+import static com.eclecticlogic.stepper.etc.Stringer.from;
+import static com.eclecticlogic.stepper.etc.Stringer.strip;
+
+
 public class AssignmentVisitor extends StepperBaseVisitor<Construct> {
 
     @Override
     public Construct visitAssignmentTask(StepperParser.AssignmentTaskContext ctx) {
-        Task task = new Task();
+        String taskName = strip(from(ctx.task().taskName));
+        Task task = taskName == null ? new Task() : new Task(taskName);
         JsonObjectVisitor visitor = new JsonObjectVisitor(task);
         visitor.visit(ctx.task().jsonObject());
         task.setResultPath("$." + ctx.dereference().getText());
-        return new StateConstruct(task);
+        return new StateConstruct<>(task);
     }
 
 
@@ -29,7 +34,7 @@ public class AssignmentVisitor extends StepperBaseVisitor<Construct> {
             visitor.visit(ctx.jsonObject());
         });
         pass.setResultPath("$." + ctx.dereference().getText());
-        return new StateConstruct(pass);
+        return new StateConstruct<>(pass);
     }
 
 
@@ -42,20 +47,43 @@ public class AssignmentVisitor extends StepperBaseVisitor<Construct> {
             visitor.visit(ctx);
         });
         pass.setResultPath("$." + ctx.dereference().getText());
-        return new StateConstruct(pass);
+        return new StateConstruct<>(pass);
     }
 
 
     @Override
     public Construct visitAssignmentExpr(StepperParser.AssignmentExprContext ctx) {
         ExpressionConstruct construct = new ExpressionConstruct();
-        construct.setVariable(ctx.dereference().getText());
-        construct.setExpression(ctx.expr().getText());
+        String variable = ctx.dereference().getText();
+        String expression = enhance(ctx, ctx.expr().getText(), variable);
+
+        construct.setVariable(variable);
+        construct.setExpression(expression);
 
         DereferencingVisitor defVisitor = new DereferencingVisitor();
         construct.setSymbols(defVisitor.visit(ctx.expr()));
         construct.setup();
 
         return construct;
+    }
+
+
+    String enhance(StepperParser.AssignmentExprContext ctx, String expression, String variable) {
+        StepperParser.ComplexAssignContext cactx = ctx.complexAssign();
+        if (cactx.ASSIGN() != null) {
+            return expression;
+        } else {
+            String symbol;
+            if (cactx.PLUSASSIGN() != null) {
+                symbol = "+";
+            } else if (cactx.MINUSASSIGN() != null) {
+                symbol = "-";
+            } else if (cactx.MULTASSIGN() != null) {
+                symbol = "*";
+            } else {
+                symbol = "/";
+            }
+            return variable + " " + symbol + " " + expression;
+        }
     }
 }

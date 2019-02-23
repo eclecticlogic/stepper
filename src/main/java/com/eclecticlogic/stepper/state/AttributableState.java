@@ -14,6 +14,12 @@ public class AttributableState extends AbstractState {
 
 
     AttributableState() {
+        this(null);
+    }
+
+
+    AttributableState(String stateName) {
+        super(stateName);
         current = json;
     }
 
@@ -78,5 +84,6 @@ public class AttributableState extends AbstractState {
         current = currentStack.pop();
         return array;
     }
+
 }
 

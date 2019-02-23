@@ -95,7 +95,7 @@ dereference
     ;
 
 task
-    : 'task' jsonObject
+    : 'task' ('(' taskName=STRING ')')? jsonObject
     ;
 
 jsonObject
@@ -137,7 +137,6 @@ NUMBER
 STRING
    : '"' (ESC | SAFECODEPOINT)* '"'
    ;
-
 
 // operators
 INCR: '++';

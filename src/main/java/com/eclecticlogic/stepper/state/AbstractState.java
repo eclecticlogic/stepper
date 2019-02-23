@@ -15,7 +15,12 @@ public abstract class AbstractState implements State {
     JsonObject json = new JsonObject();
 
     AbstractState() {
-        stateName = String.format("state%03d", stateNameCounter++);
+        this(null);
+    }
+
+
+    AbstractState(String stateName) {
+        this.stateName = stateName == null ? String.format("state%03d", stateNameCounter++) : stateName;
     }
 
 
@@ -43,5 +48,4 @@ public abstract class AbstractState implements State {
     public void setNextState(String value) {
         json.addProperty("Next", value);
     }
-
 }

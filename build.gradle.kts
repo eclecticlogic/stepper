@@ -1,6 +1,8 @@
 plugins {
     java
     antlr
+    groovy
+    id("com.github.ben-manes.versions").version("0.20.0")
 }
 
 group = "com.eclecticlogic"
@@ -25,7 +27,10 @@ dependencies {
     implementation ("org.antlr", "ST4", "4.1")
     implementation("com.google.guava", "guava", "27.0.1-jre")
     implementation ("com.google.code.gson", "gson", "2.8.5")
+
     testCompile("junit", "junit", "4.12")
+    testCompile("org.codehaus.groovy", "groovy-all", "2.5.6")
+    testCompile("org.spockframework", "spock-core", "1.2-groovy-2.5")
 }
 
 configure<JavaPluginConvention> {
@@ -45,6 +50,5 @@ tasks {
             project.delete(fileTree("build/generated-src/antlr/main").include("*.*"))
         }
     }
-
-
+    
 }

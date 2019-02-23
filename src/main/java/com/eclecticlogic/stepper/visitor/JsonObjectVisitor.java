@@ -2,11 +2,16 @@ package com.eclecticlogic.stepper.visitor;
 
 import com.eclecticlogic.stepper.antlr.StepperBaseVisitor;
 import com.eclecticlogic.stepper.antlr.StepperParser;
+import com.eclecticlogic.stepper.etc.Stringer;
 import com.eclecticlogic.stepper.state.AttributableState;
 import com.eclecticlogic.stepper.state.Task;
 
 import java.text.NumberFormat;
 import java.text.ParseException;
+
+import static com.eclecticlogic.stepper.etc.Stringer.from;
+import static com.eclecticlogic.stepper.etc.Stringer.strip;
+
 
 public class JsonObjectVisitor extends StepperBaseVisitor<AttributableState> {
 
@@ -27,7 +32,7 @@ public class JsonObjectVisitor extends StepperBaseVisitor<AttributableState> {
 
     @Override
     public AttributableState visitPair(StepperParser.PairContext ctx) {
-        state.captureAttribute(ctx.STRING().getText().replaceAll("\"", ""));
+        state.captureAttribute(strip(from(ctx.STRING())));
         visit(ctx.value());
         return null;
     }
@@ -35,7 +40,7 @@ public class JsonObjectVisitor extends StepperBaseVisitor<AttributableState> {
 
     @Override
     public Task visitValueString(StepperParser.ValueStringContext ctx) {
-        state.setProperty(ctx.STRING().getText().replaceAll("\"", ""));
+        state.setProperty(strip(from(ctx.STRING())));
         return null;
     }
 
