@@ -17,9 +17,9 @@ public class IfConstruct extends Construct {
     private List<String> symbols;
     private Construct firstIf, firstElse;
 
-    private Task conditionTask = new Task();
-    private String choiceVariable = getNextDynamicVariable();
-    private Choice choice = new Choice(choiceVariable);
+    private final Task conditionTask = new Task();
+    private final String choiceVariable = getNextDynamicVariable();
+    final Choice choice = new Choice(choiceVariable);
 
 
     public void setCondition(String condition) {
@@ -51,8 +51,7 @@ public class IfConstruct extends Construct {
     }
 
 
-    void setup(WeaveContext context) {
-        setupLambda(context);
+    void setupCondition() {
         conditionTask.captureAttribute("Parameters");
         conditionTask.handleObject(() -> {
             conditionTask.captureAttribute(COMMAND_VAR);
@@ -99,7 +98,8 @@ public class IfConstruct extends Construct {
 
     @Override
     public void weave(WeaveContext context) {
-        setup(context);
+        setupLambda(context);
+        setupCondition();
         firstIf.weave(context);
         if (firstElse != null) {
             firstElse.weave(context);

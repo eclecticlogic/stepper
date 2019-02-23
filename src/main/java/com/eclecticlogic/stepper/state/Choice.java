@@ -37,4 +37,14 @@ public class Choice extends AttributableState {
     public void setElseNextState(String value) {
         objElse.addProperty("Next", value);
     }
+
+
+    public JsonObject getObjIf() {
+        return objIf;
+    }
+
+
+    public JsonObject getObjElse() {
+        return objElse;
+    }
 }
