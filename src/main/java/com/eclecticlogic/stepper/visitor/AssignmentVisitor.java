@@ -8,8 +8,7 @@ import com.eclecticlogic.stepper.construct.StateConstruct;
 import com.eclecticlogic.stepper.state.Pass;
 import com.eclecticlogic.stepper.state.Task;
 
-import static com.eclecticlogic.stepper.etc.Stringer.from;
-import static com.eclecticlogic.stepper.etc.Stringer.strip;
+import static com.eclecticlogic.stepper.etc.Stringer.*;
 
 
 public class AssignmentVisitor extends StepperBaseVisitor<Construct> {
@@ -55,7 +54,7 @@ public class AssignmentVisitor extends StepperBaseVisitor<Construct> {
     public Construct visitAssignmentExpr(StepperParser.AssignmentExprContext ctx) {
         ExpressionConstruct construct = new ExpressionConstruct();
         String variable = ctx.dereference().getText();
-        String expression = enhance(ctx, ctx.expr().getText(), variable);
+        String expression = enhance(ctx.complexAssign(), ctx.expr().getText(), variable);
 
         construct.setVariable(variable);
         construct.setExpression(expression);
@@ -67,23 +66,4 @@ public class AssignmentVisitor extends StepperBaseVisitor<Construct> {
         return construct;
     }
 
-
-    String enhance(StepperParser.AssignmentExprContext ctx, String expression, String variable) {
-        StepperParser.ComplexAssignContext cactx = ctx.complexAssign();
-        if (cactx.ASSIGN() != null) {
-            return expression;
-        } else {
-            String symbol;
-            if (cactx.PLUSASSIGN() != null) {
-                symbol = "+";
-            } else if (cactx.MINUSASSIGN() != null) {
-                symbol = "-";
-            } else if (cactx.MULTASSIGN() != null) {
-                symbol = "*";
-            } else {
-                symbol = "/";
-            }
-            return variable + " " + symbol + " " + expression;
-        }
-    }
 }

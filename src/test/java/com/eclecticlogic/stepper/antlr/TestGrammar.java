@@ -122,8 +122,9 @@ public class TestGrammar extends AbstractGrammarTester {
     @Test
     public void testFor() {
         Function<StepperParser, ParserRuleContext> fn = p -> p.forStatement();
-        parse("core.stg", "testForClassic1", fn);
-        parse("core.stg", "testForClassic2", fn);
+        parse("core.stg", "testForLoop1", fn);
+        parse("core.stg", "testForLoop2", fn);
+        parse("core.stg", "testForLoop3", fn);
         parse("core.stg", "testForIteration", fn);
     }
 

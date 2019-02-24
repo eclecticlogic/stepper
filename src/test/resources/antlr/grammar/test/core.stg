@@ -57,13 +57,18 @@ testAssignmentJson() ::= <<
 
 >>
 
-testForClassic1() ::= <<
-    for (i = 0; i \< c * 4; i++) {
+testForLoop1() ::= <<
+    for (i = 0 to c * 4) {
         a = b;
     }
 >>
-testForClassic2() ::= <<
-    for (i = 0; i \< c * 4; i = i+3) {
+testForLoop2() ::= <<
+    for (i = 0 to c * 4 step 3) {
+        a = b;
+    }
+>>
+testForLoop3() ::= <<
+    for (i = d to c * 4 step -53 * a) {
         a = b;
     }
 >>

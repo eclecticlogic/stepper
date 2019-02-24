@@ -54,6 +54,10 @@ public abstract class Construct {
     public abstract void weave(WeaveContext context);
 
 
+    /**
+     * @param input first construct in a chain
+     * @return The last construct in a chain of constructs (useful in finding last construct in a block of constructs).
+     */
     Construct getLastInChain(Construct input) {
         Construct next = input;
         while (next.getNext() != null) {

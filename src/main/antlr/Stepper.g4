@@ -12,8 +12,8 @@ annotation
     ;
 
 forStatement
-    : 'for' '(' var=ID '=' expr ';' limiting=expr ';' (incVar=ID complexAssign)? delta=expr ')' statementBlock #forClassic
-    | 'for' '(' ID 'in' iterable=expr ')' statementBlock     #forIteration
+    : FOR '(' ID '=' init=expr TO end=expr (STEP delta=expr)? ')' statementBlock #forLoop
+    | FOR '(' ID 'in' iterable=expr ')' statementBlock     #forIteration
     ;
 
 ifStatement
@@ -22,13 +22,13 @@ ifStatement
     ;
 
 whileStatement
-    : 'while' '(' expr ')' statementBlock
+    : WHILE '(' expr ')' statementBlock
     ;
 
 whenStatement
-    : 'when' '{'
-        ('case' caseExpr=expr ':' statementBlock)+
-        ('else' statementBlock)?
+    : WHEN '{'
+        (CASE caseExpr=expr ':' statementBlock)+
+        (ELSE statementBlock)?
     '}'
     ;
 
@@ -165,6 +165,12 @@ FALSE: 'false';
 NULL: 'null';
 IF: 'if';
 ELSE: 'else';
+FOR: 'for';
+TO: 'to';
+STEP: 'step';
+WHILE: 'while';
+WHEN: 'when';
+CASE: 'case';
 
 // symbols
 SEMICOLON: ';';

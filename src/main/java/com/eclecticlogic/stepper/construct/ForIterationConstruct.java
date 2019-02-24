@@ -73,6 +73,7 @@ public class ForIterationConstruct extends Construct {
         branch.setOutputExpression("r");
         context.getLambdaHelper().getBranches().add(branch);
 
+        symbols.add(index);
         iteratingLambda.captureAttribute("Parameters");
         iteratingLambda.handleObject(() -> {
             iteratingLambda.captureAttribute(COMMAND_VAR);
@@ -97,7 +98,7 @@ public class ForIterationConstruct extends Construct {
         iterVariableSetter.setProperty("$." + index + ".var");
         iterVariableSetter.setResultPath("$." + iterableVariable);
         iterVariableSetter.setNextState(block.getFirstStateName());
-        block.setNextStateName(iteratingLambda.getName());
+        getLastInChain(block).setNextStateName(iteratingLambda.getName());
     }
 
 
@@ -115,7 +116,6 @@ public class ForIterationConstruct extends Construct {
 
     @Override
     public void weave(WeaveContext context) {
-        symbols.add(index);
         setupInitializer();
         setupIteratingLambda(context);
         setupChoice();
