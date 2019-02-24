@@ -134,7 +134,7 @@ public class ForLoopConstruct extends Construct {
     void setupIncrementer(WeaveContext context) {
         if (stepExpression == null) {
             // Use default
-            stepExpression = iterableVariable + " + 1";
+            stepExpression = "1";
             stepExpressionSymbols = Lists.newArrayList();
         }
         stepExpressionSymbols.add(iterableVariable);
@@ -142,7 +142,7 @@ public class ForLoopConstruct extends Construct {
         final LambdaBranch branch = new LambdaBranch();
         branch.setCommandName(incrementingLambda.getName());
         branch.setInputs(stepExpressionSymbols);
-        branch.setOutputExpression(iterableVariable + " + (" + endingExpression + ")");
+        branch.setOutputExpression(iterableVariable + " + (" + stepExpression + ")");
         context.getLambdaHelper().getBranches().add(branch);
 
         incrementingLambda.captureAttribute("Parameters");
@@ -158,7 +158,7 @@ public class ForLoopConstruct extends Construct {
 
         incrementingLambda.captureAttribute("Resource");
         incrementingLambda.setProperty("@@@lambda_helper_arn@@@");
-        incrementingLambda.setResultPath("$." + choiceVar);
+        incrementingLambda.setResultPath("$." + iterableVariable);
         incrementingLambda.setNextState(choice.getName());
     }
 
