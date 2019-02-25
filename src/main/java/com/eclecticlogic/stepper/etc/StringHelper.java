@@ -4,7 +4,7 @@ import com.eclecticlogic.stepper.antlr.StepperParser;
 import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
-public class Stringer {
+public class StringHelper {
 
     public static String from(Token token) {
         return token == null ? null : token.getText();

@@ -2,15 +2,14 @@ package com.eclecticlogic.stepper.visitor;
 
 import com.eclecticlogic.stepper.antlr.StepperBaseVisitor;
 import com.eclecticlogic.stepper.antlr.StepperParser;
-import com.eclecticlogic.stepper.etc.Stringer;
 import com.eclecticlogic.stepper.state.AttributableState;
 import com.eclecticlogic.stepper.state.Task;
 
 import java.text.NumberFormat;
 import java.text.ParseException;
 
-import static com.eclecticlogic.stepper.etc.Stringer.from;
-import static com.eclecticlogic.stepper.etc.Stringer.strip;
+import static com.eclecticlogic.stepper.etc.StringHelper.from;
+import static com.eclecticlogic.stepper.etc.StringHelper.strip;
 
 
 public class JsonObjectVisitor extends StepperBaseVisitor<AttributableState> {

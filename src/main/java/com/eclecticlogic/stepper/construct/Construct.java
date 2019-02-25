@@ -1,10 +1,14 @@
 package com.eclecticlogic.stepper.construct;
 
+import com.eclecticlogic.stepper.etc.LambdaBranch;
 import com.eclecticlogic.stepper.etc.WeaveContext;
 import com.eclecticlogic.stepper.state.State;
+import com.eclecticlogic.stepper.state.Task;
 import com.google.common.collect.Lists;
 
 import java.util.List;
+
+import static com.eclecticlogic.stepper.etc.Constants.COMMAND_VAR;
 
 public abstract class Construct {
 
@@ -66,4 +70,24 @@ public abstract class Construct {
         return next;
     }
 
+
+    protected LambdaBranch constructLambda(WeaveContext context, Task lambda, String expression, List<String> symbols) {
+        final LambdaBranch branch = new LambdaBranch();
+        branch.setCommandName(lambda.getName());
+        branch.setInputs(symbols);
+        branch.setOutputExpression(expression);
+        context.getLambdaHelper().getBranches().add(branch);
+
+        lambda.captureAttribute("Parameters");
+        lambda.handleObject(() -> {
+            lambda.captureAttribute(COMMAND_VAR);
+            lambda.setProperty(lambda.getName());
+
+            symbols.forEach(it -> {
+                lambda.captureAttribute(it + ".$");
+                lambda.setProperty("$." + it);
+            });
+        });
+        return branch;
+    }
 }

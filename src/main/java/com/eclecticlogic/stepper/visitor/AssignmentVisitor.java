@@ -8,7 +8,7 @@ import com.eclecticlogic.stepper.construct.StateConstruct;
 import com.eclecticlogic.stepper.state.Pass;
 import com.eclecticlogic.stepper.state.Task;
 
-import static com.eclecticlogic.stepper.etc.Stringer.*;
+import static com.eclecticlogic.stepper.etc.StringHelper.*;
 
 
 public class AssignmentVisitor extends StepperBaseVisitor<Construct> {
@@ -27,7 +27,7 @@ public class AssignmentVisitor extends StepperBaseVisitor<Construct> {
     @Override
     public Construct visitAssignmentJson(StepperParser.AssignmentJsonContext ctx) {
         Pass pass = new Pass();
-        pass.captureAttribute("Result");
+        pass.captureAttribute("Parameters");
         pass.handleObject(() -> {
             JsonObjectVisitor visitor = new JsonObjectVisitor(pass);
             visitor.visit(ctx.jsonObject());
@@ -61,7 +61,6 @@ public class AssignmentVisitor extends StepperBaseVisitor<Construct> {
 
         DereferencingVisitor defVisitor = new DereferencingVisitor();
         construct.setSymbols(defVisitor.visit(ctx.expr()));
-        construct.setup();
 
         return construct;
     }

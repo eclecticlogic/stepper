@@ -1,14 +1,9 @@
 package com.eclecticlogic.stepper.construct;
 
-import com.eclecticlogic.stepper.etc.LambdaBranch;
 import com.eclecticlogic.stepper.etc.WeaveContext;
 import com.eclecticlogic.stepper.state.Task;
-import com.google.common.collect.Maps;
 
 import java.util.List;
-import java.util.Map;
-
-import static com.eclecticlogic.stepper.etc.Constants.COMMAND_VAR;
 
 public class ExpressionConstruct extends StateConstruct<Task> {
 
@@ -37,33 +32,14 @@ public class ExpressionConstruct extends StateConstruct<Task> {
     }
 
 
-    public void setup() {
+    @Override
+    public void weave(WeaveContext context) {
+        constructLambda(context, getState(), expression, symbols);
         Task task = getState();
         task.setResultPath("$." + variable);
 
-        task.captureAttribute("Parameters");
-        task.handleObject(() -> {
-            task.captureAttribute(COMMAND_VAR);
-            task.setProperty(task.getName());
-
-            symbols.forEach(it -> {
-                task.captureAttribute(it + ".$");
-                task.setProperty("$." + it);
-            });
-        });
-
         task.captureAttribute("Resource");
         task.setProperty("@@@lambda_helper_arn@@@");
-    }
-
-
-    @Override
-    public void weave(WeaveContext context) {
-        final LambdaBranch branch = new LambdaBranch();
-        branch.setCommandName(getState().getName());
-        branch.setInputs(symbols);
-        branch.setOutputExpression(expression);
-        context.getLambdaHelper().getBranches().add(branch);
 
         super.weave(context);
     }

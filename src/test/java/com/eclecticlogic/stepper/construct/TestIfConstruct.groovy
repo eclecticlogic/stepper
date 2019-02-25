@@ -1,5 +1,6 @@
 package com.eclecticlogic.stepper.construct
 
+import com.eclecticlogic.stepper.etc.WeaveContext
 import com.eclecticlogic.stepper.state.Task
 import spock.lang.Specification
 
@@ -13,7 +14,7 @@ class TestIfConstruct extends Specification {
         ic.firstIf = c1
 
         when:
-        ic.setupCondition()
+        ic.setupCondition(new WeaveContext())
 
         then:
         ic.choice.objIf.get('Next').asString == c1.state.name
@@ -31,7 +32,7 @@ class TestIfConstruct extends Specification {
         ic.firstElse = c2
 
         when:
-        ic.setupCondition()
+        ic.setupCondition(new WeaveContext())
 
         then:
         ic.choice.objIf.get('Next').asString == c1.state.name
@@ -47,7 +48,7 @@ class TestIfConstruct extends Specification {
         ic.firstIf = c1
 
         when:
-        ic.setupCondition()
+        ic.setupCondition(new WeaveContext())
         ic.nextStateName = 'abc'
 
         then:
@@ -66,7 +67,7 @@ class TestIfConstruct extends Specification {
         ic.firstElse = c2
 
         when:
-        ic.setupCondition()
+        ic.setupCondition(new WeaveContext())
         ic.nextStateName = 'abc'
 
         then:

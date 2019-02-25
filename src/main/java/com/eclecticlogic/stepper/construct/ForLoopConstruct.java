@@ -1,6 +1,5 @@
 package com.eclecticlogic.stepper.construct;
 
-import com.eclecticlogic.stepper.etc.LambdaBranch;
 import com.eclecticlogic.stepper.etc.WeaveContext;
 import com.eclecticlogic.stepper.state.Choice;
 import com.eclecticlogic.stepper.state.State;
@@ -8,8 +7,6 @@ import com.eclecticlogic.stepper.state.Task;
 import com.google.common.collect.Lists;
 
 import java.util.List;
-
-import static com.eclecticlogic.stepper.etc.Constants.COMMAND_VAR;
 
 public class ForLoopConstruct extends Construct {
 
@@ -74,22 +71,7 @@ public class ForLoopConstruct extends Construct {
 
 
     void setupInitializer(WeaveContext context) {
-        final LambdaBranch branch = new LambdaBranch();
-        branch.setCommandName(initializingLambda.getName());
-        branch.setInputs(initialExpressionSymbols);
-        branch.setOutputExpression(initialExpression);
-        context.getLambdaHelper().getBranches().add(branch);
-
-        initializingLambda.captureAttribute("Parameters");
-        initializingLambda.handleObject(() -> {
-            initializingLambda.captureAttribute(COMMAND_VAR);
-            initializingLambda.setProperty(initializingLambda.getName());
-
-            initialExpressionSymbols.forEach(it -> {
-                initializingLambda.captureAttribute(it + ".$");
-                initializingLambda.setProperty("$." + it);
-            });
-        });
+        constructLambda(context, initializingLambda, initialExpression, initialExpressionSymbols);
 
         initializingLambda.captureAttribute("Resource");
         initializingLambda.setProperty("@@@lambda_helper_arn@@@");
@@ -100,23 +82,7 @@ public class ForLoopConstruct extends Construct {
 
     void setupEnding(WeaveContext context) {
         endingExpressionSymbols.add(iterableVariable);
-
-        final LambdaBranch branch = new LambdaBranch();
-        branch.setCommandName(endingLambda.getName());
-        branch.setInputs(endingExpressionSymbols);
-        branch.setOutputExpression(iterableVariable + " <= " + endingExpression);
-        context.getLambdaHelper().getBranches().add(branch);
-
-        endingLambda.captureAttribute("Parameters");
-        endingLambda.handleObject(() -> {
-            endingLambda.captureAttribute(COMMAND_VAR);
-            endingLambda.setProperty(endingLambda.getName());
-
-            endingExpressionSymbols.forEach(it -> {
-                endingLambda.captureAttribute(it + ".$");
-                endingLambda.setProperty("$." + it);
-            });
-        });
+        constructLambda(context, endingLambda, iterableVariable + " <= " + endingExpression, endingExpressionSymbols);
 
         endingLambda.captureAttribute("Resource");
         endingLambda.setProperty("@@@lambda_helper_arn@@@");
@@ -139,23 +105,8 @@ public class ForLoopConstruct extends Construct {
         }
         stepExpressionSymbols.add(iterableVariable);
 
-        final LambdaBranch branch = new LambdaBranch();
-        branch.setCommandName(incrementingLambda.getName());
-        branch.setInputs(stepExpressionSymbols);
-        branch.setOutputExpression(iterableVariable + " + (" + stepExpression + ")");
-        context.getLambdaHelper().getBranches().add(branch);
-
-        incrementingLambda.captureAttribute("Parameters");
-        incrementingLambda.handleObject(() -> {
-            incrementingLambda.captureAttribute(COMMAND_VAR);
-            incrementingLambda.setProperty(incrementingLambda.getName());
-
-            stepExpressionSymbols.forEach(it -> {
-                incrementingLambda.captureAttribute(it + ".$");
-                incrementingLambda.setProperty("$." + it);
-            });
-        });
-
+        constructLambda(context, incrementingLambda, iterableVariable + " + (" + stepExpression + ")",
+                stepExpressionSymbols);
         incrementingLambda.captureAttribute("Resource");
         incrementingLambda.setProperty("@@@lambda_helper_arn@@@");
         incrementingLambda.setResultPath("$." + iterableVariable);

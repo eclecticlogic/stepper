@@ -13,8 +13,6 @@ import org.stringtemplate.v4.STGroupFile;
 
 import java.util.List;
 
-import static com.eclecticlogic.stepper.etc.Constants.COMMAND_VAR;
-
 public class ForIterationConstruct extends Construct {
 
     private String iterableExpression;
@@ -62,28 +60,13 @@ public class ForIterationConstruct extends Construct {
 
 
     void setupIteratingLambda(WeaveContext context) {
-        final LambdaBranch branch = new LambdaBranch();
-        branch.setCommandName(iteratingLambda.getName());
-        branch.setInputs(symbols);
+        symbols.add(index);
+        final LambdaBranch branch = constructLambda(context, iteratingLambda, iterableExpression, symbols);
         STGroup group = new STGroupFile("stepper/template/lambda.stg");
         ST st = group.getInstanceOf("forIterationBody");
         st.add("expr", iterableExpression);
         st.add("index", index);
         branch.setComputation(st.render());
-        branch.setOutputExpression("r");
-        context.getLambdaHelper().getBranches().add(branch);
-
-        symbols.add(index);
-        iteratingLambda.captureAttribute("Parameters");
-        iteratingLambda.handleObject(() -> {
-            iteratingLambda.captureAttribute(COMMAND_VAR);
-            iteratingLambda.setProperty(iteratingLambda.getName());
-
-            symbols.forEach(it -> {
-                iteratingLambda.captureAttribute(it + ".$");
-                iteratingLambda.setProperty("$." + it);
-            });
-        });
 
         iteratingLambda.captureAttribute("Resource");
         iteratingLambda.setProperty("@@@lambda_helper_arn@@@");

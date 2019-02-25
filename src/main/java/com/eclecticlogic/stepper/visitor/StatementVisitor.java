@@ -4,10 +4,11 @@ import com.eclecticlogic.stepper.antlr.StepperBaseVisitor;
 import com.eclecticlogic.stepper.antlr.StepperParser;
 import com.eclecticlogic.stepper.construct.Construct;
 import com.eclecticlogic.stepper.construct.StateConstruct;
+import com.eclecticlogic.stepper.construct.WhileConstruct;
 import com.eclecticlogic.stepper.state.Task;
 
-import static com.eclecticlogic.stepper.etc.Stringer.from;
-import static com.eclecticlogic.stepper.etc.Stringer.strip;
+import static com.eclecticlogic.stepper.etc.StringHelper.from;
+import static com.eclecticlogic.stepper.etc.StringHelper.strip;
 
 
 public class StatementVisitor extends StepperBaseVisitor<Construct> {
@@ -41,5 +42,20 @@ public class StatementVisitor extends StepperBaseVisitor<Construct> {
     public Construct visitStatementFor(StepperParser.StatementForContext ctx) {
         ForVisitor visitor = new ForVisitor();
         return visitor.visit(ctx.forStatement());
+    }
+
+
+    @Override
+    public Construct visitWhileStatement(StepperParser.WhileStatementContext ctx) {
+        WhileConstruct construct = new WhileConstruct();
+        construct.setExpression(ctx.expr().getText());
+
+        DereferencingVisitor defVisitor = new DereferencingVisitor();
+        construct.setSymbols(defVisitor.visit(ctx.expr()));
+
+        StatementBlockVisitor visitor = new StatementBlockVisitor();
+        construct.setBlock(visitor.visit(ctx.statementBlock()));
+
+        return construct;
     }
 }

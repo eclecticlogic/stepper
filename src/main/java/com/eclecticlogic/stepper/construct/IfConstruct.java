@@ -1,6 +1,5 @@
 package com.eclecticlogic.stepper.construct;
 
-import com.eclecticlogic.stepper.etc.LambdaBranch;
 import com.eclecticlogic.stepper.etc.WeaveContext;
 import com.eclecticlogic.stepper.state.Choice;
 import com.eclecticlogic.stepper.state.State;
@@ -8,8 +7,6 @@ import com.eclecticlogic.stepper.state.Task;
 import com.google.common.collect.Lists;
 
 import java.util.List;
-
-import static com.eclecticlogic.stepper.etc.Constants.COMMAND_VAR;
 
 public class IfConstruct extends Construct {
 
@@ -42,26 +39,8 @@ public class IfConstruct extends Construct {
     }
 
 
-    void setupLambda(WeaveContext context) {
-        final LambdaBranch branch = new LambdaBranch();
-        branch.setCommandName(conditionTask.getName());
-        branch.setInputs(symbols);
-        branch.setOutputExpression(conditionText);
-        context.getLambdaHelper().getBranches().add(branch);
-    }
-
-
-    void setupCondition() {
-        conditionTask.captureAttribute("Parameters");
-        conditionTask.handleObject(() -> {
-            conditionTask.captureAttribute(COMMAND_VAR);
-            conditionTask.setProperty(conditionTask.getName());
-
-            symbols.forEach(it -> {
-                conditionTask.captureAttribute(it + ".$");
-                conditionTask.setProperty("$." + it);
-            });
-        });
+    void setupCondition(WeaveContext context) {
+        constructLambda(context, conditionTask, conditionText, symbols);
 
         conditionTask.captureAttribute("Resource");
         conditionTask.setProperty("@@@lambda_helper_arn@@@");
@@ -98,8 +77,7 @@ public class IfConstruct extends Construct {
 
     @Override
     public void weave(WeaveContext context) {
-        setupLambda(context);
-        setupCondition();
+        setupCondition(context);
         firstIf.weave(context);
         if (firstElse != null) {
             firstElse.weave(context);

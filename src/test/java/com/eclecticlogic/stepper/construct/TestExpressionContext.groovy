@@ -11,12 +11,13 @@ class TestExpressionContext extends Specification {
         given:
         ExpressionConstruct ec = new ExpressionConstruct()
         Task t = ec.state
+        WeaveContext ctx = new WeaveContext()
 
         when:
         ec.expression = 'a * b + c'
         ec.variable = 'answer'
         ec.symbols = ['a', 'b', 'c']
-        ec.setup()
+        ec.weave(ctx)
 
         then:
         t.jsonRepresentation.replaceAll('[ \t\n]', '') == """
@@ -44,7 +45,6 @@ class TestExpressionContext extends Specification {
         ec.expression = 'a * b + c'
         ec.variable = 'answer'
         ec.symbols = ['a', 'b', 'c']
-        ec.setup()
         ec.weave(ctx)
 
         then:
