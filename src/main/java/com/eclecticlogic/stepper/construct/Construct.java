@@ -71,7 +71,7 @@ public abstract class Construct {
     }
 
 
-    protected LambdaBranch constructLambda(WeaveContext context, Task lambda, String expression, List<String> symbols) {
+    LambdaBranch constructLambda(WeaveContext context, Task lambda, String expression, List<String> symbols) {
         final LambdaBranch branch = new LambdaBranch();
         branch.setCommandName(lambda.getName());
         branch.setInputs(symbols);
