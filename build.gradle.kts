@@ -3,10 +3,11 @@ plugins {
     antlr
     groovy
     id("com.github.ben-manes.versions").version("0.20.0")
+    `maven-publish`
+    signing
+    id("io.codearte.nexus-staging") version "0.20.0"
 }
 
-group = "com.eclecticlogic"
-version = "0.1-SNAPSHOT"
 
 repositories {
     mavenCentral()
@@ -51,5 +52,75 @@ tasks {
             project.delete(fileTree("build/generated-src/antlr/main").include("*.*"))
         }
     }
-    
+}
+
+tasks.register<Jar>("sourcesJar") {
+    from(sourceSets.main.get().allJava)
+    archiveClassifier.set("sources")
+}
+
+tasks.register<Jar>("javadocJar") {
+    from(tasks.javadoc)
+    archiveClassifier.set("javadoc")
+}
+
+
+publishing {
+    publications {
+        create<MavenPublication>("maven") {
+            pom {
+                name.set("Stepper")
+                description.set("A programming language for AWS Step Functions")
+                url.set("https://github.com/eclecticlogic/stepper")
+                licenses {
+                    license {
+                        name.set("The Apache License, Version 2.0")
+                        url.set("http://www.apache.org/licenses/LICENSE-2.0.txt")
+                    }
+                }
+                developers {
+                    developer {
+                        id.set("kabram")
+                        name.set("Karthik Abram")
+                        email.set("karthik@k2d2.org")
+                    }
+                }
+                scm {
+                    connection.set("scm:git:git://github.com/eclecticlogic/stepper.git")
+                    developerConnection.set("scm:git:git://github.com:eclecticlogic/stepper.git")
+                    url.set("https://github.com/eclecticlogic/stepper")
+                }
+            }
+
+            groupId = "com.eclecticlogic"
+            artifactId = "stepper"
+            version = "0.1"
+
+            from(components["java"])
+            artifact(tasks["sourcesJar"])
+            artifact(tasks["javadocJar"])
+        }
+
+        repositories {
+            maven {
+                // change URLs to point to your repos, e.g. http://my.org/repo
+                val releasesRepoUrl = uri("https://oss.sonatype.org/service/local/staging/deploy/maven2/")
+                val snapshotsRepoUrl = uri("https://oss.sonatype.org/content/repositories/snapshots")
+                url = if (version.toString().endsWith("SNAPSHOT")) snapshotsRepoUrl else releasesRepoUrl
+                credentials {
+                    username = properties["nexusUsername"].toString()
+                    password = properties["nexusPassword"].toString()
+                }
+            }
+        }
+    }
+}
+
+signing {
+    useGpgCmd()
+    sign(publishing.publications["maven"])
+}
+
+nexusStaging {
+    packageGroup = "com.eclecticlogic"
 }
