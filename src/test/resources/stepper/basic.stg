@@ -1,0 +1,25 @@
+
+simple() ::= <<
+    state Simple {
+        a = "Hello World";
+    }
+>>
+
+annotationName() ::= <<
+    @Comment("this is a comment")
+    @TimeoutSeconds(3600)
+    @Version("1.0")
+    state AnnotationTest {
+        c = 5;
+    }
+>>
+
+assignmentPrimitive() ::= <<
+    state assignment {
+        a = 5.2;
+        b = 10;
+        c = "Hello World";
+        d = true;
+        e = false;
+    }
+>>
