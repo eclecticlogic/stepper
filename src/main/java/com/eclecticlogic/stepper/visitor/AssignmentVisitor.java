@@ -5,8 +5,11 @@ import com.eclecticlogic.stepper.antlr.StepperParser;
 import com.eclecticlogic.stepper.construct.Construct;
 import com.eclecticlogic.stepper.construct.ExpressionConstruct;
 import com.eclecticlogic.stepper.construct.StateConstruct;
+import com.eclecticlogic.stepper.etc.StringHelper;
 import com.eclecticlogic.stepper.state.Pass;
 import com.eclecticlogic.stepper.state.Task;
+
+import java.math.BigDecimal;
 
 import static com.eclecticlogic.stepper.etc.StringHelper.*;
 
@@ -21,6 +24,47 @@ public class AssignmentVisitor extends StepperBaseVisitor<Construct> {
         visitor.visit(ctx.task().jsonObject());
         task.setResultPath("$." + ctx.dereference().getText());
         return new StateConstruct<>(task);
+    }
+
+
+    @Override
+    public Construct visitAssignmentNumber(StepperParser.AssignmentNumberContext ctx) {
+        Pass pass = new Pass();
+        pass.captureAttribute("Result");
+        pass.setProperty(new BigDecimal(ctx.NUMBER().getText()));
+        pass.setResultPath("$." + ctx.dereference().getText());
+        return new StateConstruct<>(pass);
+    }
+
+
+    @Override
+    public Construct visitAssignmentString(StepperParser.AssignmentStringContext ctx) {
+        Pass pass = new Pass();
+        pass.captureAttribute("Result");
+        pass.setProperty(strip(ctx.STRING().getText()));
+        pass.setResultPath("$." + ctx.dereference().getText());
+        return new StateConstruct<>(pass);
+    }
+
+
+    Construct visitAssignmentBoolean(String var, boolean value) {
+        Pass pass = new Pass();
+        pass.captureAttribute("Result");
+        pass.setProperty(value);
+        pass.setResultPath("$." + var);
+        return new StateConstruct<>(pass);
+    }
+
+
+    @Override
+    public Construct visitAssignmentTrue(StepperParser.AssignmentTrueContext ctx) {
+        return visitAssignmentBoolean(ctx.dereference().getText(), true);
+    }
+
+
+    @Override
+    public Construct visitAssignmentFalse(StepperParser.AssignmentFalseContext ctx) {
+        return visitAssignmentBoolean(ctx.dereference().getText(), false);
     }
 
 

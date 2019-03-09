@@ -26,7 +26,7 @@ public class ForLoopConstruct extends Construct {
     private final Task initializingLambda = new Task();
     private final Task endingLambda = new Task();
     private final String choiceVar = getNextDynamicVariable();
-    final Choice choice = new Choice(choiceVar);
+    private final Choice choice = new Choice(choiceVar);
     private final Task incrementingLambda = new Task();
 
 
@@ -73,8 +73,7 @@ public class ForLoopConstruct extends Construct {
     void setupInitializer(WeaveContext context) {
         constructLambda(context, initializingLambda, initialExpression, initialExpressionSymbols);
 
-        initializingLambda.captureAttribute("Resource");
-        initializingLambda.setProperty("@@@lambda_helper_arn@@@");
+        initializingLambda.setupLambdaHelper();
         initializingLambda.setResultPath("$." + iterableVariable);
         initializingLambda.setNextState(endingLambda.getName());
     }
@@ -84,8 +83,7 @@ public class ForLoopConstruct extends Construct {
         endingExpressionSymbols.add(iterableVariable);
         constructLambda(context, endingLambda, iterableVariable + " <= " + endingExpression, endingExpressionSymbols);
 
-        endingLambda.captureAttribute("Resource");
-        endingLambda.setProperty("@@@lambda_helper_arn@@@");
+        endingLambda.setupLambdaHelper();
         endingLambda.setResultPath("$." + choiceVar);
         endingLambda.setNextState(choice.getName());
     }
@@ -107,8 +105,7 @@ public class ForLoopConstruct extends Construct {
 
         constructLambda(context, incrementingLambda, iterableVariable + " + (" + stepExpression + ")",
                 stepExpressionSymbols);
-        incrementingLambda.captureAttribute("Resource");
-        incrementingLambda.setProperty("@@@lambda_helper_arn@@@");
+        incrementingLambda.setupLambdaHelper();
         incrementingLambda.setResultPath("$." + iterableVariable);
         incrementingLambda.setNextState(choice.getName());
     }

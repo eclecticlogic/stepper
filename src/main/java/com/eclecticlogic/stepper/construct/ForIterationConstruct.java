@@ -23,7 +23,7 @@ public class ForIterationConstruct extends Construct {
     private final Pass indexInitializer = new Pass();
     private final String index = getNextDynamicVariable();
     private final Task iteratingLambda = new Task();
-    final Choice choice = new Choice(index + ".exists");
+    private final Choice choice = new Choice(index + ".exists");
     private final Pass iterVariableSetter = new Pass();
 
 
@@ -68,8 +68,7 @@ public class ForIterationConstruct extends Construct {
         st.add("index", index);
         branch.setComputation(st.render());
 
-        iteratingLambda.captureAttribute("Resource");
-        iteratingLambda.setProperty("@@@lambda_helper_arn@@@");
+        iteratingLambda.setupLambdaHelper();
         iteratingLambda.setResultPath("$." + index);
         iteratingLambda.setNextState(choice.getName());
     }

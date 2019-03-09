@@ -38,9 +38,7 @@ public class ExpressionConstruct extends StateConstruct<Task> {
         Task task = getState();
         task.setResultPath("$." + variable);
 
-        task.captureAttribute("Resource");
-        task.setProperty("@@@lambda_helper_arn@@@");
-
+        task.setupLambdaHelper();
         super.weave(context);
     }
 }

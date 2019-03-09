@@ -36,8 +36,7 @@ public class WhileConstruct extends Construct {
     void setupConditionLambda(WeaveContext context) {
         constructLambda(context, conditionLambda, expression, symbols);
 
-        conditionLambda.captureAttribute("Resource");
-        conditionLambda.setProperty("@@@lambda_helper_arn@@@");
+        conditionLambda.setupLambdaHelper();
         conditionLambda.setResultPath("$." + choiceVar);
         conditionLambda.setNextState(choice.getName());
     }

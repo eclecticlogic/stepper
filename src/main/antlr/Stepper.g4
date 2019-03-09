@@ -27,8 +27,8 @@ whileStatement
 
 whenStatement
     : WHEN '{'
-        (CASE caseExpr=expr ':' statementBlock)+
-        (ELSE statementBlock)?
+        (CASE caseExpr+=expr ':' caseBlock+=statementBlock)+
+        (ELSE elseBlock=statementBlock)?
     '}'
     ;
 
@@ -48,9 +48,13 @@ statement
 
 assignment
     : dereference ASSIGN task SEMICOLON?                           #assignmentTask
-    | dereference complexAssign expr ';'                           #assignmentExpr
-    | dereference ASSIGN jsonObject SEMICOLON?                     #assignmentJson
-    | dereference ASSIGN '[' value (',' value)* ']' SEMICOLON?     #assignmentJsonArray
+    | dereference ASSIGN NUMBER ';'                                 #assignmentNumber
+    | dereference ASSIGN TRUE ';'                                   #assignmentTrue
+    | dereference ASSIGN FALSE ';'                                  #assignmentFalse
+    | dereference ASSIGN STRING ';'                                 #assignmentString
+    | dereference complexAssign expr ';'                            #assignmentExpr
+    | dereference ASSIGN jsonObject SEMICOLON?                      #assignmentJson
+    | dereference ASSIGN '[' value (',' value)* ']' SEMICOLON?      #assignmentJsonArray
     ;
 
 expr

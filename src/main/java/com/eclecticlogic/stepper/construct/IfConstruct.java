@@ -16,7 +16,7 @@ public class IfConstruct extends Construct {
 
     private final Task conditionTask = new Task();
     private final String choiceVariable = getNextDynamicVariable();
-    final Choice choice = new Choice(choiceVariable);
+    private final Choice choice = new Choice(choiceVariable);
 
 
     public void setCondition(String condition) {
@@ -42,8 +42,7 @@ public class IfConstruct extends Construct {
     void setupCondition(WeaveContext context) {
         constructLambda(context, conditionTask, conditionText, symbols);
 
-        conditionTask.captureAttribute("Resource");
-        conditionTask.setProperty("@@@lambda_helper_arn@@@");
+        conditionTask.setupLambdaHelper();
         conditionTask.setResultPath("$." + choiceVariable);
         conditionTask.setNextState(choice.getName());
 

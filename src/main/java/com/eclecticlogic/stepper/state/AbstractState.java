@@ -8,11 +8,10 @@ import java.text.MessageFormat;
 
 public abstract class AbstractState implements State {
 
-    private static int stateNameCounter;
-
     private String stateName;
 
     JsonObject json = new JsonObject();
+
 
     AbstractState() {
         this(null);
@@ -20,7 +19,7 @@ public abstract class AbstractState implements State {
 
 
     AbstractState(String stateName) {
-        this.stateName = stateName == null ? String.format("state%03d", stateNameCounter++) : stateName;
+        this.stateName = stateName == null ? NameProvider.getName() : stateName;
     }
 
 
@@ -31,9 +30,8 @@ public abstract class AbstractState implements State {
 
 
     @Override
-    public String getJsonRepresentation() {
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        return MessageFormat.format("\"{0}\": {1}", stateName, gson.toJson(json));
+    public JsonObject toJson() {
+        return json;
     }
 
 
@@ -41,9 +39,16 @@ public abstract class AbstractState implements State {
         json.addProperty("Type", type.getName());
     }
 
+
+    public void setupLambdaHelper() {
+        json.addProperty("Resource", "@@@lambda_helper_arn@@@");
+    }
+
+
     public void setResultPath(String value) {
         json.addProperty("ResultPath", value);
     }
+
 
     public void setNextState(String value) {
         json.addProperty("Next", value);

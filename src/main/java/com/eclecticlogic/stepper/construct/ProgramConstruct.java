@@ -1,15 +1,22 @@
 package com.eclecticlogic.stepper.construct;
 
+import com.eclecticlogic.stepper.etc.StringHelper;
 import com.eclecticlogic.stepper.etc.WeaveContext;
 import com.eclecticlogic.stepper.state.State;
 import com.google.common.collect.Lists;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 
 import java.util.List;
 
+import static com.eclecticlogic.stepper.etc.StringHelper.strip;
+
 public class ProgramConstruct extends Construct {
 
+    private final JsonObject stepFunction = new JsonObject();
     private String programName;
-    private final List<String> machineAttributes = Lists.newArrayList();
+    private WeaveContext context;
+
 
     @Override
     public String getFirstStateName() {
@@ -31,7 +38,13 @@ public class ProgramConstruct extends Construct {
 
     @Override
     public void weave(WeaveContext context) {
+        this.context = context;
         getNext().weave(context);
+        stepFunction.addProperty("StartAt", getFirstStateName());
+
+        JsonObject states = new JsonObject();
+        getStates().stream().forEach(state -> states.add(state.getName(), state.toJson()));
+        stepFunction.add("States", states);
     }
 
 
@@ -46,11 +59,26 @@ public class ProgramConstruct extends Construct {
 
 
     public void addAnnotation(String name, String value) {
-        machineAttributes.add("\"" + name + "\": " + value);
+        stepFunction.addProperty(name, strip(value));
     }
 
 
-    public List<String> getMachineAttributes() {
-        return machineAttributes;
+    public void addAnnotation(String name, Number value) {
+        stepFunction.addProperty(name, value);
+    }
+
+
+    public void addAnnotation(String name, boolean value) {
+        stepFunction.addProperty(name, value);
+    }
+
+
+    public WeaveContext getContext() {
+        return context;
+    }
+
+
+    public JsonObject toJson() {
+        return stepFunction;
     }
 }
