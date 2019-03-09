@@ -51,21 +51,22 @@ class TestBasic extends AbstractStateMachineTester {
         given:
         ReadContext ctx = runProgram('basic.stg', 'assignmentPrimitive')
 
-        expect:
-        ctx.read('$..assignment000.Result')[0] == 5.2
-        ctx.read('$..assignment000.ResultPath')[0] == '$.a'
+        when:
+        Closure primitiveTest = { key, value, resultVar ->
+            verifyAll(ctx) {
+                read('$..' + key + '.Type')[0] == 'Pass'
+                read('$..' + key + '.Result')[0] == value
+                read('$..' + key + '.ResultPath')[0] == '$.' + resultVar
+            }
+            return true
+        }
 
-        ctx.read('$..assignment001.Result')[0] == 10
-        ctx.read('$..assignment001.ResultPath')[0] == '$.b'
-
-        ctx.read('$..assignment002.Result')[0] == 'Hello World'
-        ctx.read('$..assignment002.ResultPath')[0] == '$.c'
-
-        ctx.read('$..assignment003.Result')[0] == true
-        ctx.read('$..assignment003.ResultPath')[0] == '$.d'
-
-        ctx.read('$..assignment004.Result')[0] == false
-        ctx.read('$..assignment004.ResultPath')[0] == '$.e'
+        then:
+        primitiveTest('assignment000', 5.2, 'a')
+        primitiveTest('assignment001', 10, 'b')
+        primitiveTest('assignment002', 'Hello World', 'c')
+        primitiveTest('assignment003', true, 'd')
+        primitiveTest('assignment004', false, 'e')
     }
 
 }
