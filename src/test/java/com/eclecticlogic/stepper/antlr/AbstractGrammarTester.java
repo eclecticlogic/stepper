@@ -34,7 +34,7 @@ public abstract class AbstractGrammarTester {
 
 
     protected void parse(String groupFile, String name, Function<StepperParser, ParserRuleContext> parserFunction) {
-        STGroup group = new STGroupFile("antlr/grammar/test/" + groupFile);
+        STGroup group = new STGroupFile("antlr/grammar/" + groupFile);
         ST st = group.getInstanceOf(name);
         parse(st.render(), parserFunction);
     }

@@ -1,5 +1,6 @@
 package com.eclecticlogic.stepper.etc
 
+import com.eclecticlogic.stepper.etc.StringHelper
 import org.antlr.v4.runtime.CommonToken
 import org.antlr.v4.runtime.Token
 import org.antlr.v4.runtime.tree.TerminalNode

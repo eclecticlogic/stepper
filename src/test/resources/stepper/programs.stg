@@ -1,0 +1,12 @@
+
+annotationName() ::= <<
+
+@Comment("this is a comment")
+@TimeoutSeconds(3600)
+@Version("1.0")
+state AnnotationTest {
+	c = 5;
+}
+
+>>
+
