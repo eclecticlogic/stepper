@@ -1,3 +1,5 @@
+import org.springframework.boot.gradle.tasks.bundling.BootJar
+
 plugins {
     java
     antlr
@@ -6,6 +8,7 @@ plugins {
     `maven-publish`
     signing
     id("io.codearte.nexus-staging") version "0.20.0"
+    id("org.springframework.boot") version "2.1.3.RELEASE"
 }
 
 
@@ -64,6 +67,13 @@ tasks.register<Jar>("javadocJar") {
     archiveClassifier.set("javadoc")
 }
 
+val classpathVal: Array<Any> = arrayOf(configurations.runtimeClasspath, sourceSets.main.get().getOutput())
+
+tasks.register<BootJar>("stepperShade") {
+    getArchiveClassifier().set("shade")
+    classpath(classpathVal)
+    mainClassName = "com.eclecticlogic.stepper.Stepper"
+}
 
 publishing {
     publications {
