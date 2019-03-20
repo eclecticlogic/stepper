@@ -19,7 +19,52 @@ assignmentPrimitive() ::= <<
         a = 5.2;
         b = 10;
         c = "Hello World";
-        d = true;
-        e = false;
+        d.e.f = true;
+        e.f.g = false;
+    }
+>>
+
+assignmentComplex() ::= <<
+    state complex {
+        value1 = a * b + c.calc(e) - d.length();
+        value2 += a * b + c.calc(e) - d.length();
+        value3 -= a * b + c.calc(e) - d.length();
+        value4 /= a * b + c.calc(e) - d.length();
+        value5 *= a * b + c.calc(e) - d.length();
+    }
+>>
+
+assignmentJson() ::= <<
+    state json {
+        value = {
+            "a": 5,
+            "b": 10,
+            "c": {
+                "d": "x"
+            },
+            "e": ["p", true, false]
+        }
+    }
+>>
+
+assignmentJsonArray() ::= <<
+    state array {
+        value = ["p", true, false, 2.5, 10]
+    }
+>>
+
+assignmentTask() ::= <<
+    state mytask {
+        value = task {
+            "a": "b"
+        }
+    }
+>>
+
+task() ::= <<
+    state mytask {
+        task("hello") {
+            "a": "b"
+        }
     }
 >>

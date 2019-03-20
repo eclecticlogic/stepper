@@ -11,6 +11,5 @@ public class Task extends AttributableState {
     public Task(String stateName) {
         super(stateName);
         setType(StateType.TASK);
-        setResultPath("$." + getName());
     }
 }

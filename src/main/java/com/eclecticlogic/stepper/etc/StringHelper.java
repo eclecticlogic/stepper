@@ -4,6 +4,7 @@ import com.eclecticlogic.stepper.antlr.StepperParser;
 import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
+
 public class StringHelper {
 
     public static String from(Token token) {
@@ -35,7 +36,7 @@ public class StringHelper {
             } else {
                 symbol = "/";
             }
-            return variable + " " + symbol + " " + expression;
+            return variable + " " + symbol + " (" + expression + ")";
         }
     }
 }
