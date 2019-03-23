@@ -216,9 +216,9 @@ class TestBasic extends AbstractStateMachineTester {
         Object[] data = ctx.read('$.States.*')
         data.length == 2
 
-        ctx.read('$..mytask000.Type')[0] == 'Task'
-        ctx.read('$..mytask000.ResultPath')[0] == '$.value'
-        ctx.read('$..mytask000.a')[0] == 'b'
+        ctx.read('$..x.Type')[0] == 'Task'
+        ctx.read('$..x.ResultPath')[0] == '$.value'
+        ctx.read('$..x.a')[0] == 'b'
     }
 
 

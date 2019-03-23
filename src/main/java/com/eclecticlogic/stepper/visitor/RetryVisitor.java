@@ -8,18 +8,18 @@ import org.antlr.v4.runtime.tree.TerminalNode;
 
 import java.util.List;
 
+import static com.eclecticlogic.stepper.etc.StringHelper.strip;
+
 public class RetryVisitor extends StepperBaseVisitor<Task> {
 
-    private final Task task;
-
-
-    public RetryVisitor(Task task) {
-        this.task = task;
-    }
+    private Task task;
 
 
     @Override
     public Task visitRetries(StepperParser.RetriesContext ctx) {
+        String taskName = ctx.label() == null ? null : strip(ctx.label().STRING().getText());
+        task = new Task(taskName);
+
         if (!ctx.retry().isEmpty()) {
             setupRetries(ctx.retry());
         }

@@ -55,7 +55,10 @@ public class TestGrammar extends AbstractGrammarTester {
     @Test
     public void testTask() {
         parse("grammar.stg", "testTask", p -> p.task());
-        parse("grammar.stg", "testStatementTask", p -> p.statement());
+        parse("grammar.stg", "testStatementTask1", p -> p.statement());
+        parse("grammar.stg", "testStatementTask2", p -> p.statement());
+        parse("grammar.stg", "testStatementTask3", p -> p.statement());
+        parse("grammar.stg", "testStatementTask4", p -> p.statement());
     }
 
 
@@ -109,7 +112,8 @@ public class TestGrammar extends AbstractGrammarTester {
     @Test
     public void testAssignment() {
         Function<StepperParser, ParserRuleContext> fn = p -> p.assignment();
-        parse("grammar.stg", "testAssignmentTask", fn);
+        parse("grammar.stg", "testAssignmentTask1", fn);
+        parse("grammar.stg", "testAssignmentTask2", fn);
         parse("a.b.c = d - g();", fn);
         parse("a.b.c += d - g()--;", fn);
         parse("a.b.c -= d - g();", fn);

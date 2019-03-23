@@ -10,23 +10,21 @@ import com.eclecticlogic.stepper.state.Task;
 
 import java.math.BigDecimal;
 
-import static com.eclecticlogic.stepper.etc.StringHelper.*;
+import static com.eclecticlogic.stepper.etc.StringHelper.enhance;
+import static com.eclecticlogic.stepper.etc.StringHelper.strip;
 
 
 public class AssignmentVisitor extends StepperBaseVisitor<Construct> {
 
     @Override
     public Construct visitAssignmentTask(StepperParser.AssignmentTaskContext ctx) {
-        String taskName = strip(from(ctx.task().taskName));
-        Task task = taskName == null ? new Task() : new Task(taskName);
-        task.setResultPath("$." + ctx.dereference().getText());
-
-        RetryVisitor retryVisitor = new RetryVisitor(task);
-        retryVisitor.visit(ctx.retries());
+        RetryVisitor retryVisitor = new RetryVisitor();
+        Task task = retryVisitor.visit(ctx.retries());
 
         JsonObjectVisitor jsonObjectVisitor = new JsonObjectVisitor(task);
         jsonObjectVisitor.visit(ctx.task().jsonObject());
 
+        task.setResultPath("$." + ctx.dereference().getText());
         return new StateConstruct<>(task);
     }
 

@@ -55,6 +55,7 @@ assignmentJsonArray() ::= <<
 
 assignmentTask() ::= <<
     state mytask {
+        @Label("x")
         value = task {
             "a": "b"
         }
@@ -66,7 +67,8 @@ task() ::= <<
     state mytask {
         @RetryOnError("abc", "def") { "IntervalSeconds": 3, "MaxAttempts": 4, "BackoffRate": 5 }
         @RetryOnError("pqr") { "IntervalSeconds": 6 }
-        task("hello") {
+        @Label("hello")
+        task {
             "a": "b"
         }
     }

@@ -99,16 +99,19 @@ dereference
     ;
 
 task
-    : 'task' ('(' taskName=STRING ')')? jsonObject
+    : 'task' jsonObject
     ;
 
 retries
-    : retry *;
+    : retry* label? retry*;
 
 retry
     : '@RetryOnError' '(' STRING (',' STRING)* ')' jsonObject
     ;
 
+label
+    : '@Label' '(' STRING ')'
+    ;
 
 jsonObject
     : '{' pair (',' pair)* '}'
