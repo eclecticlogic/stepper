@@ -8,8 +8,7 @@ import com.google.common.collect.Lists;
 
 import java.util.List;
 
-import static com.eclecticlogic.stepper.etc.StringHelper.from;
-import static com.eclecticlogic.stepper.etc.StringHelper.strip;
+import static com.eclecticlogic.stepper.etc.Etc.from;
 
 
 public class StatementVisitor extends StepperBaseVisitor<Construct> {

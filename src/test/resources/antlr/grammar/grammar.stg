@@ -116,7 +116,7 @@ testAssignmentTask2() ::= <<
 >>
 
 testAssignmentJson() ::= <<
-    result = {
+    @Label("xyz") result = {
         "test": {
             "a": ["b", {
                 "t": {},

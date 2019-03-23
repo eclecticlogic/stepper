@@ -114,13 +114,13 @@ public class TestGrammar extends AbstractGrammarTester {
         Function<StepperParser, ParserRuleContext> fn = p -> p.assignment();
         parse("grammar.stg", "testAssignmentTask1", fn);
         parse("grammar.stg", "testAssignmentTask2", fn);
-        parse("a.b.c = d - g();", fn);
+        parse("@Label(\"xyz\") a.b.c = d - g();", fn);
         parse("a.b.c += d - g()--;", fn);
         parse("a.b.c -= d - g();", fn);
-        parse("a.b.c *= d - ++g();", fn);
+        parse("@Label(\"xyz\") a.b.c *= d - ++g();", fn);
         parse("a.b.c /= d - g();", fn);
         parse("grammar.stg", "testAssignmentJson", fn);
-        parse("ab.cd = [1, 2, 3]", fn);
+        parse("@Label(\"xyz\") ab.cd = [1, 2, 3]", fn);
     }
 
 

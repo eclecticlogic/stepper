@@ -47,14 +47,14 @@ statement
     ;
 
 assignment
-    : retries dereference ASSIGN task SEMICOLON?                     #assignmentTask
-    | dereference ASSIGN NUMBER ';'                                 #assignmentNumber
-    | dereference ASSIGN TRUE ';'                                   #assignmentTrue
-    | dereference ASSIGN FALSE ';'                                  #assignmentFalse
-    | dereference ASSIGN STRING ';'                                 #assignmentString
-    | dereference complexAssign expr ';'                            #assignmentExpr
-    | dereference ASSIGN jsonObject SEMICOLON?                      #assignmentJson
-    | dereference ASSIGN '[' value (',' value)* ']' SEMICOLON?      #assignmentJsonArray
+    : retries dereference ASSIGN task SEMICOLON?                           #assignmentTask
+    | label? dereference ASSIGN NUMBER ';'                                 #assignmentNumber
+    | label? dereference ASSIGN TRUE ';'                                   #assignmentTrue
+    | label? dereference ASSIGN FALSE ';'                                  #assignmentFalse
+    | label? dereference ASSIGN STRING ';'                                 #assignmentString
+    | label? dereference complexAssign expr ';'                            #assignmentExpr
+    | label? dereference ASSIGN jsonObject SEMICOLON?                      #assignmentJson
+    | label? dereference ASSIGN '[' value (',' value)* ']' SEMICOLON?      #assignmentJsonArray
     ;
 
 expr

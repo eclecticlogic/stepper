@@ -12,8 +12,8 @@ public class ExpressionConstruct extends StateConstruct<Task> {
     private List<String> symbols;
 
 
-    public ExpressionConstruct() {
-        super(new Task());
+    public ExpressionConstruct(String label) {
+        super(new Task(label));
     }
 
 

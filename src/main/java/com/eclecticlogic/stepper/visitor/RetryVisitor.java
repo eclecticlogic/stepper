@@ -2,13 +2,13 @@ package com.eclecticlogic.stepper.visitor;
 
 import com.eclecticlogic.stepper.antlr.StepperBaseVisitor;
 import com.eclecticlogic.stepper.antlr.StepperParser;
-import com.eclecticlogic.stepper.etc.StringHelper;
+import com.eclecticlogic.stepper.etc.Etc;
 import com.eclecticlogic.stepper.state.Task;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
 import java.util.List;
 
-import static com.eclecticlogic.stepper.etc.StringHelper.strip;
+import static com.eclecticlogic.stepper.etc.Etc.strip;
 
 public class RetryVisitor extends StepperBaseVisitor<Task> {
 
@@ -35,7 +35,7 @@ public class RetryVisitor extends StepperBaseVisitor<Task> {
                     task.captureAttribute("ErrorEquals");
                     task.handleArray(() -> rc.STRING().stream()//
                             .map(TerminalNode::getText) //
-                            .map(StringHelper::strip) //
+                            .map(Etc::strip) //
                             .forEach(task::setProperty));
                     JsonObjectVisitor visitor = new JsonObjectVisitor(task);
                     visitor.visit(rc.jsonObject());

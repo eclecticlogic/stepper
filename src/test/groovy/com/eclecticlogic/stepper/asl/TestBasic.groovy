@@ -13,15 +13,15 @@ class TestBasic extends AbstractStateMachineTester {
 
         expect:
         with(ctx) {
-            read('$.StartAt') == 'Simple000'
+            read('$.StartAt') == 'xyz'
             read('$.States').size() == 2
 
-            read('$..Simple000.Type')[0] == 'Pass'
-            read('$..Simple000.Result')[0] == 'Hello World'
-            read('$..Simple000.ResultPath')[0] == '$.a'
-            read('$..Simple000.Next')[0] == 'Simple001'
+            read('$..xyz.Type')[0] == 'Pass'
+            read('$..xyz.Result')[0] == 'Hello World'
+            read('$..xyz.ResultPath')[0] == '$.a'
+            read('$..xyz.Next')[0] == 'Simple000'
 
-            read('$..Simple001.Type')[0] == 'Succeed'
+            read('$..Simple000.Type')[0] == 'Succeed'
         }
     }
 
@@ -62,11 +62,11 @@ class TestBasic extends AbstractStateMachineTester {
         }
 
         then:
-        v('assignment000', 5.2, 'a')
-        v('assignment001', 10, 'b')
-        v('assignment002', 'Hello World', 'c')
-        v('assignment003', true, 'd.e.f')
-        v('assignment004', false, 'e.f.g')
+        v('abc', 5.2, 'a')
+        v('assignment000', 10, 'b')
+        v('assignment001', 'Hello World', 'c')
+        v('assignment002', true, 'd.e.f')
+        v('xyz', false, 'e.f.g')
     }
 
 
@@ -74,6 +74,11 @@ class TestBasic extends AbstractStateMachineTester {
         given:
         TestOutput output = runWithLambda('basic.stg', 'assignmentComplex')
         ReadContext ctx = output.ctx
+        def name1 = 'complex000'
+        def name2 = 'one'
+        def name3 = 'complex001'
+        def name4 = 'complex002'
+        def name5 = 'two'
 
         when:
         Closure v = { stateName, key, value ->
@@ -87,62 +92,62 @@ class TestBasic extends AbstractStateMachineTester {
         Object[] data = ctx.read('$.States.*')
         data.length == 6
 
-        v('complex000', 'Type', 'Task')
-        v('complex000', 'ResultPath', '$.value1')
-        v('complex000', 'Parameters.cmd__sm', 'complex000')
-        v('complex000', "Parameters.['a.\$']", '$.a')
-        v('complex000', "Parameters.['b.\$']", '$.b')
-        v('complex000', "Parameters.['c.\$']", '$.c')
-        v('complex000', "Parameters.['d.\$']", '$.d')
-        v('complex000', "Parameters.['e.\$']", '$.e')
-        v('complex000', 'Next', 'complex001')
+        v(name1, 'Type', 'Task')
+        v(name1, 'ResultPath', '$.value1')
+        v(name1, 'Parameters.cmd__sm', name1)
+        v(name1, "Parameters.['a.\$']", '$.a')
+        v(name1, "Parameters.['b.\$']", '$.b')
+        v(name1, "Parameters.['c.\$']", '$.c')
+        v(name1, "Parameters.['d.\$']", '$.d')
+        v(name1, "Parameters.['e.\$']", '$.e')
+        v(name1, 'Next', name2)
         output.lambda.contains('const response = a*b+c.calc(e)-d.length();')
 
-        v('complex001', 'Type', 'Task')
-        v('complex001', 'ResultPath', '$.value2')
-        v('complex001', 'Parameters.cmd__sm', 'complex001')
-        v('complex001', "Parameters.['a.\$']", '$.a')
-        v('complex001', "Parameters.['b.\$']", '$.b')
-        v('complex001', "Parameters.['c.\$']", '$.c')
-        v('complex001', "Parameters.['d.\$']", '$.d')
-        v('complex001', "Parameters.['e.\$']", '$.e')
-        v('complex001', 'Next', 'complex002')
+        v(name2, 'Type', 'Task')
+        v(name2, 'ResultPath', '$.value2')
+        v(name2, 'Parameters.cmd__sm', name2)
+        v(name2, "Parameters.['a.\$']", '$.a')
+        v(name2, "Parameters.['b.\$']", '$.b')
+        v(name2, "Parameters.['c.\$']", '$.c')
+        v(name2, "Parameters.['d.\$']", '$.d')
+        v(name2, "Parameters.['e.\$']", '$.e')
+        v(name2, 'Next', name3)
         output.lambda.contains('const response = value2 + (a*b+c.calc(e)-d.length());')
 
-        v('complex002', 'Type', 'Task')
-        v('complex002', 'ResultPath', '$.value3')
-        v('complex002', 'Parameters.cmd__sm', 'complex002')
-        v('complex002', "Parameters.['a.\$']", '$.a')
-        v('complex002', "Parameters.['b.\$']", '$.b')
-        v('complex002', "Parameters.['c.\$']", '$.c')
-        v('complex002', "Parameters.['d.\$']", '$.d')
-        v('complex002', "Parameters.['e.\$']", '$.e')
-        v('complex002', 'Next', 'complex003')
+        v(name3, 'Type', 'Task')
+        v(name3, 'ResultPath', '$.value3')
+        v(name3, 'Parameters.cmd__sm', name3)
+        v(name3, "Parameters.['a.\$']", '$.a')
+        v(name3, "Parameters.['b.\$']", '$.b')
+        v(name3, "Parameters.['c.\$']", '$.c')
+        v(name3, "Parameters.['d.\$']", '$.d')
+        v(name3, "Parameters.['e.\$']", '$.e')
+        v(name3, 'Next', name4)
         output.lambda.contains('const response = value3 - (a*b+c.calc(e)-d.length());')
 
-        v('complex003', 'Type', 'Task')
-        v('complex003', 'ResultPath', '$.value4')
-        v('complex003', 'Parameters.cmd__sm', 'complex003')
-        v('complex003', "Parameters.['a.\$']", '$.a')
-        v('complex003', "Parameters.['b.\$']", '$.b')
-        v('complex003', "Parameters.['c.\$']", '$.c')
-        v('complex003', "Parameters.['d.\$']", '$.d')
-        v('complex003', "Parameters.['e.\$']", '$.e')
-        v('complex003', 'Next', 'complex004')
+        v(name4, 'Type', 'Task')
+        v(name4, 'ResultPath', '$.value4')
+        v(name4, 'Parameters.cmd__sm', name4)
+        v(name4, "Parameters.['a.\$']", '$.a')
+        v(name4, "Parameters.['b.\$']", '$.b')
+        v(name4, "Parameters.['c.\$']", '$.c')
+        v(name4, "Parameters.['d.\$']", '$.d')
+        v(name4, "Parameters.['e.\$']", '$.e')
+        v(name4, 'Next', name5)
         output.lambda.contains('const response = value4 / (a*b+c.calc(e)-d.length());')
 
-        v('complex004', 'Type', 'Task')
-        v('complex004', 'ResultPath', '$.value5')
-        v('complex004', 'Parameters.cmd__sm', 'complex004')
-        v('complex004', "Parameters.['a.\$']", '$.a')
-        v('complex004', "Parameters.['b.\$']", '$.b')
-        v('complex004', "Parameters.['c.\$']", '$.c')
-        v('complex004', "Parameters.['d.\$']", '$.d')
-        v('complex004', "Parameters.['e.\$']", '$.e')
-        v('complex004', 'Next', 'complex005')
+        v(name5, 'Type', 'Task')
+        v(name5, 'ResultPath', '$.value5')
+        v(name5, 'Parameters.cmd__sm', name5)
+        v(name5, "Parameters.['a.\$']", '$.a')
+        v(name5, "Parameters.['b.\$']", '$.b')
+        v(name5, "Parameters.['c.\$']", '$.c')
+        v(name5, "Parameters.['d.\$']", '$.d')
+        v(name5, "Parameters.['e.\$']", '$.e')
+        v(name5, 'Next', 'complex003')
         output.lambda.contains('const response = value5 * (a*b+c.calc(e)-d.length());')
 
-        v('complex005', 'Type', 'Succeed')
+        v('complex003', 'Type', 'Succeed')
     }
 
 
@@ -150,6 +155,7 @@ class TestBasic extends AbstractStateMachineTester {
         given:
         TestOutput output = runWithLambda('basic.stg', 'assignmentJson')
         ReadContext ctx = output.ctx
+        def name = 'xyz'
 
         when:
         Closure v = { stateName, key, value ->
@@ -163,17 +169,17 @@ class TestBasic extends AbstractStateMachineTester {
         Object[] data = ctx.read('$.States.*')
         data.length == 2
 
-        v('json000', 'Type', 'Pass')
-        v('json000', 'Parameters.a', 5)
-        v('json000', 'Parameters.b', 10)
-        v('json000', 'Parameters.c.d', 'x')
-        v('json000', 'Parameters.e[0]', 'p')
-        v('json000', 'Parameters.e[1]', true)
-        v('json000', 'Parameters.e[2]', false)
-        v('json000', 'ResultPath', '$.value')
-        v('json000', 'Next', 'json001')
+        v(name, 'Type', 'Pass')
+        v(name, 'Parameters.a', 5)
+        v(name, 'Parameters.b', 10)
+        v(name, 'Parameters.c.d', 'x')
+        v(name, 'Parameters.e[0]', 'p')
+        v(name, 'Parameters.e[1]', true)
+        v(name, 'Parameters.e[2]', false)
+        v(name, 'ResultPath', '$.value')
+        v(name, 'Next', 'json000')
 
-        v('json001', 'Type', 'Succeed')
+        v('json000', 'Type', 'Succeed')
     }
 
 
@@ -181,6 +187,7 @@ class TestBasic extends AbstractStateMachineTester {
         given:
         TestOutput output = runWithLambda('basic.stg', 'assignmentJsonArray')
         ReadContext ctx = output.ctx
+        def name = 'xyz'
 
         when:
         Closure v = { stateName, key, value ->
@@ -194,16 +201,16 @@ class TestBasic extends AbstractStateMachineTester {
         Object[] data = ctx.read('$.States.*')
         data.length == 2
 
-        v('array000', 'Type', 'Pass')
-        v('array000', 'Result[0]', 'p')
-        v('array000', 'Result[1]', true)
-        v('array000', 'Result[2]', false)
-        v('array000', 'Result[3]', 2.5)
-        v('array000', 'Result[4]', 10)
-        v('array000', 'ResultPath', '$.value')
-        v('array000', 'Next', 'array001')
+        v(name, 'Type', 'Pass')
+        v(name, 'Result[0]', 'p')
+        v(name, 'Result[1]', true)
+        v(name, 'Result[2]', false)
+        v(name, 'Result[3]', 2.5)
+        v(name, 'Result[4]', 10)
+        v(name, 'ResultPath', '$.value')
+        v(name, 'Next', 'array000')
 
-        v('array001', 'Type', 'Succeed')
+        v('array000', 'Type', 'Succeed')
     }
 
 

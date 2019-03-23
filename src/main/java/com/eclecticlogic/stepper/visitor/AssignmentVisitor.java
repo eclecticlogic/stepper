@@ -5,13 +5,13 @@ import com.eclecticlogic.stepper.antlr.StepperParser;
 import com.eclecticlogic.stepper.construct.Construct;
 import com.eclecticlogic.stepper.construct.ExpressionConstruct;
 import com.eclecticlogic.stepper.construct.StateConstruct;
+import com.eclecticlogic.stepper.etc.Etc;
 import com.eclecticlogic.stepper.state.Pass;
 import com.eclecticlogic.stepper.state.Task;
 
 import java.math.BigDecimal;
 
-import static com.eclecticlogic.stepper.etc.StringHelper.enhance;
-import static com.eclecticlogic.stepper.etc.StringHelper.strip;
+import static com.eclecticlogic.stepper.etc.Etc.*;
 
 
 public class AssignmentVisitor extends StepperBaseVisitor<Construct> {
@@ -31,7 +31,7 @@ public class AssignmentVisitor extends StepperBaseVisitor<Construct> {
 
     @Override
     public Construct visitAssignmentNumber(StepperParser.AssignmentNumberContext ctx) {
-        Pass pass = new Pass();
+        Pass pass = new Pass(toLabel(ctx.label()));
         pass.captureAttribute("Result");
         pass.setProperty(new BigDecimal(ctx.NUMBER().getText()));
         pass.setResultPath("$." + ctx.dereference().getText());
@@ -41,7 +41,7 @@ public class AssignmentVisitor extends StepperBaseVisitor<Construct> {
 
     @Override
     public Construct visitAssignmentString(StepperParser.AssignmentStringContext ctx) {
-        Pass pass = new Pass();
+        Pass pass = new Pass(toLabel(ctx.label()));
         pass.captureAttribute("Result");
         pass.setProperty(strip(ctx.STRING().getText()));
         pass.setResultPath("$." + ctx.dereference().getText());
@@ -49,8 +49,8 @@ public class AssignmentVisitor extends StepperBaseVisitor<Construct> {
     }
 
 
-    Construct visitAssignmentBoolean(String var, boolean value) {
-        Pass pass = new Pass();
+    Construct visitAssignmentBoolean(String var, boolean value, StepperParser.LabelContext lbl) {
+        Pass pass = new Pass(toLabel(lbl));
         pass.captureAttribute("Result");
         pass.setProperty(value);
         pass.setResultPath("$." + var);
@@ -60,19 +60,19 @@ public class AssignmentVisitor extends StepperBaseVisitor<Construct> {
 
     @Override
     public Construct visitAssignmentTrue(StepperParser.AssignmentTrueContext ctx) {
-        return visitAssignmentBoolean(ctx.dereference().getText(), true);
+        return visitAssignmentBoolean(ctx.dereference().getText(), true, ctx.label());
     }
 
 
     @Override
     public Construct visitAssignmentFalse(StepperParser.AssignmentFalseContext ctx) {
-        return visitAssignmentBoolean(ctx.dereference().getText(), false);
+        return visitAssignmentBoolean(ctx.dereference().getText(), false, ctx.label());
     }
 
 
     @Override
     public Construct visitAssignmentJson(StepperParser.AssignmentJsonContext ctx) {
-        Pass pass = new Pass();
+        Pass pass = new Pass(toLabel(ctx.label()));
         pass.captureAttribute("Parameters");
         pass.handleObject(() -> {
             JsonObjectVisitor visitor = new JsonObjectVisitor(pass);
@@ -85,7 +85,7 @@ public class AssignmentVisitor extends StepperBaseVisitor<Construct> {
 
     @Override
     public Construct visitAssignmentJsonArray(StepperParser.AssignmentJsonArrayContext ctx) {
-        Pass pass = new Pass();
+        Pass pass = new Pass(toLabel(ctx.label()));
         pass.captureAttribute("Result");
         pass.handleArray(() -> {
             JsonObjectVisitor visitor = new JsonObjectVisitor(pass);
@@ -98,7 +98,7 @@ public class AssignmentVisitor extends StepperBaseVisitor<Construct> {
 
     @Override
     public Construct visitAssignmentExpr(StepperParser.AssignmentExprContext ctx) {
-        ExpressionConstruct construct = new ExpressionConstruct();
+        ExpressionConstruct construct = new ExpressionConstruct(toLabel(ctx.label()));
         String variable = ctx.dereference().getText();
         String expression = enhance(ctx.complexAssign(), ctx.expr().getText(), variable);
 

@@ -1,7 +1,7 @@
 
 simple() ::= <<
     state Simple {
-        a = "Hello World";
+        @Label("xyz") a = "Hello World";
     }
 >>
 
@@ -16,27 +16,27 @@ annotationName() ::= <<
 
 assignmentPrimitive() ::= <<
     state assignment {
-        a = 5.2;
+        @Label("abc") a = 5.2;
         b = 10;
         c = "Hello World";
         d.e.f = true;
-        e.f.g = false;
+        @Label("xyz") e.f.g = false;
     }
 >>
 
 assignmentComplex() ::= <<
     state complex {
         value1 = a * b + c.calc(e) - d.length();
-        value2 += a * b + c.calc(e) - d.length();
+        @Label("one") value2 += a * b + c.calc(e) - d.length();
         value3 -= a * b + c.calc(e) - d.length();
         value4 /= a * b + c.calc(e) - d.length();
-        value5 *= a * b + c.calc(e) - d.length();
+        @Label("two") value5 *= a * b + c.calc(e) - d.length();
     }
 >>
 
 assignmentJson() ::= <<
     state json {
-        value = {
+        @Label("xyz") value = {
             "a": 5,
             "b": 10,
             "c": {
@@ -49,7 +49,7 @@ assignmentJson() ::= <<
 
 assignmentJsonArray() ::= <<
     state array {
-        value = ["p", true, false, 2.5, 10]
+        @Label("xyz") value = ["p", true, false, 2.5, 10]
     }
 >>
 

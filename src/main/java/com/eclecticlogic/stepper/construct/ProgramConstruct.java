@@ -1,15 +1,12 @@
 package com.eclecticlogic.stepper.construct;
 
-import com.eclecticlogic.stepper.etc.StringHelper;
 import com.eclecticlogic.stepper.etc.WeaveContext;
 import com.eclecticlogic.stepper.state.State;
-import com.google.common.collect.Lists;
-import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 import java.util.List;
 
-import static com.eclecticlogic.stepper.etc.StringHelper.strip;
+import static com.eclecticlogic.stepper.etc.Etc.strip;
 
 public class ProgramConstruct extends Construct {
 

@@ -8,8 +8,8 @@ import com.eclecticlogic.stepper.state.Task;
 import java.text.NumberFormat;
 import java.text.ParseException;
 
-import static com.eclecticlogic.stepper.etc.StringHelper.from;
-import static com.eclecticlogic.stepper.etc.StringHelper.strip;
+import static com.eclecticlogic.stepper.etc.Etc.from;
+import static com.eclecticlogic.stepper.etc.Etc.strip;
 
 
 public class JsonObjectVisitor extends StepperBaseVisitor<AttributableState> {

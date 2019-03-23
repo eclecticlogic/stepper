@@ -5,7 +5,7 @@ import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
 
-public class StringHelper {
+public class Etc {
 
     public static String from(Token token) {
         return token == null ? null : token.getText();
@@ -38,5 +38,10 @@ public class StringHelper {
             }
             return variable + " " + symbol + " (" + expression + ")";
         }
+    }
+
+
+    public static String toLabel(StepperParser.LabelContext ctx) {
+        return ctx == null ? null : strip(ctx.STRING().getText());
     }
 }
