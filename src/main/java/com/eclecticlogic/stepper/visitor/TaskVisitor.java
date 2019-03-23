@@ -4,9 +4,8 @@ import com.eclecticlogic.stepper.antlr.StepperBaseVisitor;
 import com.eclecticlogic.stepper.antlr.StepperParser;
 import com.eclecticlogic.stepper.construct.StateConstruct;
 import com.eclecticlogic.stepper.etc.StringHelper;
-import com.eclecticlogic.stepper.state.Retry;
 import com.eclecticlogic.stepper.state.Task;
-import com.google.common.collect.Lists;
+import org.antlr.v4.runtime.tree.TerminalNode;
 
 import java.text.NumberFormat;
 import java.text.ParseException;
@@ -26,19 +25,31 @@ public class TaskVisitor extends StepperBaseVisitor<StateConstruct> {
 
     @Override
     public StateConstruct visitTask(StepperParser.TaskContext ctx) {
-        List<Retry> retries = Lists.newArrayList();
-        for (StepperParser.RetryContext retryContext : ctx.retry()) {
-            Retry retry = new Retry();
-            for (StepperParser.RetryPairContext retryPair : retryContext.retryPair()) {
-                retry.put(retryPair.ID().getText(), getValue(retryPair.scalar()));
-            }
-            retries.add(retry);
+        if (!ctx.retry().isEmpty()) {
+            setupRetries(ctx.retry());
         }
-        task.setRetries(retries);
 
         JsonObjectVisitor visitor = new JsonObjectVisitor(task);
         visitor.visit(ctx.jsonObject());
         return new StateConstruct<>(task);
+    }
+
+
+    void setupRetries(List<StepperParser.RetryContext> ctx) {
+        task.captureAttribute("Retry");
+        task.handleArray(() -> {
+            for (StepperParser.RetryContext rc : ctx) {
+                task.handleObject(() -> {
+                    task.captureAttribute("ErrorEquals");
+                    task.handleArray(() -> rc.STRING().stream()//
+                            .map(TerminalNode::getText) //
+                            .map(StringHelper::strip) //
+                            .forEach(task::setProperty));
+                    JsonObjectVisitor visitor = new JsonObjectVisitor(task);
+                    visitor.visit(rc.jsonObject());
+                });
+            }
+        });
     }
 
 

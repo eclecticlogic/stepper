@@ -103,12 +103,9 @@ task
     ;
 
 retry
-    : '@Retry' '(' retryPair (',' retryPair)* ')'
+    : '@RetryOnError' '(' STRING (',' STRING)* ')' jsonObject
     ;
 
-retryPair
-    : ID '=' scalar ','?
-    ;
 
 jsonObject
     : '{' pair (',' pair)* '}'

@@ -18,8 +18,8 @@ testValueNested() ::= <<
 
 testTask() ::= <<
 
-    @Retry(ErrorEquals="abc", IntervalSeconds=3, MaxAttempts=4, BackoffRate=5)
-    @Retry(ErrorEquals="xyz", IntervalSeconds=3)
+    @RetryOnError("abc") { "IntervalSeconds": 3, "MaxAttempts": 4, "BackoffRate": 5}
+    @RetryOnError("xyz", "pqr") { "IntervalSeconds": 3 }
     task {
 		"Resource": "arn:aws:states:::sqs:sendMessage",
       	"Parameters": {

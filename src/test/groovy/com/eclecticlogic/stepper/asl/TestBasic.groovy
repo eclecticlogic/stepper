@@ -237,8 +237,9 @@ class TestBasic extends AbstractStateMachineTester {
         ctx.read('$.States.hello.Retry[0].BackoffRate') == 5
         ctx.read('$.States.hello.Retry[0].IntervalSeconds') == 3
         ctx.read('$.States.hello.Retry[0].ErrorEquals')[0] == 'abc'
+        ctx.read('$.States.hello.Retry[0].ErrorEquals')[1] == 'def'
         ctx.read('$.States.hello.Retry[0].MaxAttempts') == 4
         ctx.read('$.States.hello.Retry[1].IntervalSeconds') == 6
-        ctx.read('$.States.hello.Retry[1].ErrorEquals')[0] == 'xyz'
+        ctx.read('$.States.hello.Retry[1].ErrorEquals')[0] == 'pqr'
     }
 }
