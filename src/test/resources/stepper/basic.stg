@@ -62,7 +62,10 @@ assignmentTask() ::= <<
 >>
 
 task() ::= <<
+
     state mytask {
+        @Retry(ErrorEquals="abc", IntervalSeconds=3, MaxAttempts=4, BackoffRate=5)
+        @Retry(ErrorEquals="xyz", IntervalSeconds=6)
         task("hello") {
             "a": "b"
         }

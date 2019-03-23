@@ -20,10 +20,9 @@ public class AssignmentVisitor extends StepperBaseVisitor<Construct> {
     public Construct visitAssignmentTask(StepperParser.AssignmentTaskContext ctx) {
         String taskName = strip(from(ctx.task().taskName));
         Task task = taskName == null ? new Task() : new Task(taskName);
-        JsonObjectVisitor visitor = new JsonObjectVisitor(task);
-        visitor.visit(ctx.task().jsonObject());
+        StateConstruct construct = new TaskVisitor(task).visit(ctx.task());
         task.setResultPath("$." + ctx.dereference().getText());
-        return new StateConstruct<>(task);
+        return construct;
     }
 
 

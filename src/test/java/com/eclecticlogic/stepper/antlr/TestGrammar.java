@@ -42,19 +42,19 @@ public class TestGrammar extends AbstractGrammarTester {
         parse("{\"attrib\": 123}", fn);
         parse("[{\"attrib\": 123}]", fn);
         parse("[{\"attrib\": 123, \"c\": [\"a\", true]}]", fn);
-        parse("core.stg", "testValueNested", fn);
+        parse("grammar.stg", "testValueNested", fn);
     }
 
 
     @Test
     public void testJsonObject() {
-        parse("core.stg", "testValueNested", p -> p.jsonObject());
+        parse("grammar.stg", "testValueNested", p -> p.jsonObject());
     }
 
 
     @Test
     public void testTask() {
-        parse("core.stg", "testTask", p -> p.task());
+        parse("grammar.stg", "testTask", p -> p.task());
     }
 
 
@@ -108,13 +108,13 @@ public class TestGrammar extends AbstractGrammarTester {
     @Test
     public void testAssignment() {
         Function<StepperParser, ParserRuleContext> fn = p -> p.assignment();
-        parse("core.stg", "testAssignmentTask", fn);
+        parse("grammar.stg", "testAssignmentTask", fn);
         parse("a.b.c = d - g();", fn);
         parse("a.b.c += d - g()--;", fn);
         parse("a.b.c -= d - g();", fn);
         parse("a.b.c *= d - ++g();", fn);
         parse("a.b.c /= d - g();", fn);
-        parse("core.stg", "testAssignmentJson", fn);
+        parse("grammar.stg", "testAssignmentJson", fn);
         parse("ab.cd = [1, 2, 3]", fn);
     }
 
@@ -122,35 +122,35 @@ public class TestGrammar extends AbstractGrammarTester {
     @Test
     public void testFor() {
         Function<StepperParser, ParserRuleContext> fn = p -> p.forStatement();
-        parse("core.stg", "testForLoop1", fn);
-        parse("core.stg", "testForLoop2", fn);
-        parse("core.stg", "testForLoop3", fn);
-        parse("core.stg", "testForIteration", fn);
+        parse("grammar.stg", "testForLoop1", fn);
+        parse("grammar.stg", "testForLoop2", fn);
+        parse("grammar.stg", "testForLoop3", fn);
+        parse("grammar.stg", "testForIteration", fn);
     }
 
 
     @Test
     public void testIf() {
         Function<StepperParser, ParserRuleContext> fn = p -> p.ifStatement();
-        parse("core.stg", "testIf1", fn);
-        parse("core.stg", "testIf2", fn);
-        parse("core.stg", "testIf3", fn);
+        parse("grammar.stg", "testIf1", fn);
+        parse("grammar.stg", "testIf2", fn);
+        parse("grammar.stg", "testIf3", fn);
     }
 
 
     @Test
     public void testWhile() {
         Function<StepperParser, ParserRuleContext> fn = p -> p.whileStatement();
-        parse("core.stg", "testWhile", fn);
+        parse("grammar.stg", "testWhile", fn);
     }
 
 
     @Test
     public void testWhen() {
         Function<StepperParser, ParserRuleContext> fn = p -> p.whenStatement();
-        parse("core.stg", "testWhen1", fn);
-        parse("core.stg", "testWhen2", fn);
-        parse("core.stg", "testWhen3", fn);
+        parse("grammar.stg", "testWhen1", fn);
+        parse("grammar.stg", "testWhen2", fn);
+        parse("grammar.stg", "testWhen3", fn);
     }
 
 }

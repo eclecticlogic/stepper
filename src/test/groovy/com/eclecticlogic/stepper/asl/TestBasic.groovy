@@ -234,5 +234,11 @@ class TestBasic extends AbstractStateMachineTester {
         ctx.read('$..hello.Type')[0] == 'Task'
         ctx.read('$..hello.ResultPath')[0] == null
         ctx.read('$..hello.a')[0] == 'b'
+        ctx.read('$.States.hello.Retry[0].BackoffRate') == 5
+        ctx.read('$.States.hello.Retry[0].IntervalSeconds') == 3
+        ctx.read('$.States.hello.Retry[0].ErrorEquals')[0] == 'abc'
+        ctx.read('$.States.hello.Retry[0].MaxAttempts') == 4
+        ctx.read('$.States.hello.Retry[1].IntervalSeconds') == 6
+        ctx.read('$.States.hello.Retry[1].ErrorEquals')[0] == 'xyz'
     }
 }

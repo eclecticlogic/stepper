@@ -99,7 +99,15 @@ dereference
     ;
 
 task
-    : 'task' ('(' taskName=STRING ')')? jsonObject
+    : retry* 'task' ('(' taskName=STRING ')')? jsonObject
+    ;
+
+retry
+    : '@Retry' '(' retryPair (',' retryPair)* ')'
+    ;
+
+retryPair
+    : ID '=' scalar ','?
     ;
 
 jsonObject
