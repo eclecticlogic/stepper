@@ -133,7 +133,7 @@ testAssignmentJson() ::= <<
 >>
 
 testForLoop1() ::= <<
-    for (i = 0 to c * 4) {
+    @Label("abc") for (i = 0 to c * 4) {
         a = b;
     }
 >>
@@ -143,13 +143,13 @@ testForLoop2() ::= <<
     }
 >>
 testForLoop3() ::= <<
-    for (i = d to c * 4 step -53 * a) {
+    @Label("abc") for (i = d to c * 4 step -53 * a) {
         a = b;
     }
 >>
 
 testForIteration() ::= <<
-    for (i in json.array) {
+    @Label("abc") for (i in json.array) {
         a = b;
     }
 >>

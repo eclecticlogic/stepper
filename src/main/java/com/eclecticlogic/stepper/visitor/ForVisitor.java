@@ -5,12 +5,15 @@ import com.eclecticlogic.stepper.antlr.StepperParser;
 import com.eclecticlogic.stepper.construct.Construct;
 import com.eclecticlogic.stepper.construct.ForIterationConstruct;
 import com.eclecticlogic.stepper.construct.ForLoopConstruct;
+import com.eclecticlogic.stepper.etc.Etc;
+
+import static com.eclecticlogic.stepper.etc.Etc.toLabel;
 
 public class ForVisitor extends StepperBaseVisitor<Construct> {
 
     @Override
     public Construct visitForIteration(StepperParser.ForIterationContext ctx) {
-        ForIterationConstruct construct = new ForIterationConstruct();
+        ForIterationConstruct construct = new ForIterationConstruct(toLabel(ctx.label()));
         construct.setIterableVariable(ctx.ID().getText());
         construct.setIterableExpression(ctx.iterable.getText());
 
@@ -26,7 +29,7 @@ public class ForVisitor extends StepperBaseVisitor<Construct> {
 
     @Override
     public Construct visitForLoop(StepperParser.ForLoopContext ctx) {
-        ForLoopConstruct construct = new ForLoopConstruct();
+        ForLoopConstruct construct = new ForLoopConstruct(toLabel(ctx.label()));
         construct.setIterableVariable(ctx.ID().getText());
 
         construct.setInitialExpression(ctx.init.getText());

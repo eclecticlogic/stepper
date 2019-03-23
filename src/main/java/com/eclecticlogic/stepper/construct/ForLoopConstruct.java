@@ -23,11 +23,20 @@ public class ForLoopConstruct extends Construct {
 
     private Construct block;
 
-    private final Task initializingLambda = new Task();
-    private final Task endingLambda = new Task();
-    private final String choiceVar = getNextDynamicVariable();
-    private final Choice choice = new Choice(choiceVar);
-    private final Task incrementingLambda = new Task();
+    private final Task initializingLambda;
+    private final Task endingLambda;
+    private final String choiceVar;
+    private final Choice choice;
+    private final Task incrementingLambda;
+
+
+    public ForLoopConstruct(String label) {
+        initializingLambda = new Task(label);
+        endingLambda = new Task();
+        choiceVar = getNextDynamicVariable();
+        choice = new Choice(choiceVar);
+        incrementingLambda = new Task();
+    }
 
 
     public void setIterableVariable(String iterableVariable) {
@@ -107,7 +116,7 @@ public class ForLoopConstruct extends Construct {
                 stepExpressionSymbols);
         incrementingLambda.setupLambdaHelper();
         incrementingLambda.setResultPath("$." + iterableVariable);
-        incrementingLambda.setNextState(choice.getName());
+        incrementingLambda.setNextState(endingLambda.getName());
     }
 
 
@@ -129,6 +138,8 @@ public class ForLoopConstruct extends Construct {
         setupEnding(context);
         setupChoice();
         setupIncrementer(context);
+
+        block.weave(context);
 
         if (getNext() != null) {
             getNext().weave(context);

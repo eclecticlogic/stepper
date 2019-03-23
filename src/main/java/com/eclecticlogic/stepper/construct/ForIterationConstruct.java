@@ -20,11 +20,20 @@ public class ForIterationConstruct extends Construct {
     private List<String> symbols;
     private Construct block;
 
-    private final Pass indexInitializer = new Pass();
-    private final String index = getNextDynamicVariable();
-    private final Task iteratingLambda = new Task();
-    private final Choice choice = new Choice(index + ".exists");
-    private final Pass iterVariableSetter = new Pass();
+    private final Pass indexInitializer;
+    private final String index;
+    private final Task iteratingLambda;
+    private final Choice choice;
+    private final Pass iterVariableSetter;
+
+
+    public ForIterationConstruct(String label) {
+        indexInitializer = new Pass(label);
+        index = getNextDynamicVariable();
+        iteratingLambda = new Task();
+        choice = new Choice(index + ".exists");
+        iterVariableSetter = new Pass();
+    }
 
 
     public void setIterableExpression(String iterableExpression) {
@@ -101,7 +110,9 @@ public class ForIterationConstruct extends Construct {
         setupInitializer();
         setupIteratingLambda(context);
         setupChoice();
+
         block.weave(context);
+
         if (getNext() != null) {
             getNext().weave(context);
             setNextStateName(getNext().getFirstStateName());

@@ -12,8 +12,8 @@ annotation
     ;
 
 forStatement
-    : FOR '(' ID '=' init=expr TO end=expr (STEP delta=expr)? ')' statementBlock #forLoop
-    | FOR '(' ID 'in' iterable=expr ')' statementBlock     #forIteration
+    : label? FOR '(' ID '=' init=expr TO end=expr (STEP delta=expr)? ')' statementBlock #forLoop
+    | label? FOR '(' ID 'in' iterable=expr ')' statementBlock     #forIteration
     ;
 
 ifStatement
