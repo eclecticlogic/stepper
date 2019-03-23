@@ -5,7 +5,6 @@ import com.eclecticlogic.stepper.antlr.StepperParser;
 import com.eclecticlogic.stepper.construct.Construct;
 import com.eclecticlogic.stepper.construct.ExpressionConstruct;
 import com.eclecticlogic.stepper.construct.StateConstruct;
-import com.eclecticlogic.stepper.etc.StringHelper;
 import com.eclecticlogic.stepper.state.Pass;
 import com.eclecticlogic.stepper.state.Task;
 
@@ -20,9 +19,15 @@ public class AssignmentVisitor extends StepperBaseVisitor<Construct> {
     public Construct visitAssignmentTask(StepperParser.AssignmentTaskContext ctx) {
         String taskName = strip(from(ctx.task().taskName));
         Task task = taskName == null ? new Task() : new Task(taskName);
-        StateConstruct construct = new TaskVisitor(task).visit(ctx.task());
         task.setResultPath("$." + ctx.dereference().getText());
-        return construct;
+
+        RetryVisitor retryVisitor = new RetryVisitor(task);
+        retryVisitor.visit(ctx.retries());
+
+        JsonObjectVisitor jsonObjectVisitor = new JsonObjectVisitor(task);
+        jsonObjectVisitor.visit(ctx.task().jsonObject());
+
+        return new StateConstruct<>(task);
     }
 
 

@@ -39,7 +39,7 @@ statementBlock
 
 statement
     : assignment                        #statementAssignment
-    | task                              #statementTask
+    | retries task                       #statementTask
     | forStatement                      #statementFor
     | ifStatement                       #statementIf
     | whileStatement                    #statementWhile
@@ -47,7 +47,7 @@ statement
     ;
 
 assignment
-    : dereference ASSIGN task SEMICOLON?                           #assignmentTask
+    : retries dereference ASSIGN task SEMICOLON?                     #assignmentTask
     | dereference ASSIGN NUMBER ';'                                 #assignmentNumber
     | dereference ASSIGN TRUE ';'                                   #assignmentTrue
     | dereference ASSIGN FALSE ';'                                  #assignmentFalse
@@ -99,8 +99,11 @@ dereference
     ;
 
 task
-    : retry* 'task' ('(' taskName=STRING ')')? jsonObject
+    : 'task' ('(' taskName=STRING ')')? jsonObject
     ;
+
+retries
+    : retry *;
 
 retry
     : '@RetryOnError' '(' STRING (',' STRING)* ')' jsonObject

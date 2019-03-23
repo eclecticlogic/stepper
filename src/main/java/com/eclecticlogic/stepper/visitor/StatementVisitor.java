@@ -19,7 +19,14 @@ public class StatementVisitor extends StepperBaseVisitor<Construct> {
     public Construct visitStatementTask(StepperParser.StatementTaskContext ctx) {
         String taskName = strip(from(ctx.task().taskName));
         Task task = taskName == null ? new Task() : new Task(taskName);
-        return new TaskVisitor(task).visit(ctx.task());
+
+        RetryVisitor retryVisitor = new RetryVisitor(task);
+        retryVisitor.visit(ctx.retries());
+
+        JsonObjectVisitor jsonObjectVisitor = new JsonObjectVisitor(task);
+        jsonObjectVisitor.visit(ctx.task().jsonObject());
+
+        return new StateConstruct<>(task);
     }
 
 

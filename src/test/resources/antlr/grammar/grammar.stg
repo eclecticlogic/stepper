@@ -18,8 +18,6 @@ testValueNested() ::= <<
 
 testTask() ::= <<
 
-    @RetryOnError("abc") { "IntervalSeconds": 3, "MaxAttempts": 4, "BackoffRate": 5}
-    @RetryOnError("xyz", "pqr") { "IntervalSeconds": 3 }
     task {
 		"Resource": "arn:aws:states:::sqs:sendMessage",
       	"Parameters": {
@@ -32,6 +30,8 @@ testTask() ::= <<
 
 testAssignmentTask() ::= <<
 
+    @RetryOnError("abc") { "IntervalSeconds": 3, "MaxAttempts": 4, "BackoffRate": 5}
+    @RetryOnError("xyz", "pqr") { "IntervalSeconds": 3 }
     abc = task {
 		"Resource": "arn:aws:states:::sqs:sendMessage",
       	"Parameters": {
