@@ -55,6 +55,7 @@ public class TestGrammar extends AbstractGrammarTester {
     @Test
     public void testTask() {
         parse("grammar.stg", "testTask", p -> p.task());
+        parse("grammar.stg", "testStatementTask", p -> p.statement());
     }
 
 
