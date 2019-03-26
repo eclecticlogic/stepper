@@ -17,7 +17,6 @@ class TestFor extends AbstractStateMachineTester {
             return ctx.read('$.States.' + name + '.' + param)
         }
 
-
         then:
         Object[] data = ctx.read('$.States.*')
         data.length == 6
@@ -49,7 +48,7 @@ class TestFor extends AbstractStateMachineTester {
 
             v(it, 'Choices[1].Variable') == '$.var__000'
             v(it, 'Choices[1].BooleanEquals') == false
-            v(it, 'Choices[1].Next') == 'For004'
+            v(it, 'Choices[1].Next') == 'For.Success'
         }
 
         with('For003') {
@@ -70,7 +69,7 @@ class TestFor extends AbstractStateMachineTester {
         }
         output.lambda.contains('const response = i + (2);')
 
-        v('For004', 'Type') == 'Succeed'
+        v("['For.Success']", 'Type') == 'Succeed'
 
 
     }

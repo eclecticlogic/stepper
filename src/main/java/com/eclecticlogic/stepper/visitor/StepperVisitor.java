@@ -36,7 +36,7 @@ public class StepperVisitor extends StepperBaseVisitor<StateMachine> {
                 current.setNext(c);
                 current = c;
             }
-            current.setNext(new SuccessConstruct());
+            current.setNext(new SuccessConstruct(program.getProgramName()));
 
             program.weave(new WeaveContext());
         });

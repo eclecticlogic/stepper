@@ -19,9 +19,9 @@ class TestBasic extends AbstractStateMachineTester {
             read('$..xyz.Type')[0] == 'Pass'
             read('$..xyz.Result')[0] == 'Hello World'
             read('$..xyz.ResultPath')[0] == '$.a'
-            read('$..xyz.Next')[0] == 'Simple000'
+            read('$..xyz.Next')[0] == 'Simple.Success'
 
-            read('$..Simple000.Type')[0] == 'Succeed'
+            read("\$..['Simple.Success'].Type")[0] == 'Succeed'
         }
     }
 
@@ -40,9 +40,9 @@ class TestBasic extends AbstractStateMachineTester {
             read('$..AnnotationTest000.Type')[0] == 'Pass'
             read('$..AnnotationTest000.Result')[0] == 5
             read('$..AnnotationTest000.ResultPath')[0] == '$.c'
-            read('$..AnnotationTest000.Next')[0] == 'AnnotationTest001'
+            read('$..AnnotationTest000.Next')[0] == 'AnnotationTest.Success'
 
-            read('$..AnnotationTest001.Type')[0] == 'Succeed'
+            read("\$..['AnnotationTest.Success'].Type")[0] == 'Succeed'
         }
     }
 
@@ -144,10 +144,10 @@ class TestBasic extends AbstractStateMachineTester {
         v(name5, "Parameters.['c.\$']", '$.c')
         v(name5, "Parameters.['d.\$']", '$.d')
         v(name5, "Parameters.['e.\$']", '$.e')
-        v(name5, 'Next', 'complex003')
+        v(name5, 'Next', 'complex.Success')
         output.lambda.contains('const response = value5 * (a*b+c.calc(e)-d.length());')
 
-        v('complex003', 'Type', 'Succeed')
+        v("['complex.Success']", 'Type', 'Succeed')
     }
 
 
@@ -177,9 +177,9 @@ class TestBasic extends AbstractStateMachineTester {
         v(name, 'Parameters.e[1]', true)
         v(name, 'Parameters.e[2]', false)
         v(name, 'ResultPath', '$.value')
-        v(name, 'Next', 'json000')
+        v(name, 'Next', 'json.Success')
 
-        v('json000', 'Type', 'Succeed')
+        v("['json.Success']", 'Type', 'Succeed')
     }
 
 
@@ -208,9 +208,9 @@ class TestBasic extends AbstractStateMachineTester {
         v(name, 'Result[3]', 2.5)
         v(name, 'Result[4]', 10)
         v(name, 'ResultPath', '$.value')
-        v(name, 'Next', 'array000')
+        v(name, 'Next', 'array.Success')
 
-        v('array000', 'Type', 'Succeed')
+        v("['array.Success']", 'Type', 'Succeed')
     }
 
 

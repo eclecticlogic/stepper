@@ -186,6 +186,8 @@ STEP: 'step';
 WHILE: 'while';
 WHEN: 'when';
 CASE: 'case';
+SUCCEED: 'succeed';
+FAIL: 'fail';
 
 // symbols
 SEMICOLON: ';';
