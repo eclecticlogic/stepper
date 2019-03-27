@@ -1,9 +1,21 @@
 
 simpleFor() ::= <<
-    state For {
+    function For {
         @Label("abc")
         for (i = 0 to 10 step 2) {
             a += i;
         }
     }
+>>
+
+doubleFor() ::= <<
+    function For {
+        for (i = 0 to 10 step 2)
+            for (j = 2 to 12) {
+                a = i;
+                b = j;
+                c = a * b;
+            }
+    }
+
 >>

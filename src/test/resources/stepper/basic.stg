@@ -1,6 +1,6 @@
 
 simple() ::= <<
-    state Simple {
+    function Simple {
         @Label("xyz") a = "Hello World";
     }
 >>
@@ -9,13 +9,13 @@ annotationName() ::= <<
     @Comment("this is a comment")
     @TimeoutSeconds(3600)
     @Version("1.0")
-    state AnnotationTest {
+    function AnnotationTest {
         c = 5;
     }
 >>
 
 assignmentPrimitive() ::= <<
-    state assignment {
+    function assignment {
         @Label("abc") a = 5.2;
         b = 10;
         c = "Hello World";
@@ -25,7 +25,7 @@ assignmentPrimitive() ::= <<
 >>
 
 assignmentComplex() ::= <<
-    state complex {
+    function complex {
         value1 = a * b + c.calc(e) - d.length();
         @Label("one") value2 += a * b + c.calc(e) - d.length();
         value3 -= a * b + c.calc(e) - d.length();
@@ -35,7 +35,7 @@ assignmentComplex() ::= <<
 >>
 
 assignmentJson() ::= <<
-    state json {
+    function json {
         @Label("xyz") value = {
             "a": 5,
             "b": 10,
@@ -48,13 +48,13 @@ assignmentJson() ::= <<
 >>
 
 assignmentJsonArray() ::= <<
-    state array {
+    function array {
         @Label("xyz") value = ["p", true, false, 2.5, 10]
     }
 >>
 
 assignmentTask() ::= <<
-    state mytask {
+    function mytask {
         @Label("x")
         value = task {
             "a": "b"
@@ -64,7 +64,7 @@ assignmentTask() ::= <<
 
 task() ::= <<
 
-    state mytask {
+    function mytask {
         @RetryOnError("abc", "def") { "IntervalSeconds": 3, "MaxAttempts": 4, "BackoffRate": 5 }
         @RetryOnError("pqr") { "IntervalSeconds": 6 }
         @Label("hello")

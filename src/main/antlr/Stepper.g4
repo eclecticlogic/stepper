@@ -2,7 +2,7 @@
 grammar Stepper;
 
 program
-    : annotation* 'state' programName=ID '{' statement+ '}'
+    : annotation* FUNCTION programName=ID '{' statement+ '}'
     ;
 
 // control statements
@@ -175,6 +175,7 @@ MULTASSIGN: '*=';
 DIVASSIGN: '/=';
 
 // keywords
+FUNCTION: 'function';
 TRUE: 'true';
 FALSE: 'false';
 NULL: 'null';
@@ -186,8 +187,7 @@ STEP: 'step';
 WHILE: 'while';
 WHEN: 'when';
 CASE: 'case';
-SUCCEED: 'succeed';
-FAIL: 'fail';
+
 
 // symbols
 SEMICOLON: ';';
