@@ -2,6 +2,8 @@ package com.eclecticlogic.stepper.construct;
 
 import com.eclecticlogic.stepper.etc.LambdaBranch;
 import com.eclecticlogic.stepper.etc.WeaveContext;
+import com.eclecticlogic.stepper.state.NameProvider;
+import com.eclecticlogic.stepper.state.NamingScheme;
 import com.eclecticlogic.stepper.state.State;
 import com.eclecticlogic.stepper.state.Task;
 import com.google.common.collect.Lists;
@@ -32,7 +34,7 @@ public abstract class Construct {
 
 
     String getNextDynamicVariable() {
-        return String.format("var__%03d", dynamicVariableCounter++);
+        return NameProvider.getVar();
     }
 
 

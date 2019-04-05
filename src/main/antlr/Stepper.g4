@@ -13,7 +13,7 @@ annotation
 
 forStatement
     : label? FOR '(' ID '=' init=expr TO end=expr (STEP delta=expr)? ')' statementBlock #forLoop
-    | label? FOR '(' ID 'in' iterable=expr ')' statementBlock     #forIteration
+    | label? FOR '(' ID IN iterable=expr ')' statementBlock     #forIteration
     ;
 
 ifStatement
@@ -187,6 +187,7 @@ NULL: 'null';
 IF: 'if';
 ELSE: 'else';
 FOR: 'for';
+IN: 'in';
 TO: 'to';
 STEP: 'step';
 WHILE: 'while';

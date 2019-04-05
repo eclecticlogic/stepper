@@ -19,3 +19,24 @@ doubleFor() ::= <<
     }
 
 >>
+
+simpleIter() ::= <<
+    stepper For {
+        @Label("abc")
+        for (a in b.custom().delta(e)) {
+            j = a;
+        }
+    }
+>>
+
+doubleIter() ::= <<
+    stepper Double {
+        @Label("abc")
+        for (a in b) {
+            @Label("def")
+            for (c in d) {
+                j = a;
+            }
+        }
+    }
+>>

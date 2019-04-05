@@ -20,4 +20,9 @@ public class NameProvider {
     public static String getName() {
         return namingSchemeStack.get().peek().getNextName();
     }
+
+
+    public static String getVar() {
+        return namingSchemeStack.get().peek().getVar();
+    }
 }
