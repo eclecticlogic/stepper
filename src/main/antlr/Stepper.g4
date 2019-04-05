@@ -2,7 +2,7 @@
 grammar Stepper;
 
 program
-    : annotation* FUNCTION programName=ID '{' statement+ '}'
+    : annotation* PROGRAM programName=ID '{' statement+ '}'
     ;
 
 // control statements
@@ -32,6 +32,10 @@ whenStatement
     '}'
     ;
 
+waitStatement
+    : label? WAIT jsonObject
+    ;
+
 statementBlock
     : '{' statement+ '}'
     | statement
@@ -39,11 +43,12 @@ statementBlock
 
 statement
     : assignment                        #statementAssignment
-    | retries task                       #statementTask
+    | retries task                      #statementTask
     | forStatement                      #statementFor
     | ifStatement                       #statementIf
     | whileStatement                    #statementWhile
     | whenStatement                     #statementWhen
+    | waitStatement                     #statementWait
     ;
 
 assignment
@@ -175,7 +180,7 @@ MULTASSIGN: '*=';
 DIVASSIGN: '/=';
 
 // keywords
-FUNCTION: 'function';
+PROGRAM: 'stepper';
 TRUE: 'true';
 FALSE: 'false';
 NULL: 'null';
@@ -187,7 +192,7 @@ STEP: 'step';
 WHILE: 'while';
 WHEN: 'when';
 CASE: 'case';
-
+WAIT: 'wait';
 
 // symbols
 SEMICOLON: ';';

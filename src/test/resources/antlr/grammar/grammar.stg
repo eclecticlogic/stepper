@@ -209,3 +209,15 @@ testWhen3() ::= <<
         }
     }
 >>
+
+testWait1() ::= <<
+    wait {
+        "a": 10
+    }
+>>
+testWait2() ::= <<
+    @Label("abc")
+    wait {
+        "a": 10
+    }
+>>

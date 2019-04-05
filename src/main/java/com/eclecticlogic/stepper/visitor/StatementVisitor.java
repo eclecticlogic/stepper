@@ -1,8 +1,10 @@
 package com.eclecticlogic.stepper.visitor;
 
+import com.eclecticlogic.stepper.Stepper;
 import com.eclecticlogic.stepper.antlr.StepperBaseVisitor;
 import com.eclecticlogic.stepper.antlr.StepperParser;
 import com.eclecticlogic.stepper.construct.*;
+import com.eclecticlogic.stepper.etc.Etc;
 import com.eclecticlogic.stepper.state.Task;
 import com.google.common.collect.Lists;
 
@@ -12,6 +14,16 @@ import static com.eclecticlogic.stepper.etc.Etc.from;
 
 
 public class StatementVisitor extends StepperBaseVisitor<Construct> {
+
+    @Override
+    public Construct visitStatementWait(StepperParser.StatementWaitContext ctx) {
+        WaitConstruct construct = new WaitConstruct(Etc.toLabel(ctx.waitStatement().label()));
+
+        JsonObjectVisitor jsonObjectVisitor = new JsonObjectVisitor(construct.getState());
+        jsonObjectVisitor.visit(ctx.waitStatement().jsonObject());
+
+        return construct;
+    }
 
 
     @Override

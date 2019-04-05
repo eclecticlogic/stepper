@@ -1,6 +1,6 @@
 
 simple() ::= <<
-    function Simple {
+    stepper Simple {
         @Label("xyz") a = "Hello World";
     }
 >>
@@ -9,13 +9,13 @@ annotationName() ::= <<
     @Comment("this is a comment")
     @TimeoutSeconds(3600)
     @Version("1.0")
-    function AnnotationTest {
+    stepper AnnotationTest {
         c = 5;
     }
 >>
 
 assignmentPrimitive() ::= <<
-    function assignment {
+    stepper assignment {
         @Label("abc") a = 5.2;
         b = 10;
         c = "Hello World";
@@ -25,7 +25,7 @@ assignmentPrimitive() ::= <<
 >>
 
 assignmentComplex() ::= <<
-    function complex {
+    stepper complex {
         value1 = a * b + c.calc(e) - d.length();
         @Label("one") value2 += a * b + c.calc(e) - d.length();
         value3 -= a * b + c.calc(e) - d.length();
@@ -35,7 +35,7 @@ assignmentComplex() ::= <<
 >>
 
 assignmentJson() ::= <<
-    function json {
+    stepper json {
         @Label("xyz") value = {
             "a": 5,
             "b": 10,
@@ -48,13 +48,13 @@ assignmentJson() ::= <<
 >>
 
 assignmentJsonArray() ::= <<
-    function array {
+    stepper array {
         @Label("xyz") value = ["p", true, false, 2.5, 10]
     }
 >>
 
 assignmentTask() ::= <<
-    function mytask {
+    stepper mytask {
         @Label("x")
         value = task {
             "a": "b"
@@ -64,12 +64,21 @@ assignmentTask() ::= <<
 
 task() ::= <<
 
-    function mytask {
+    stepper mytask {
         @RetryOnError("abc", "def") { "IntervalSeconds": 3, "MaxAttempts": 4, "BackoffRate": 5 }
         @RetryOnError("pqr") { "IntervalSeconds": 6 }
         @Label("hello")
         task {
             "a": "b"
+        }
+    }
+>>
+
+wait() ::= <<
+    stepper waiter {
+        @Label("abc")
+        wait {
+            "Seconds": 10
         }
     }
 >>

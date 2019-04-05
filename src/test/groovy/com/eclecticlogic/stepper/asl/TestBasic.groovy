@@ -249,4 +249,20 @@ class TestBasic extends AbstractStateMachineTester {
         ctx.read('$.States.hello.Retry[1].IntervalSeconds') == 6
         ctx.read('$.States.hello.Retry[1].ErrorEquals')[0] == 'pqr'
     }
+
+
+    def "test wait"() {
+        given:
+        TestOutput output = runWithLambda('basic.stg', 'wait')
+        ReadContext ctx = output.ctx
+
+        expect:
+        Object[] data = ctx.read('$.States.*')
+        data.length == 2
+
+        ctx.read('$..abc.Type')[0] == 'Wait'
+        ctx.read('$..abc.Seconds')[0] == 10
+        ctx.read('$..abc.Next')[0] == 'waiter.Success'
+        ctx.read("\$..['waiter.Success'].Type")[0] == 'Succeed'
+    }
 }

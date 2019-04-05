@@ -158,4 +158,12 @@ public class TestGrammar extends AbstractGrammarTester {
         parse("grammar.stg", "testWhen3", fn);
     }
 
+
+    @Test
+    public void testWait() {
+        Function<StepperParser, ParserRuleContext> fn = p -> p.waitStatement();
+        parse("grammar.stg", "testWait1", fn);
+        parse("grammar.stg", "testWait2", fn);
+    }
+
 }
