@@ -70,7 +70,7 @@ public class ForIterationConstruct extends Construct {
 
     void setupIteratingLambda(WeaveContext context) {
         symbols.add(index);
-        final LambdaBranch branch = constructLambda(context, iteratingLambda, iterableExpression, symbols);
+        final LambdaBranch branch = constructLambda(context, iteratingLambda, "r", symbols);
         STGroup group = new STGroupFile("stepper/template/lambda.stg");
         ST st = group.getInstanceOf("forIterationBody");
         st.add("expr", iterableExpression);
