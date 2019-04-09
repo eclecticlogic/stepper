@@ -11,13 +11,14 @@ import com.google.common.collect.Lists;
 import java.util.List;
 
 import static com.eclecticlogic.stepper.etc.Etc.from;
+import static com.eclecticlogic.stepper.etc.Etc.toLabel;
 
 
 public class StatementVisitor extends StepperBaseVisitor<Construct> {
 
     @Override
     public Construct visitStatementWait(StepperParser.StatementWaitContext ctx) {
-        WaitConstruct construct = new WaitConstruct(Etc.toLabel(ctx.waitStatement().label()));
+        WaitConstruct construct = new WaitConstruct(toLabel(ctx.waitStatement().label()));
 
         JsonObjectVisitor jsonObjectVisitor = new JsonObjectVisitor(construct.getState());
         jsonObjectVisitor.visit(ctx.waitStatement().jsonObject());
@@ -47,7 +48,7 @@ public class StatementVisitor extends StepperBaseVisitor<Construct> {
 
     @Override
     public Construct visitIfStatement(StepperParser.IfStatementContext ctx) {
-        IfConstruct construct = new IfConstruct();
+        IfConstruct construct = new IfConstruct(toLabel(ctx.label()));
         construct.setCondition(ctx.ifCondition.getText());
 
         DereferencingVisitor defVisitor = new DereferencingVisitor();

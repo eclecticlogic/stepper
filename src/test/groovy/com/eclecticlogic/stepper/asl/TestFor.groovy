@@ -2,9 +2,6 @@ package com.eclecticlogic.stepper.asl
 
 import com.jayway.jsonpath.ReadContext
 
-/**
- * General structure and assignment tests.
- */
 class TestFor extends AbstractStateMachineTester {
 
     def "test simple for"() {

@@ -17,7 +17,7 @@ forStatement
     ;
 
 ifStatement
-    : IF '(' ifCondition=expr ')' ifBlock=statementBlock
+    : label? IF '(' ifCondition=expr ')' ifBlock=statementBlock
         (ELSE elseBlock=statementBlock)?
     ;
 

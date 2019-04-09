@@ -14,9 +14,16 @@ public class IfConstruct extends Construct {
     private List<String> symbols;
     private Construct firstIf, firstElse;
 
-    private final Task conditionTask = new Task();
-    private final String choiceVariable = getNextDynamicVariable();
-    private final Choice choice = new Choice(choiceVariable);
+    private final Task conditionTask;
+    private final String choiceVariable;
+    private final Choice choice;
+
+
+    public IfConstruct(String label) {
+        conditionTask = new Task(label);
+        choiceVariable = getNextDynamicVariable();
+        choice = new Choice(choiceVariable);
+    }
 
 
     public void setCondition(String condition) {
