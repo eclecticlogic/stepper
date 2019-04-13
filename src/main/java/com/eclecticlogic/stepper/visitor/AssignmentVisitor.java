@@ -5,11 +5,13 @@ import com.eclecticlogic.stepper.antlr.StepperParser;
 import com.eclecticlogic.stepper.construct.Construct;
 import com.eclecticlogic.stepper.construct.ExpressionConstruct;
 import com.eclecticlogic.stepper.construct.StateConstruct;
-import com.eclecticlogic.stepper.etc.Etc;
 import com.eclecticlogic.stepper.state.Pass;
 import com.eclecticlogic.stepper.state.Task;
+import com.google.common.collect.Lists;
 
 import java.math.BigDecimal;
+import java.util.List;
+import java.util.Set;
 
 import static com.eclecticlogic.stepper.etc.Etc.*;
 
@@ -106,8 +108,11 @@ public class AssignmentVisitor extends StepperBaseVisitor<Construct> {
         construct.setExpression(expression);
 
         DereferencingVisitor defVisitor = new DereferencingVisitor();
-        construct.setSymbols(defVisitor.visit(ctx.expr()));
-
+        Set<String> symbols = defVisitor.visit(ctx.expr());
+        if (ctx.complexAssign().ASSIGN() == null) {
+            symbols.add(variable);
+        }
+        construct.setSymbols(symbols);
         return construct;
     }
 

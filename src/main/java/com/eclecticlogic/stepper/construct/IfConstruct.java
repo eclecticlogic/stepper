@@ -7,11 +7,12 @@ import com.eclecticlogic.stepper.state.Task;
 import com.google.common.collect.Lists;
 
 import java.util.List;
+import java.util.Set;
 
 public class IfConstruct extends Construct {
 
     private String conditionText;
-    private List<String> symbols;
+    private Set<String> symbols;
     private Construct firstIf, firstElse;
 
     private final Task conditionTask;
@@ -31,7 +32,7 @@ public class IfConstruct extends Construct {
     }
 
 
-    public void setSymbols(List<String> conditionDeferences) {
+    public void setSymbols(Set<String> conditionDeferences) {
         this.symbols = conditionDeferences;
     }
 

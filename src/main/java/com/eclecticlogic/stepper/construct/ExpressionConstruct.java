@@ -3,13 +3,13 @@ package com.eclecticlogic.stepper.construct;
 import com.eclecticlogic.stepper.etc.WeaveContext;
 import com.eclecticlogic.stepper.state.Task;
 
-import java.util.List;
+import java.util.Collection;
 
 public class ExpressionConstruct extends StateConstruct<Task> {
 
     private String expression;
     private String variable;
-    private List<String> symbols;
+    private Collection<String> symbols;
 
 
     public ExpressionConstruct(String label) {
@@ -27,7 +27,7 @@ public class ExpressionConstruct extends StateConstruct<Task> {
     }
 
 
-    public void setSymbols(List<String> symbols) {
+    public void setSymbols(Collection<String> symbols) {
         this.symbols = symbols;
     }
 

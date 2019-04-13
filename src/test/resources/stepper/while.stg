@@ -1,0 +1,27 @@
+
+simple() ::= <<
+    stepper Simple {
+        a = 5;
+        @Label("abc")
+        while (a \< 15) {
+            b = a + 1;
+            a = a + 1;
+        }
+        c = a;
+    }
+>>
+
+nested() ::= <<
+    stepper Nested {
+        a = 5;
+        @Label("abc")
+        while (a \< 15) {
+            b = a + 1;
+            @Label("def")
+            while (b > 3) {
+                c = b + a;
+                b-=1;
+            }
+        }
+    }
+>>

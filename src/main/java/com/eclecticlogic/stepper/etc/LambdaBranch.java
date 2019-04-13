@@ -1,12 +1,11 @@
 package com.eclecticlogic.stepper.etc;
 
-import java.util.List;
-import java.util.Map;
+import java.util.Collection;
 
 public class LambdaBranch {
 
     private String commandName;
-    private List<String> inputs;
+    private Collection<String> inputs;
     private String computation;
     private String outputExpression;
 
@@ -20,12 +19,12 @@ public class LambdaBranch {
     }
 
 
-    public List<String> getInputs() {
+    public Collection<String> getInputs() {
         return inputs;
     }
 
 
-    public void setInputs(List<String> inputs) {
+    public void setInputs(Collection<String> inputs) {
         this.inputs = inputs;
     }
 

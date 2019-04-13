@@ -7,15 +7,23 @@ import com.eclecticlogic.stepper.state.Task;
 import com.google.common.collect.Lists;
 
 import java.util.List;
+import java.util.Set;
 
 public class WhileConstruct extends Construct {
     private String expression;
-    private List<String> symbols;
+    private Set<String> symbols;
     private Construct block;
 
-    private final Task conditionLambda = new Task();
-    private final String choiceVar = getNextDynamicVariable();
-    final Choice choice = new Choice(choiceVar);
+    private final Task conditionLambda;
+    private final String choiceVar;
+    final Choice choice;
+
+
+    public WhileConstruct(String label) {
+        conditionLambda = new Task(label);
+        choiceVar = getNextDynamicVariable();
+        choice = new Choice(choiceVar);
+    }
 
 
     public void setExpression(String expression) {
@@ -23,7 +31,7 @@ public class WhileConstruct extends Construct {
     }
 
 
-    public void setSymbols(List<String> symbols) {
+    public void setSymbols(Set<String> symbols) {
         this.symbols = symbols;
     }
 

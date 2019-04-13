@@ -27,13 +27,13 @@ public class TestGrammar extends AbstractGrammarTester {
 
     @Test
     public void testScalar() {
-        testScalarTypeUse(p -> p.scalar());
+        testScalarTypeUse(StepperParser::scalar);
     }
 
 
     @Test
     public void testValue() {
-        Function<StepperParser, ParserRuleContext> fn = p -> p.value();
+        Function<StepperParser, ParserRuleContext> fn = StepperParser::value;
         testScalarTypeUse(fn);
         parse("{}", fn);
         parse("[]", fn);
@@ -48,23 +48,23 @@ public class TestGrammar extends AbstractGrammarTester {
 
     @Test
     public void testJsonObject() {
-        parse("grammar.stg", "testValueNested", p -> p.jsonObject());
+        parse("grammar.stg", "testValueNested", StepperParser::jsonObject);
     }
 
 
     @Test
     public void testTask() {
-        parse("grammar.stg", "testTask", p -> p.task());
-        parse("grammar.stg", "testStatementTask1", p -> p.statement());
-        parse("grammar.stg", "testStatementTask2", p -> p.statement());
-        parse("grammar.stg", "testStatementTask3", p -> p.statement());
-        parse("grammar.stg", "testStatementTask4", p -> p.statement());
+        parse("grammar.stg", "testTask", StepperParser::task);
+        parse("grammar.stg", "testStatementTask1", StepperParser::statement);
+        parse("grammar.stg", "testStatementTask2", StepperParser::statement);
+        parse("grammar.stg", "testStatementTask3", StepperParser::statement);
+        parse("grammar.stg", "testStatementTask4", StepperParser::statement);
     }
 
 
     @Test
     public void testDereference() {
-        Function<StepperParser, ParserRuleContext> fn = p -> p.dereference();
+        Function<StepperParser, ParserRuleContext> fn = StepperParser::dereference;
         parse("abc.def", fn);
         parse("abc", fn);
         parse("abc.d.e.f", fn);
@@ -73,7 +73,7 @@ public class TestGrammar extends AbstractGrammarTester {
 
     @Test
     public void testExpr() {
-        Function<StepperParser, ParserRuleContext> fn = p -> p.expr();
+        Function<StepperParser, ParserRuleContext> fn = StepperParser::expr;
         testScalarTypeUse(fn);
         parse("null", fn);
         parse("12 * 3", fn);
@@ -98,26 +98,17 @@ public class TestGrammar extends AbstractGrammarTester {
         parse("c().d().e[0][1]", fn);
         parse("c(a+b).d(r && f).e[0][w-q(4)]", fn);
         parse("c(a+b, r(z).d && f)", fn);
-        parse("c++", fn);
-        parse("++c", fn);
-        parse("--c", fn);
-        parse("c--", fn);
-        parse("c()--", fn);
-        parse("--c()", fn);
-        parse("++c()", fn);
-        parse("c()++", fn);
     }
 
 
     @Test
     public void testAssignment() {
-        Function<StepperParser, ParserRuleContext> fn = p -> p.assignment();
+        Function<StepperParser, ParserRuleContext> fn = StepperParser::assignment;
         parse("grammar.stg", "testAssignmentTask1", fn);
         parse("grammar.stg", "testAssignmentTask2", fn);
         parse("@Label(\"xyz\") a.b.c = d - g();", fn);
-        parse("a.b.c += d - g()--;", fn);
         parse("a.b.c -= d - g();", fn);
-        parse("@Label(\"xyz\") a.b.c *= d - ++g();", fn);
+        parse("@Label(\"xyz\") a.b.c *= d - g();", fn);
         parse("a.b.c /= d - g();", fn);
         parse("grammar.stg", "testAssignmentJson", fn);
         parse("@Label(\"xyz\") ab.cd = [1, 2, 3]", fn);
@@ -126,7 +117,7 @@ public class TestGrammar extends AbstractGrammarTester {
 
     @Test
     public void testFor() {
-        Function<StepperParser, ParserRuleContext> fn = p -> p.forStatement();
+        Function<StepperParser, ParserRuleContext> fn = StepperParser::forStatement;
         parse("grammar.stg", "testForLoop1", fn);
         parse("grammar.stg", "testForLoop2", fn);
         parse("grammar.stg", "testForLoop3", fn);
@@ -136,7 +127,7 @@ public class TestGrammar extends AbstractGrammarTester {
 
     @Test
     public void testIf() {
-        Function<StepperParser, ParserRuleContext> fn = p -> p.ifStatement();
+        Function<StepperParser, ParserRuleContext> fn = StepperParser::ifStatement;
         parse("grammar.stg", "testIf1", fn);
         parse("grammar.stg", "testIf2", fn);
         parse("grammar.stg", "testIf3", fn);
@@ -145,14 +136,14 @@ public class TestGrammar extends AbstractGrammarTester {
 
     @Test
     public void testWhile() {
-        Function<StepperParser, ParserRuleContext> fn = p -> p.whileStatement();
+        Function<StepperParser, ParserRuleContext> fn = StepperParser::whileStatement;
         parse("grammar.stg", "testWhile", fn);
     }
 
 
     @Test
     public void testWhen() {
-        Function<StepperParser, ParserRuleContext> fn = p -> p.whenStatement();
+        Function<StepperParser, ParserRuleContext> fn = StepperParser::whenStatement;
         parse("grammar.stg", "testWhen1", fn);
         parse("grammar.stg", "testWhen2", fn);
         parse("grammar.stg", "testWhen3", fn);
@@ -161,7 +152,7 @@ public class TestGrammar extends AbstractGrammarTester {
 
     @Test
     public void testWait() {
-        Function<StepperParser, ParserRuleContext> fn = p -> p.waitStatement();
+        Function<StepperParser, ParserRuleContext> fn = StepperParser::waitStatement;
         parse("grammar.stg", "testWait1", fn);
         parse("grammar.stg", "testWait2", fn);
     }

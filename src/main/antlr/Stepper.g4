@@ -22,7 +22,7 @@ ifStatement
     ;
 
 whileStatement
-    : WHILE '(' expr ')' statementBlock
+    : label? WHILE '(' expr ')' statementBlock
     ;
 
 whenStatement
@@ -66,10 +66,6 @@ expr
     : scalar
     | NULL
     | expressionStatement
-    | expr INCR
-    | expr DECR
-    | INCR expr
-    | DECR expr
     | expr MUL expr
     | expr DIV expr
     | expr ADD expr
@@ -159,8 +155,6 @@ STRING
    ;
 
 // operators
-INCR: '++';
-DECR: '--';
 MUL: '*';
 DIV: '/';
 ADD: '+';

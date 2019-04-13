@@ -5,21 +5,23 @@ import com.eclecticlogic.stepper.state.Choice;
 import com.eclecticlogic.stepper.state.State;
 import com.eclecticlogic.stepper.state.Task;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 
 import java.util.List;
+import java.util.Set;
 
 public class ForLoopConstruct extends Construct {
 
     private String iterableVariable;
 
     private String initialExpression;
-    private List<String> initialExpressionSymbols;
+    private Set<String> initialExpressionSymbols;
 
     private String endingExpression;
-    private List<String> endingExpressionSymbols;
+    private Set<String> endingExpressionSymbols;
 
     private String stepExpression;
-    private List<String> stepExpressionSymbols;
+    private Set<String> stepExpressionSymbols;
 
     private Construct block;
 
@@ -49,7 +51,7 @@ public class ForLoopConstruct extends Construct {
     }
 
 
-    public void setInitialExpressionSymbols(List<String> initialExpressionSymbols) {
+    public void setInitialExpressionSymbols(Set<String> initialExpressionSymbols) {
         this.initialExpressionSymbols = initialExpressionSymbols;
     }
 
@@ -59,7 +61,7 @@ public class ForLoopConstruct extends Construct {
     }
 
 
-    public void setEndingExpressionSymbols(List<String> endingExpressionSymbols) {
+    public void setEndingExpressionSymbols(Set<String> endingExpressionSymbols) {
         this.endingExpressionSymbols = endingExpressionSymbols;
     }
 
@@ -69,7 +71,7 @@ public class ForLoopConstruct extends Construct {
     }
 
 
-    public void setStepExpressionSymbols(List<String> stepExpressionSymbols) {
+    public void setStepExpressionSymbols(Set<String> stepExpressionSymbols) {
         this.stepExpressionSymbols = stepExpressionSymbols;
     }
 
@@ -108,7 +110,7 @@ public class ForLoopConstruct extends Construct {
         if (stepExpression == null) {
             // Use default
             stepExpression = "1";
-            stepExpressionSymbols = Lists.newArrayList();
+            stepExpressionSymbols = Sets.newHashSet();
         }
         stepExpressionSymbols.add(iterableVariable);
 

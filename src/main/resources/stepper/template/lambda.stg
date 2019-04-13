@@ -14,8 +14,9 @@ exports.handler = async (event) => {
 branch(call, other) ::= <<
 
     if (event.cmd__sm == "<call.commandName>") {
-
+        <if(call.inputs)>
         <genInputs(first(call.inputs), rest(call.inputs))>
+        <endif>
         <if(call.computation)><call.computation><endif>
         <if(call.outputExpression)>
         const response = <call.outputExpression>;

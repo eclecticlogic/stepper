@@ -12,12 +12,13 @@ import org.stringtemplate.v4.STGroup;
 import org.stringtemplate.v4.STGroupFile;
 
 import java.util.List;
+import java.util.Set;
 
 public class ForIterationConstruct extends Construct {
 
     private String iterableExpression;
     private String iterableVariable;
-    private List<String> symbols;
+    private Set<String> symbols;
     private Construct block;
 
     private final Pass indexInitializer;
@@ -46,7 +47,7 @@ public class ForIterationConstruct extends Construct {
     }
 
 
-    public void setSymbols(List<String> symbols) {
+    public void setSymbols(Set<String> symbols) {
         this.symbols = symbols;
     }
 

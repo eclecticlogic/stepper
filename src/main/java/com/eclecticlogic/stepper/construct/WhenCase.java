@@ -1,22 +1,22 @@
 package com.eclecticlogic.stepper.construct;
 
-import java.util.List;
+import java.util.Set;
 
 public class WhenCase {
 
-    private List<String> symbols;
+    private Set<String> symbols;
     private String expression;
     private Construct block;
 
 
-    public WhenCase(List<String> symbols, String expression, Construct block) {
+    public WhenCase(Set<String> symbols, String expression, Construct block) {
         this.symbols = symbols;
         this.expression = expression;
         this.block = block;
     }
 
 
-    public List<String> getSymbols() {
+    public Set<String> getSymbols() {
         return symbols;
     }
 

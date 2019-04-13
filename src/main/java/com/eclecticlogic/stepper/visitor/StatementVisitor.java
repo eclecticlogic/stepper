@@ -1,16 +1,13 @@
 package com.eclecticlogic.stepper.visitor;
 
-import com.eclecticlogic.stepper.Stepper;
 import com.eclecticlogic.stepper.antlr.StepperBaseVisitor;
 import com.eclecticlogic.stepper.antlr.StepperParser;
 import com.eclecticlogic.stepper.construct.*;
-import com.eclecticlogic.stepper.etc.Etc;
 import com.eclecticlogic.stepper.state.Task;
 import com.google.common.collect.Lists;
 
 import java.util.List;
 
-import static com.eclecticlogic.stepper.etc.Etc.from;
 import static com.eclecticlogic.stepper.etc.Etc.toLabel;
 
 
@@ -75,7 +72,7 @@ public class StatementVisitor extends StepperBaseVisitor<Construct> {
 
     @Override
     public Construct visitWhileStatement(StepperParser.WhileStatementContext ctx) {
-        WhileConstruct construct = new WhileConstruct();
+        WhileConstruct construct = new WhileConstruct(toLabel(ctx.label()));
         construct.setExpression(ctx.expr().getText());
 
         DereferencingVisitor defVisitor = new DereferencingVisitor();
