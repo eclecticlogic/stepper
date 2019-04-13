@@ -96,7 +96,7 @@ public class StatementVisitor extends StepperBaseVisitor<Construct> {
             DereferencingVisitor defVisitor = new DereferencingVisitor();
             StatementBlockVisitor statementBlockVisitor = new StatementBlockVisitor();
             Construct blockConstruct = statementBlockVisitor.visit(ctx.caseBlock.get(i));
-            WhenCase wcase = new WhenCase(defVisitor.visit(ectx), ectx.getText(), blockConstruct);
+            WhenCase wcase = new WhenCase(toLabel(ctx.label(i)), defVisitor.visit(ectx), ectx.getText(), blockConstruct);
             cases.add(wcase);
         }
 

@@ -159,7 +159,7 @@ testIf1() ::= <<
         a = b;
 >>
 testIf2() ::= <<
-    if (c * 3 > 4) {
+    @Label("abc") if (c * 3 > 4) {
         a = b;
     }
 >>
@@ -174,6 +174,7 @@ testIf3() ::= <<
 >>
 
 testWhile() ::= <<
+    @Label("abc")
     while (a > b) {
         c = task {
             "a": "b"
@@ -188,8 +189,8 @@ testWhen1() ::= <<
 >>
 testWhen2() ::= <<
     when {
-        case a > b: task { "a": "b" }
-        case c > d: {
+        @Label("abc") case a > b: task { "a": "b" }
+        @Label("def") case c > d: {
             a1 = 1;
             a2 = 2;
         }

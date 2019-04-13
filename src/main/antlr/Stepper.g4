@@ -27,7 +27,7 @@ whileStatement
 
 whenStatement
     : WHEN '{'
-        (CASE caseExpr+=expr ':' caseBlock+=statementBlock)+
+        (label? CASE caseExpr+=expr ':' caseBlock+=statementBlock)+
         (ELSE elseBlock=statementBlock)?
     '}'
     ;

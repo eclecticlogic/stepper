@@ -35,7 +35,7 @@ public class WhenConstruct extends Construct {
 
     void setupBlocks(WeaveContext context) {
         for (WhenCase aCase : cases) {
-            Task task = new Task();
+            Task task = new Task(aCase.getLabel());
             String var = getNextDynamicVariable();
             Choice choice = new Choice(var);
 
@@ -104,4 +104,6 @@ public class WhenConstruct extends Construct {
         }
         return result;
     }
+
+
 }

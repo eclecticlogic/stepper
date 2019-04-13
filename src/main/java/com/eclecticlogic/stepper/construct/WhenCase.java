@@ -4,15 +4,22 @@ import java.util.Set;
 
 public class WhenCase {
 
+    private String label;
     private Set<String> symbols;
     private String expression;
     private Construct block;
 
 
-    public WhenCase(Set<String> symbols, String expression, Construct block) {
+    public WhenCase(String label, Set<String> symbols, String expression, Construct block) {
+        this.label = label;
         this.symbols = symbols;
         this.expression = expression;
         this.block = block;
+    }
+
+
+    public String getLabel() {
+        return label;
     }
 
 
