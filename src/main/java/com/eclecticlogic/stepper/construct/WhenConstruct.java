@@ -1,24 +1,20 @@
 package com.eclecticlogic.stepper.construct;
 
 import com.eclecticlogic.stepper.etc.WeaveContext;
-import com.eclecticlogic.stepper.state.Choice;
 import com.eclecticlogic.stepper.state.State;
-import com.eclecticlogic.stepper.state.Task;
 import com.google.common.collect.Lists;
 
 import java.util.List;
 
 public class WhenConstruct extends Construct {
-    private List<WhenCase> cases;
+    private final List<WhenCase> cases = Lists.newArrayList();
     private Construct elseBlock;
 
-    private final List<Task> whenTasks = Lists.newArrayList();
-    private final List<String> choiceVariables = Lists.newArrayList();
-    private final List<Choice> choices = Lists.newArrayList();
 
-
-    public void setCases(List<WhenCase> cases) {
-        this.cases = cases;
+    public WhenCase addCase(String label) {
+        WhenCase wcase = new WhenCase(label, getNextDynamicVariable());
+        cases.add(wcase);
+        return wcase;
     }
 
 
@@ -29,34 +25,26 @@ public class WhenConstruct extends Construct {
 
     @Override
     protected String getFirstStateName() {
-        return whenTasks.get(0).getName();
+        return cases.get(0).getTask().getName();
     }
 
 
     void setupBlocks(WeaveContext context) {
         for (WhenCase aCase : cases) {
-            Task task = new Task(aCase.getLabel());
-            String var = getNextDynamicVariable();
-            Choice choice = new Choice(var);
+            constructLambda(context, aCase.getTask(), aCase.getExpression(), aCase.getSymbols());
 
-            constructLambda(context, task, aCase.getExpression(), aCase.getSymbols());
+            aCase.getTask().setupLambdaHelper();
+            aCase.getTask().setResultPath("$." + aCase.getChoiceVariable());
+            aCase.getTask().setNextState(aCase.getChoice().getName());
 
-            task.setupLambdaHelper();
-            task.setResultPath("$." + var);
-            task.setNextState(choice.getName());
-
-            choice.setIfNextState(aCase.getBlock().getFirstStateName());
-
-            whenTasks.add(task);
-            choiceVariables.add(var);
-            choices.add(choice);
+            aCase.getChoice().setIfNextState(aCase.getBlock().getFirstStateName());
         }
         // now wire up all the choice failure parts.
-        for (int i = 0; i < choices.size() - 1; i++) {
-            choices.get(i).setElseNextState(whenTasks.get(i + 1).getName());
+        for (int i = 0; i < cases.size() - 1; i++) {
+            cases.get(i).getChoice().setElseNextState(cases.get(i + 1).getTask().getName());
         }
         if (elseBlock != null) {
-            choices.get(choices.size() - 1).setElseNextState(elseBlock.getFirstStateName());
+            cases.get(cases.size() - 1).getChoice().setElseNextState(elseBlock.getFirstStateName());
         }
     }
 
@@ -83,7 +71,7 @@ public class WhenConstruct extends Construct {
         if (elseBlock != null) {
             getLastInChain(elseBlock).setNextStateName(name);
         } else {
-            choices.get(choices.size() - 1).setElseNextState(name);
+            cases.get(cases.size() - 1).getChoice().setElseNextState(name);
         }
     }
 
@@ -91,10 +79,10 @@ public class WhenConstruct extends Construct {
     @Override
     public List<State> getStates() {
         List<State> result = Lists.newArrayList();
-        for (int i = 0; i < whenTasks.size(); i++) {
-            result.add(whenTasks.get(i));
-            result.add(choices.get(i));
-            result.addAll(cases.get(i).getBlock().getStates());
+        for (WhenCase aCase : cases) {
+            result.add(aCase.getTask());
+            result.add(aCase.getChoice());
+            result.addAll(aCase.getBlock().getStates());
         }
         if (elseBlock != null) {
             result.addAll(elseBlock.getStates());

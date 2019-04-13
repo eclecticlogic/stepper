@@ -1,0 +1,40 @@
+
+simple() ::= <<
+    stepper Simple {
+        a = 5;
+        when {
+            case a \< 5:
+                b = 1;
+            @Label("abc") case a == 5: {
+                b = 2;
+                c = 1;
+            }
+            else {
+                b = 3;
+                c = 2;
+            }
+        }
+    }
+>>
+
+nested() ::= <<
+    stepper Nested {
+        when {
+            case a \< 5: {
+                c = 1;
+                when {
+                    case c == 2: e = 1;
+                    @Label("x") case c == 3: e = 2;
+                }
+            }
+            else {
+                b = 3;
+                when {
+                    @Label("a1") case b % 3 == 0:
+                        d = 1;
+                    else @Label("a2") d = 2;
+                }
+            }
+        }
+    }
+>>

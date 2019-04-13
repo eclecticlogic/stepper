@@ -27,9 +27,13 @@ whileStatement
 
 whenStatement
     : WHEN '{'
-        (label? CASE caseExpr+=expr ':' caseBlock+=statementBlock)+
+        caseEntry+
         (ELSE elseBlock=statementBlock)?
     '}'
+    ;
+
+caseEntry
+    : label? CASE expr ':' statementBlock
     ;
 
 waitStatement
@@ -70,6 +74,7 @@ expr
     | expr DIV expr
     | expr ADD expr
     | expr SUB expr
+    | expr MOD expr
     | '(' expr ')'
     | expr AND expr
     | expr OR expr
@@ -159,6 +164,7 @@ MUL: '*';
 DIV: '/';
 ADD: '+';
 SUB: '-';
+MOD: '%';
 AND: '&&';
 OR: '||';
 NOT: '!';

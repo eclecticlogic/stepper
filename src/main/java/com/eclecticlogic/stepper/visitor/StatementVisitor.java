@@ -4,9 +4,6 @@ import com.eclecticlogic.stepper.antlr.StepperBaseVisitor;
 import com.eclecticlogic.stepper.antlr.StepperParser;
 import com.eclecticlogic.stepper.construct.*;
 import com.eclecticlogic.stepper.state.Task;
-import com.google.common.collect.Lists;
-
-import java.util.List;
 
 import static com.eclecticlogic.stepper.etc.Etc.toLabel;
 
@@ -88,16 +85,16 @@ public class StatementVisitor extends StepperBaseVisitor<Construct> {
     @Override
     public Construct visitWhenStatement(StepperParser.WhenStatementContext ctx) {
         WhenConstruct construct = new WhenConstruct();
-        List<WhenCase> cases = Lists.newArrayList();
-        construct.setCases(cases);
+        for (StepperParser.CaseEntryContext caseEntry : ctx.caseEntry()) {
+            WhenCase wcase = construct.addCase(toLabel(caseEntry.label()));
 
-        for (int i = 0; i < ctx.caseExpr.size(); i++) {
-            StepperParser.ExprContext ectx = ctx.caseExpr.get(i);
             DereferencingVisitor defVisitor = new DereferencingVisitor();
             StatementBlockVisitor statementBlockVisitor = new StatementBlockVisitor();
-            Construct blockConstruct = statementBlockVisitor.visit(ctx.caseBlock.get(i));
-            WhenCase wcase = new WhenCase(toLabel(ctx.label(i)), defVisitor.visit(ectx), ectx.getText(), blockConstruct);
-            cases.add(wcase);
+            Construct blockConstruct = statementBlockVisitor.visit(caseEntry.statementBlock());
+
+            wcase.setSymbols(defVisitor.visit(caseEntry.expr()));
+            wcase.setExpression(caseEntry.expr().getText());
+            wcase.setBlock(blockConstruct);
         }
 
         if (ctx.elseBlock != null) {
