@@ -1,0 +1,22 @@
+
+goto1() ::= <<
+    stepper Goto {
+        a = 5;
+        if (a == 5) {
+            goto "a"
+        } else fail;
+        @Label("a") b = 7;
+        d = 5;
+    }
+>>
+
+goto2() ::= <<
+    stepper Goto {
+        a = 5;
+        if (a == 5) goto "a"
+        else goto "b"
+        @Label("a") b = 7;
+        goto "Goto.Success"
+        @Label("b") d = 5;
+    }
+>>

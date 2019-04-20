@@ -5,33 +5,11 @@ import com.eclecticlogic.stepper.antlr.StepperParser;
 import com.eclecticlogic.stepper.construct.*;
 import com.eclecticlogic.stepper.state.Task;
 
+import static com.eclecticlogic.stepper.etc.Etc.strip;
 import static com.eclecticlogic.stepper.etc.Etc.toLabel;
 
 
 public class StatementVisitor extends StepperBaseVisitor<Construct> {
-
-    @Override
-    public Construct visitStatementWait(StepperParser.StatementWaitContext ctx) {
-        WaitConstruct construct = new WaitConstruct(toLabel(ctx.waitStatement().label()));
-
-        JsonObjectVisitor jsonObjectVisitor = new JsonObjectVisitor(construct.getState());
-        jsonObjectVisitor.visit(ctx.waitStatement().jsonObject());
-
-        return construct;
-    }
-
-
-    @Override
-    public Construct visitStatementFail(StepperParser.StatementFailContext ctx) {
-        FailConstruct construct = new FailConstruct(toLabel(ctx.failStatement().label()));
-
-        if (ctx.failStatement().jsonObject() != null) {
-            JsonObjectVisitor jsonObjectVisitor = new JsonObjectVisitor(construct.getState());
-            jsonObjectVisitor.visit(ctx.failStatement().jsonObject());
-        }
-
-        return construct;
-    }
 
 
     @Override
@@ -115,5 +93,35 @@ public class StatementVisitor extends StepperBaseVisitor<Construct> {
             construct.setElseBlock(statementBlockVisitor.visit(ctx.elseBlock));
         }
         return construct;
+    }
+
+
+    @Override
+    public Construct visitStatementWait(StepperParser.StatementWaitContext ctx) {
+        WaitConstruct construct = new WaitConstruct(toLabel(ctx.waitStatement().label()));
+
+        JsonObjectVisitor jsonObjectVisitor = new JsonObjectVisitor(construct.getState());
+        jsonObjectVisitor.visit(ctx.waitStatement().jsonObject());
+
+        return construct;
+    }
+
+
+    @Override
+    public Construct visitStatementFail(StepperParser.StatementFailContext ctx) {
+        FailConstruct construct = new FailConstruct(toLabel(ctx.failStatement().label()));
+
+        if (ctx.failStatement().jsonObject() != null) {
+            JsonObjectVisitor jsonObjectVisitor = new JsonObjectVisitor(construct.getState());
+            jsonObjectVisitor.visit(ctx.failStatement().jsonObject());
+        }
+
+        return construct;
+    }
+
+
+    @Override
+    public Construct visitStatementGoto(StepperParser.StatementGotoContext ctx) {
+        return new GotoConstruct(strip(ctx.gotoStatement().STRING().getText()));
     }
 }

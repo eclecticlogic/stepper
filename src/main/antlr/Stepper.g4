@@ -44,6 +44,10 @@ failStatement
     : label? FAIL jsonObject? ';'?
     ;
 
+gotoStatement
+    : GOTO STRING ';'?
+    ;
+
 statementBlock
     : '{' statement+ '}'
     | statement
@@ -58,6 +62,7 @@ statement
     | whenStatement                     #statementWhen
     | waitStatement                     #statementWait
     | failStatement                     #statementFail
+    | gotoStatement                     #statementGoto
     ;
 
 assignment
@@ -200,6 +205,7 @@ WHEN: 'when';
 CASE: 'case';
 WAIT: 'wait';
 FAIL: 'fail';
+GOTO: 'goto';
 
 // symbols
 SEMICOLON: ';';

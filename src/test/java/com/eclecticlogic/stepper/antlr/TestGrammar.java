@@ -166,4 +166,12 @@ public class TestGrammar extends AbstractGrammarTester {
         parse("grammar.stg", "testFail2", fn);
     }
 
+
+    @Test
+    public void testGoto() {
+        Function<StepperParser, ParserRuleContext> fn = StepperParser::gotoStatement;
+        parse("goto \"abc\";", fn);
+        parse("goto \"abc\"", fn);
+    }
+
 }
