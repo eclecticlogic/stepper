@@ -157,4 +157,13 @@ public class TestGrammar extends AbstractGrammarTester {
         parse("grammar.stg", "testWait2", fn);
     }
 
+
+    @Test
+    public void testFail() {
+        Function<StepperParser, ParserRuleContext> fn = StepperParser::failStatement;
+        parse("grammar.stg", "testFail0", fn);
+        parse("grammar.stg", "testFail1", fn);
+        parse("grammar.stg", "testFail2", fn);
+    }
+
 }

@@ -222,3 +222,18 @@ testWait2() ::= <<
         "a": 10
     }
 >>
+
+testFail0() ::= <<
+    fail;
+>>
+
+testFail1() ::= <<
+    @Label("a") fail
+>>
+
+testFail2() ::= <<
+    @Label("a") fail {
+        "Cause": "blah",
+        "Error": "error"
+    }
+>>

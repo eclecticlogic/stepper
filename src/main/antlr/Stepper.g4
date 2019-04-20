@@ -40,6 +40,10 @@ waitStatement
     : label? WAIT jsonObject
     ;
 
+failStatement
+    : label? FAIL jsonObject? ';'?
+    ;
+
 statementBlock
     : '{' statement+ '}'
     | statement
@@ -53,6 +57,7 @@ statement
     | whileStatement                    #statementWhile
     | whenStatement                     #statementWhen
     | waitStatement                     #statementWait
+    | failStatement                     #statementFail
     ;
 
 assignment
@@ -194,6 +199,7 @@ WHILE: 'while';
 WHEN: 'when';
 CASE: 'case';
 WAIT: 'wait';
+FAIL: 'fail';
 
 // symbols
 SEMICOLON: ';';

@@ -1,0 +1,21 @@
+
+simple() ::= <<
+    stepper Fail {
+        a = 5;
+        fail;
+        b = 7;
+        d = 5;
+    }
+>>
+
+failWithAttributes() ::= <<
+    stepper Fail {
+        a = 5;
+        @Label("a") fail {
+            "Cause": "blah1",
+            "Error": "blah2"
+        }
+        b = 7;
+        d = 5;
+    }
+>>

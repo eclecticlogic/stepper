@@ -22,6 +22,19 @@ public class StatementVisitor extends StepperBaseVisitor<Construct> {
 
 
     @Override
+    public Construct visitStatementFail(StepperParser.StatementFailContext ctx) {
+        FailConstruct construct = new FailConstruct(toLabel(ctx.failStatement().label()));
+
+        if (ctx.failStatement().jsonObject() != null) {
+            JsonObjectVisitor jsonObjectVisitor = new JsonObjectVisitor(construct.getState());
+            jsonObjectVisitor.visit(ctx.failStatement().jsonObject());
+        }
+
+        return construct;
+    }
+
+
+    @Override
     public Construct visitStatementTask(StepperParser.StatementTaskContext ctx) {
         RetryVisitor retryVisitor = new RetryVisitor();
         Task task = retryVisitor.visit(ctx.retries());
