@@ -48,6 +48,10 @@ gotoStatement
     : GOTO STRING ';'?
     ;
 
+parallelStatement
+    : retries dereference ASSIGN PARALLEL '(' first=STRING (',' others+=STRING)* ')'
+    ;
+
 statementBlock
     : '{' statement+ '}'
     | statement
@@ -63,6 +67,7 @@ statement
     | waitStatement                     #statementWait
     | failStatement                     #statementFail
     | gotoStatement                     #statementGoto
+    | parallelStatement                 #statementParallel
     ;
 
 assignment
@@ -115,7 +120,7 @@ dereference
     ;
 
 task
-    : 'task' jsonObject
+    : TASK jsonObject
     ;
 
 retries
@@ -191,6 +196,12 @@ DIVASSIGN: '/=';
 
 // keywords
 PROGRAM: 'stepper';
+TASK: 'task';
+PARALLEL: 'parallel';
+WAIT: 'wait';
+FAIL: 'fail';
+GOTO: 'goto';
+
 TRUE: 'true';
 FALSE: 'false';
 NULL: 'null';
@@ -203,9 +214,6 @@ STEP: 'step';
 WHILE: 'while';
 WHEN: 'when';
 CASE: 'case';
-WAIT: 'wait';
-FAIL: 'fail';
-GOTO: 'goto';
 
 // symbols
 SEMICOLON: ';';

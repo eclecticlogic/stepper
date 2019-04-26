@@ -237,3 +237,19 @@ testFail2() ::= <<
         "Error": "error"
     }
 >>
+
+parallel1() ::= <<
+    x = parallel("a", "b")
+>>
+
+parallel2() ::= <<
+    @Label("xyz")
+    x = parallel("a", "b")
+>>
+
+parallel3() ::= <<
+    @RetryOnError("abc") { "IntervalSeconds": 3, "MaxAttempts": 4, "BackoffRate": 5}
+    @Label("hello how are you")
+    @RetryOnError("xyz", "pqr") { "IntervalSeconds": 3 }
+    x = parallel("a", "b")
+>>

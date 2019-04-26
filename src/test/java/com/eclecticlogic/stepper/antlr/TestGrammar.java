@@ -174,4 +174,13 @@ public class TestGrammar extends AbstractGrammarTester {
         parse("goto \"abc\"", fn);
     }
 
+
+    @Test
+    public void testParallel() {
+        Function<StepperParser, ParserRuleContext> fn = StepperParser::parallelStatement;
+        parse("grammar.stg", "parallel1", fn);
+        parse("grammar.stg", "parallel2", fn);
+        parse("grammar.stg", "parallel3", fn);
+
+    }
 }
