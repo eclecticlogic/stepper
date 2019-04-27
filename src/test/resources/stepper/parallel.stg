@@ -1,0 +1,23 @@
+
+parallel1() ::= <<
+    stepper Para {
+        a = 5 * 2;
+        @Label("a")
+        @RetryOnError("pqr") { "IntervalSeconds": 6 }
+        b = parallel("stg://para1@stepper/parallel.stg", "stg://para2@stepper/parallel.stg")
+    }
+>>
+
+para1() ::= <<
+    stepper First {
+        a = 5 * 5;
+        b = 10;
+    }
+>>
+
+para2() ::= <<
+    stepper Second {
+        a = 15 * 5;
+        b = 20;
+    }
+>>

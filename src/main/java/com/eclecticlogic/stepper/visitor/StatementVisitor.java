@@ -43,6 +43,10 @@ public class StatementVisitor extends StepperBaseVisitor<Construct> {
                     .collect(Collectors.toList()));
         }
         construct.setReferences(references);
+
+        if (ctx.dereference() != null) {
+            construct.setResultPath("$." + ctx.dereference().getText());
+        }
         return construct;
     }
 

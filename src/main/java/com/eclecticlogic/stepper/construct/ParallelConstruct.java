@@ -26,7 +26,6 @@ public class ParallelConstruct extends StateConstruct<Parallel> {
 
     private List<String> references;
 
-
     public ParallelConstruct(Parallel state) {
         super(state);
     }
@@ -37,34 +36,40 @@ public class ParallelConstruct extends StateConstruct<Parallel> {
     }
 
 
-    String getText(String reference) {
-        if (reference.startsWith("classpath://")) {
-            Path path = Paths.get(getClass().getClassLoader()
-                    .getResource(reference.substring(12)).getFile());
+    public void setResultPath(String path) {
+        getState().setResultPath(path);
+    }
 
-            Stream<String> lines = null;
-            try {
-                lines = Files.lines(path);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-            String data = lines.collect(joining("\n"));
-            lines.close();
-            return data;
-        } else if (reference.startsWith("stg://")) {
+
+    String getText(String reference) {
+        if (reference.startsWith("stg://")) {
             String path = reference.substring(6);
             String[] parts = path.split("@");
             STGroup group = new STGroupFile(parts[1]);
             ST st = group.getInstanceOf(parts[0]);
             return st.render();
+        } else {
+            Path path;
+            if (reference.startsWith("classpath://")) {
+                path = Paths.get(getClass().getClassLoader()
+                        .getResource(reference.substring(12)).getFile());
+            } else {
+                path = Paths.get(reference);
+            }
+            try (Stream<String> lines = Files.lines(path)) {
+                String data = lines.collect(joining("\n"));
+                return data;
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         }
-        throw new RuntimeException(reference + " has scheme that is not supported.");
     }
 
 
     @Override
     public void weave(WeaveContext context) {
         Parallel state = getState();
+        state.captureAttribute("Branches");
         state.handleArray(() -> {
             for (String reference : references) {
                 String text = getText(reference);
@@ -82,4 +87,6 @@ public class ParallelConstruct extends StateConstruct<Parallel> {
         });
         super.weave(context);
     }
+
+
 }

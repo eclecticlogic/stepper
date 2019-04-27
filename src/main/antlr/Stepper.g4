@@ -49,7 +49,7 @@ gotoStatement
     ;
 
 parallelStatement
-    : retries dereference ASSIGN PARALLEL '(' first=STRING (',' others+=STRING)* ')'
+    : retries (dereference ASSIGN)? PARALLEL '(' first=STRING (',' others+=STRING)* ')'
     ;
 
 statementBlock
