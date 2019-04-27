@@ -10,6 +10,7 @@ public class WaitConstruct extends StateConstruct<Wait> {
 
 
     @Override
+    // Making public.
     public Wait getState() {
         return super.getState();
     }

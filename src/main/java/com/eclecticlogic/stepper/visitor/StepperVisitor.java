@@ -13,18 +13,39 @@ import java.math.BigDecimal;
 
 public class StepperVisitor extends StepperBaseVisitor<StateMachine> {
 
+    private final WeaveContext weaveContext;
+    private boolean suppressAnnotations;
+
+
+    public StepperVisitor() {
+        this(new WeaveContext());
+    }
+
+
+    public StepperVisitor(WeaveContext weaveContext) {
+        this.weaveContext = weaveContext;
+    }
+
+
+    public void setSuppressAnnotations(boolean suppressAnnotations) {
+        this.suppressAnnotations = suppressAnnotations;
+    }
+
+
     @Override
     public StateMachine visitProgram(StepperParser.ProgramContext ctx) {
         ProgramConstruct program = new ProgramConstruct();
 
         program.setProgramName(ctx.ID().getText());
-        for (StepperParser.AnnotationContext anCtx : ctx.annotation()) {
-            if (anCtx.scalar().STRING() != null) {
-                program.addAnnotation(anCtx.ID().getText(), anCtx.scalar().getText());
-            } else if (anCtx.scalar().NUMBER() != null) {
-                program.addAnnotation(anCtx.ID().getText(), new BigDecimal(anCtx.scalar().getText()));
-            } else {
-                program.addAnnotation(anCtx.ID().getText(), Boolean.parseBoolean(anCtx.scalar().getText()));
+        if (!suppressAnnotations) {
+            for (StepperParser.AnnotationContext anCtx : ctx.annotation()) {
+                if (anCtx.scalar().STRING() != null) {
+                    program.addAnnotation(anCtx.ID().getText(), anCtx.scalar().getText());
+                } else if (anCtx.scalar().NUMBER() != null) {
+                    program.addAnnotation(anCtx.ID().getText(), new BigDecimal(anCtx.scalar().getText()));
+                } else {
+                    program.addAnnotation(anCtx.ID().getText(), Boolean.parseBoolean(anCtx.scalar().getText()));
+                }
             }
         }
 
@@ -38,7 +59,7 @@ public class StepperVisitor extends StepperBaseVisitor<StateMachine> {
             }
             current.setNext(new SuccessConstruct(program.getProgramName()));
 
-            program.weave(new WeaveContext());
+            program.weave(weaveContext);
         });
 
         return new StateMachine(program);

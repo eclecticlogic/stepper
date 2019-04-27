@@ -3,41 +3,48 @@ package com.eclecticlogic.stepper.visitor;
 import com.eclecticlogic.stepper.antlr.StepperBaseVisitor;
 import com.eclecticlogic.stepper.antlr.StepperParser;
 import com.eclecticlogic.stepper.etc.Etc;
-import com.eclecticlogic.stepper.state.Task;
+import com.eclecticlogic.stepper.state.AttributableState;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
 import java.util.List;
+import java.util.function.Function;
 
 import static com.eclecticlogic.stepper.etc.Etc.strip;
 
-public class RetryVisitor extends StepperBaseVisitor<Task> {
+public class RetryVisitor<T extends AttributableState> extends StepperBaseVisitor<T> {
 
-    private Task task;
+    private T state;
+    private final Function<String, T> stateCreator;
+
+
+    public RetryVisitor(Function<String, T> stateCreator) {
+        this.stateCreator = stateCreator;
+    }
 
 
     @Override
-    public Task visitRetries(StepperParser.RetriesContext ctx) {
-        String taskName = ctx.label() == null ? null : strip(ctx.label().STRING().getText());
-        task = new Task(taskName);
+    public T visitRetries(StepperParser.RetriesContext ctx) {
+        String name = ctx.label() == null ? null : strip(ctx.label().STRING().getText());
+        state = stateCreator.apply(name);
 
         if (!ctx.retry().isEmpty()) {
             setupRetries(ctx.retry());
         }
-        return task;
+        return state;
     }
 
 
     void setupRetries(List<StepperParser.RetryContext> ctx) {
-        task.captureAttribute("Retry");
-        task.handleArray(() -> {
+        state.captureAttribute("Retry");
+        state.handleArray(() -> {
             for (StepperParser.RetryContext rc : ctx) {
-                task.handleObject(() -> {
-                    task.captureAttribute("ErrorEquals");
-                    task.handleArray(() -> rc.STRING().stream()//
+                state.handleObject(() -> {
+                    state.captureAttribute("ErrorEquals");
+                    state.handleArray(() -> rc.STRING().stream()//
                             .map(TerminalNode::getText) //
                             .map(Etc::strip) //
-                            .forEach(task::setProperty));
-                    JsonObjectVisitor visitor = new JsonObjectVisitor(task);
+                            .forEach(state::setProperty));
+                    JsonObjectVisitor visitor = new JsonObjectVisitor(state);
                     visitor.visit(rc.jsonObject());
                 });
             }

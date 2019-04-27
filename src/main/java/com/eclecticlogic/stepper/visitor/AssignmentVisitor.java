@@ -20,7 +20,7 @@ public class AssignmentVisitor extends StepperBaseVisitor<Construct> {
 
     @Override
     public Construct visitAssignmentTask(StepperParser.AssignmentTaskContext ctx) {
-        RetryVisitor retryVisitor = new RetryVisitor();
+        RetryVisitor<Task> retryVisitor = new RetryVisitor<>(Task::new);
         Task task = retryVisitor.visit(ctx.retries());
 
         JsonObjectVisitor jsonObjectVisitor = new JsonObjectVisitor(task);

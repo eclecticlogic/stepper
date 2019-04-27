@@ -3,7 +3,12 @@ package com.eclecticlogic.stepper.visitor;
 import com.eclecticlogic.stepper.antlr.StepperBaseVisitor;
 import com.eclecticlogic.stepper.antlr.StepperParser;
 import com.eclecticlogic.stepper.construct.*;
+import com.eclecticlogic.stepper.state.Parallel;
 import com.eclecticlogic.stepper.state.Task;
+import com.google.common.collect.Lists;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.eclecticlogic.stepper.etc.Etc.strip;
 import static com.eclecticlogic.stepper.etc.Etc.toLabel;
@@ -14,13 +19,31 @@ public class StatementVisitor extends StepperBaseVisitor<Construct> {
 
     @Override
     public Construct visitStatementTask(StepperParser.StatementTaskContext ctx) {
-        RetryVisitor retryVisitor = new RetryVisitor();
+        RetryVisitor<Task> retryVisitor = new RetryVisitor<>(Task::new);
         Task task = retryVisitor.visit(ctx.retries());
 
         JsonObjectVisitor jsonObjectVisitor = new JsonObjectVisitor(task);
         jsonObjectVisitor.visit(ctx.task().jsonObject());
 
         return new StateConstruct<>(task);
+    }
+
+
+    @Override
+    public Construct visitStatementParallel(StepperParser.StatementParallelContext stCtx) {
+        StepperParser.ParallelStatementContext ctx = stCtx.parallelStatement();
+        RetryVisitor<Parallel> retryVisitor = new RetryVisitor<>(Parallel::new);
+        Parallel parallel = retryVisitor.visit(ctx.retries());
+
+        ParallelConstruct construct = new ParallelConstruct(parallel);
+        List<String> references = Lists.newArrayList(strip(ctx.first.getText()));
+        if (ctx.others != null) {
+            references.addAll(ctx.others.stream()
+                    .map(c -> strip(c.getText()))
+                    .collect(Collectors.toList()));
+        }
+        construct.setReferences(references);
+        return construct;
     }
 
 

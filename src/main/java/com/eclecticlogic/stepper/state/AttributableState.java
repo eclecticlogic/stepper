@@ -56,6 +56,15 @@ public class AttributableState extends AbstractState {
     }
 
 
+    public void setObject(JsonObject object) {
+        if (current instanceof JsonObject) {
+            ((JsonObject) current).add(currentAttribute, object);
+        } else {
+            ((JsonArray) current).add(object);
+        }
+    }
+
+
     public JsonObject handleObject(Runnable closure) {
         JsonObject obj = new JsonObject();
         if (current instanceof JsonObject) {
