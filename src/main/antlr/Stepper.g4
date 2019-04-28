@@ -49,7 +49,15 @@ gotoStatement
     ;
 
 parallelStatement
-    : retries (dereference ASSIGN)? PARALLEL '(' first=STRING (',' others+=STRING)* ')'
+    : retries (dereference ASSIGN)? PARALLEL '(' STRING (',' STRING)* ')'
+    ;
+
+tryCatchStatement
+    : TRY statementBlock catchClause+
+    ;
+
+catchClause
+    : CATCH '(' STRING (',' STRING)* ')' '{' (dereference CLOSURE)* statement+ '}'
     ;
 
 statementBlock
@@ -68,6 +76,7 @@ statement
     | failStatement                     #statementFail
     | gotoStatement                     #statementGoto
     | parallelStatement                 #statementParallel
+    | tryCatchStatement                 #statementTryCatch
     ;
 
 assignment
@@ -214,9 +223,12 @@ STEP: 'step';
 WHILE: 'while';
 WHEN: 'when';
 CASE: 'case';
+TRY: 'try';
+CATCH: 'catch';
 
 // symbols
 SEMICOLON: ';';
+CLOSURE: '->';
 
 ID
     : ALPHA (ALPHA | DIGIT)*

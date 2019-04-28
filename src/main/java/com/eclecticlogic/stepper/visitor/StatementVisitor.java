@@ -5,13 +5,13 @@ import com.eclecticlogic.stepper.antlr.StepperParser;
 import com.eclecticlogic.stepper.construct.*;
 import com.eclecticlogic.stepper.state.Parallel;
 import com.eclecticlogic.stepper.state.Task;
-import com.google.common.collect.Lists;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.eclecticlogic.stepper.etc.Etc.strip;
 import static com.eclecticlogic.stepper.etc.Etc.toLabel;
+import static java.util.stream.Collectors.toList;
 
 
 public class StatementVisitor extends StepperBaseVisitor<Construct> {
@@ -36,12 +36,7 @@ public class StatementVisitor extends StepperBaseVisitor<Construct> {
         Parallel parallel = retryVisitor.visit(ctx.retries());
 
         ParallelConstruct construct = new ParallelConstruct(parallel);
-        List<String> references = Lists.newArrayList(strip(ctx.first.getText()));
-        if (ctx.others != null) {
-            references.addAll(ctx.others.stream()
-                    .map(c -> strip(c.getText()))
-                    .collect(Collectors.toList()));
-        }
+        List<String> references = ctx.STRING().stream().map(t -> strip(t.getText())).collect(toList());
         construct.setReferences(references);
 
         if (ctx.dereference() != null) {
