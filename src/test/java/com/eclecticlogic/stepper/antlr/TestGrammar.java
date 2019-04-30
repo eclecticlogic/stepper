@@ -181,6 +181,16 @@ public class TestGrammar extends AbstractGrammarTester {
         parse("grammar.stg", "parallel1", fn);
         parse("grammar.stg", "parallel2", fn);
         parse("grammar.stg", "parallel3", fn);
+    }
 
+
+    @Test
+    public void testTryCatch() {
+        Function<StepperParser, ParserRuleContext> fn = StepperParser::tryCatchStatement;
+        parse("grammar.stg", "trycatch1", fn);
+        parse("grammar.stg", "trycatch2", fn);
+        parse("grammar.stg", "trycatch3", fn);
+        parse("grammar.stg", "trycatch4", fn);
+        parse("grammar.stg", "trycatch5", fn);
     }
 }

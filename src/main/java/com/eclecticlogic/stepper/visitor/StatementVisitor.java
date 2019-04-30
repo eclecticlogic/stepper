@@ -146,4 +146,15 @@ public class StatementVisitor extends StepperBaseVisitor<Construct> {
     public Construct visitStatementGoto(StepperParser.StatementGotoContext ctx) {
         return new GotoConstruct(strip(ctx.gotoStatement().STRING().getText()));
     }
+
+
+    @Override
+    public Construct visitTryCatchStatement(StepperParser.TryCatchStatementContext ctx) {
+        // TODO: start try here.
+        visit(ctx.statementBlock());
+        ctx.catchClause().forEach(clause -> {
+            // TODO: apply catch to task/parallel.
+        });
+        return super.visitTryCatchStatement(ctx);
+    }
 }

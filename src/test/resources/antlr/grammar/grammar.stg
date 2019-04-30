@@ -253,3 +253,26 @@ parallel3() ::= <<
     @RetryOnError("xyz", "pqr") { "IntervalSeconds": 3 }
     x = parallel("a", "b")
 >>
+
+trycatch1() ::= <<
+    try a = 5; catch("b") d = 3;
+>>
+
+trycatch2() ::= <<
+    try a = 5; catch("b") { d = 3; }
+>>
+
+trycatch3() ::= <<
+    try a = 5; catch("b") { output -> d = 3; }
+>>
+
+trycatch4() ::= <<
+    try a = 5; catch("b") { output -> d = 3; c = 10; }
+>>
+
+trycatch5() ::= <<
+    try {
+        a = 5;
+        b = 10;
+    } catch("q", "r", "s") { output -> d = 3; c = 10; }
+>>

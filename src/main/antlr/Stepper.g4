@@ -57,7 +57,7 @@ tryCatchStatement
     ;
 
 catchClause
-    : CATCH '(' STRING (',' STRING)* ')' '{' (dereference CLOSURE)* statement+ '}'
+    : CATCH '(' STRING (',' STRING)* ')' (('{' (dereference CLOSURE)* statement+ '}') | statement)
     ;
 
 statementBlock
@@ -81,11 +81,11 @@ statement
 
 assignment
     : retries dereference ASSIGN task SEMICOLON?                           #assignmentTask
-    | label? dereference ASSIGN NUMBER ';'                                 #assignmentNumber
-    | label? dereference ASSIGN TRUE ';'                                   #assignmentTrue
-    | label? dereference ASSIGN FALSE ';'                                  #assignmentFalse
-    | label? dereference ASSIGN STRING ';'                                 #assignmentString
-    | label? dereference complexAssign expr ';'                            #assignmentExpr
+    | label? dereference ASSIGN NUMBER SEMICOLON                           #assignmentNumber
+    | label? dereference ASSIGN TRUE SEMICOLON                             #assignmentTrue
+    | label? dereference ASSIGN FALSE SEMICOLON                            #assignmentFalse
+    | label? dereference ASSIGN STRING SEMICOLON                           #assignmentString
+    | label? dereference complexAssign expr SEMICOLON                      #assignmentExpr
     | label? dereference ASSIGN jsonObject SEMICOLON?                      #assignmentJson
     | label? dereference ASSIGN '[' value (',' value)* ']' SEMICOLON?      #assignmentJsonArray
     ;
