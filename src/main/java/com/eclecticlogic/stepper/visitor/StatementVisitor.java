@@ -1,20 +1,24 @@
 package com.eclecticlogic.stepper.visitor;
 
-import com.eclecticlogic.stepper.antlr.StepperBaseVisitor;
 import com.eclecticlogic.stepper.antlr.StepperParser;
 import com.eclecticlogic.stepper.construct.*;
 import com.eclecticlogic.stepper.state.Parallel;
 import com.eclecticlogic.stepper.state.Task;
+import com.eclecticlogic.stepper.state.observer.StateObserver;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static com.eclecticlogic.stepper.etc.Etc.strip;
 import static com.eclecticlogic.stepper.etc.Etc.toLabel;
 import static java.util.stream.Collectors.toList;
 
 
-public class StatementVisitor extends StepperBaseVisitor<Construct> {
+public class StatementVisitor extends AbstractVisitor<Construct> {
+
+
+    public StatementVisitor(StateObserver observer) {
+        super(observer);
+    }
 
 
     @Override
@@ -48,7 +52,7 @@ public class StatementVisitor extends StepperBaseVisitor<Construct> {
 
     @Override
     public Construct visitStatementAssignment(StepperParser.StatementAssignmentContext ctx) {
-        AssignmentVisitor visitor = new AssignmentVisitor();
+        AssignmentVisitor visitor = new AssignmentVisitor(getStateObserver());
         return visitor.visit(ctx.assignment());
     }
 
@@ -61,11 +65,11 @@ public class StatementVisitor extends StepperBaseVisitor<Construct> {
         DereferencingVisitor defVisitor = new DereferencingVisitor();
         construct.setSymbols(defVisitor.visit(ctx.ifCondition));
 
-        StatementBlockVisitor ifBlockVisitor = new StatementBlockVisitor();
+        StatementBlockVisitor ifBlockVisitor = new StatementBlockVisitor(getStateObserver());
         construct.setFirstIf(ifBlockVisitor.visit(ctx.ifBlock));
 
         if (ctx.ELSE() != null) {
-            StatementBlockVisitor elseBlockVisitor = new StatementBlockVisitor();
+            StatementBlockVisitor elseBlockVisitor = new StatementBlockVisitor(getStateObserver());
             construct.setFirstElse(elseBlockVisitor.visit(ctx.elseBlock));
         }
 
@@ -75,7 +79,7 @@ public class StatementVisitor extends StepperBaseVisitor<Construct> {
 
     @Override
     public Construct visitStatementFor(StepperParser.StatementForContext ctx) {
-        ForVisitor visitor = new ForVisitor();
+        ForVisitor visitor = new ForVisitor(getStateObserver());
         return visitor.visit(ctx.forStatement());
     }
 
@@ -88,7 +92,7 @@ public class StatementVisitor extends StepperBaseVisitor<Construct> {
         DereferencingVisitor defVisitor = new DereferencingVisitor();
         construct.setSymbols(defVisitor.visit(ctx.expr()));
 
-        StatementBlockVisitor visitor = new StatementBlockVisitor();
+        StatementBlockVisitor visitor = new StatementBlockVisitor(getStateObserver());
         construct.setBlock(visitor.visit(ctx.statementBlock()));
 
         return construct;
@@ -102,7 +106,7 @@ public class StatementVisitor extends StepperBaseVisitor<Construct> {
             WhenCase wcase = construct.addCase(toLabel(caseEntry.label()));
 
             DereferencingVisitor defVisitor = new DereferencingVisitor();
-            StatementBlockVisitor statementBlockVisitor = new StatementBlockVisitor();
+            StatementBlockVisitor statementBlockVisitor = new StatementBlockVisitor(getStateObserver());
             Construct blockConstruct = statementBlockVisitor.visit(caseEntry.statementBlock());
 
             wcase.setSymbols(defVisitor.visit(caseEntry.expr()));
@@ -111,7 +115,7 @@ public class StatementVisitor extends StepperBaseVisitor<Construct> {
         }
 
         if (ctx.elseBlock != null) {
-            StatementBlockVisitor statementBlockVisitor = new StatementBlockVisitor();
+            StatementBlockVisitor statementBlockVisitor = new StatementBlockVisitor(getStateObserver());
             construct.setElseBlock(statementBlockVisitor.visit(ctx.elseBlock));
         }
         return construct;

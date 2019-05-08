@@ -1,28 +1,29 @@
 package com.eclecticlogic.stepper.visitor;
 
 import com.eclecticlogic.stepper.StateMachine;
-import com.eclecticlogic.stepper.antlr.StepperBaseVisitor;
 import com.eclecticlogic.stepper.antlr.StepperParser;
 import com.eclecticlogic.stepper.construct.Construct;
 import com.eclecticlogic.stepper.construct.ProgramConstruct;
 import com.eclecticlogic.stepper.construct.SuccessConstruct;
 import com.eclecticlogic.stepper.etc.WeaveContext;
 import com.eclecticlogic.stepper.state.NameProvider;
+import com.eclecticlogic.stepper.state.observer.StateObserver;
 
 import java.math.BigDecimal;
 
-public class StepperVisitor extends StepperBaseVisitor<StateMachine> {
+public class StepperVisitor extends AbstractVisitor<StateMachine> {
 
     private final WeaveContext weaveContext;
     private boolean suppressAnnotations;
 
 
-    public StepperVisitor() {
-        this(new WeaveContext());
+    public StepperVisitor(StateObserver observer) {
+        this(new WeaveContext(), observer);
     }
 
 
-    public StepperVisitor(WeaveContext weaveContext) {
+    public StepperVisitor(WeaveContext weaveContext, StateObserver observer) {
+        super(observer);
         this.weaveContext = weaveContext;
     }
 
@@ -52,7 +53,7 @@ public class StepperVisitor extends StepperBaseVisitor<StateMachine> {
         NameProvider.usingName(program.getProgramName(), () -> {
             Construct current = program;
             for (StepperParser.StatementContext stCtx : ctx.statement()) {
-                StatementVisitor visitor = new StatementVisitor();
+                StatementVisitor visitor = new StatementVisitor(getStateObserver());
                 Construct c = visitor.visit(stCtx);
                 current.setNext(c);
                 current = c;

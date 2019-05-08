@@ -2,6 +2,7 @@ package com.eclecticlogic.stepper;
 
 import com.eclecticlogic.stepper.antlr.StepperLexer;
 import com.eclecticlogic.stepper.antlr.StepperParser;
+import com.eclecticlogic.stepper.state.observer.StateObserver;
 import com.eclecticlogic.stepper.visitor.StepperVisitor;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
@@ -15,7 +16,7 @@ public class Stepper {
         CommonTokenStream tokens = new CommonTokenStream(lexer);
         StepperParser parser = new StepperParser(tokens);
 
-        StepperVisitor visitor = new StepperVisitor();
+        StepperVisitor visitor = new StepperVisitor(new StateObserver());
         StateMachine machine = visitor.visitProgram(parser.program());
 
         System.out.println(machine.getAsl());

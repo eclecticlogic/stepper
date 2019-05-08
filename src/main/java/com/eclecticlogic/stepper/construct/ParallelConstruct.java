@@ -5,6 +5,7 @@ import com.eclecticlogic.stepper.antlr.StepperLexer;
 import com.eclecticlogic.stepper.antlr.StepperParser;
 import com.eclecticlogic.stepper.etc.WeaveContext;
 import com.eclecticlogic.stepper.state.Parallel;
+import com.eclecticlogic.stepper.state.observer.StateObserver;
 import com.eclecticlogic.stepper.visitor.StepperVisitor;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
@@ -57,8 +58,7 @@ public class ParallelConstruct extends StateConstruct<Parallel> {
                 path = Paths.get(reference);
             }
             try (Stream<String> lines = Files.lines(path)) {
-                String data = lines.collect(joining("\n"));
-                return data;
+                return lines.collect(joining("\n"));
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -79,7 +79,7 @@ public class ParallelConstruct extends StateConstruct<Parallel> {
                 CommonTokenStream tokens = new CommonTokenStream(lexer);
                 StepperParser parser = new StepperParser(tokens);
 
-                StepperVisitor visitor = new StepperVisitor(context);
+                StepperVisitor visitor = new StepperVisitor(context, new StateObserver());
                 visitor.setSuppressAnnotations(true);
                 StateMachine machine = visitor.visitProgram(parser.program());
                 state.setObject(machine.toJson());

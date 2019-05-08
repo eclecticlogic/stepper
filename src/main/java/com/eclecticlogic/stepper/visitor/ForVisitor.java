@@ -1,15 +1,19 @@
 package com.eclecticlogic.stepper.visitor;
 
-import com.eclecticlogic.stepper.antlr.StepperBaseVisitor;
 import com.eclecticlogic.stepper.antlr.StepperParser;
 import com.eclecticlogic.stepper.construct.Construct;
 import com.eclecticlogic.stepper.construct.ForIterationConstruct;
 import com.eclecticlogic.stepper.construct.ForLoopConstruct;
-import com.eclecticlogic.stepper.etc.Etc;
+import com.eclecticlogic.stepper.state.observer.StateObserver;
 
 import static com.eclecticlogic.stepper.etc.Etc.toLabel;
 
-public class ForVisitor extends StepperBaseVisitor<Construct> {
+public class ForVisitor extends AbstractVisitor<Construct> {
+
+    public ForVisitor(StateObserver observer) {
+        super(observer);
+    }
+
 
     @Override
     public Construct visitForIteration(StepperParser.ForIterationContext ctx) {
@@ -20,7 +24,7 @@ public class ForVisitor extends StepperBaseVisitor<Construct> {
         DereferencingVisitor defVisitor = new DereferencingVisitor();
         construct.setSymbols(defVisitor.visit(ctx.iterable));
 
-        StatementBlockVisitor visitor = new StatementBlockVisitor();
+        StatementBlockVisitor visitor = new StatementBlockVisitor(getStateObserver());
         construct.setBlock(visitor.visit(ctx.statementBlock()));
 
         return construct;
@@ -50,7 +54,7 @@ public class ForVisitor extends StepperBaseVisitor<Construct> {
             construct.setStepExpressionSymbols(defVisitor.visit(ctx.delta));
         }
 
-        StatementBlockVisitor visitor = new StatementBlockVisitor();
+        StatementBlockVisitor visitor = new StatementBlockVisitor(getStateObserver());
         construct.setBlock(visitor.visit(ctx.statementBlock()));
 
         return construct;

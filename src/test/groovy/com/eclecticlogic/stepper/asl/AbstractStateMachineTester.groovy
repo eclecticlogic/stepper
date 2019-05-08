@@ -3,6 +3,7 @@ package com.eclecticlogic.stepper.asl
 import com.eclecticlogic.stepper.StateMachine
 import com.eclecticlogic.stepper.antlr.StepperLexer
 import com.eclecticlogic.stepper.antlr.StepperParser
+import com.eclecticlogic.stepper.state.observer.StateObserver
 import com.eclecticlogic.stepper.visitor.StepperVisitor
 import com.jayway.jsonpath.JsonPath
 import com.jayway.jsonpath.ReadContext
@@ -16,7 +17,7 @@ abstract class AbstractStateMachineTester extends Specification {
 
     class TestListener extends BaseErrorListener {
         @Override
-        public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol, int line, int charPositionInLine, String msg, RecognitionException e) {
+        void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol, int line, int charPositionInLine, String msg, RecognitionException e) {
             throw new RuntimeException("Line: $line, char: $charPositionInLine, $msg")
         }
     }
@@ -33,7 +34,7 @@ abstract class AbstractStateMachineTester extends Specification {
         parser.removeErrorListeners()
         parser.addErrorListener(new TestListener())
 
-        StepperVisitor visitor = new StepperVisitor()
+        StepperVisitor visitor = new StepperVisitor(new StateObserver())
         return visitor.visitProgram(parser.program())
     }
 
