@@ -1,0 +1,63 @@
+
+simple0() ::= <<
+    stepper Simple {
+        a = 5;
+        try {
+            b = 3;
+        } catch ("e1", "e2") { errorInfo ->
+            c = 3;
+            fail;
+        }
+    }
+>>
+
+
+simple1() ::= <<
+    stepper Simple {
+        a = 5;
+        try {
+            b = 3 * a;
+        } catch ("e1", "e2") { errorInfo ->
+            c = 3;
+            fail;
+        }
+    }
+>>
+
+
+simple2() ::= <<
+    stepper Simple {
+        a = 5;
+        try {
+            b = 3 * a;
+        } catch ("e1", "e2") { errorInfo ->
+            c = 3;
+            goto "g1";
+        } catch ("e3", "e4") {
+            fail;
+        }
+        @Label("g1")
+        d = 10;
+    }
+>>
+
+
+nested() ::= <<
+    stepper Nested {
+        try {
+            a = 5;
+            try {
+                b = 3 * a;
+            } catch ("e1", "e2") { errorInfo ->
+                c = 3;
+                goto "g1";
+            }
+            @Label("g1")
+            d = 10;
+        } catch ("e0") {
+            x = 10;
+            fail;
+        }
+        y = 5;
+    }
+>>

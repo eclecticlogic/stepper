@@ -14,11 +14,11 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package com.eclecticlogic.stepper.visitor;
+package com.eclecticlogic.stepper.state.observer;
 
-import com.eclecticlogic.stepper.antlr.StepperBaseVisitor;
+import com.eclecticlogic.stepper.state.State;
 
-public abstract class AbstractVisitor<T> extends StepperBaseVisitor<T> {
+public interface NotificationReceiver {
 
-
+    void receive(State state);
 }

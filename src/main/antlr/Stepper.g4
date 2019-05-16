@@ -57,7 +57,7 @@ tryCatchStatement
     ;
 
 catchClause
-    : CATCH '(' STRING (',' STRING)* ')' (('{' (dereference CLOSURE)* statement+ '}') | statement)
+    : CATCH '(' STRING (',' STRING)* ')' '{' (dereference CLOSURE)? statement+ '}'
     ;
 
 statementBlock

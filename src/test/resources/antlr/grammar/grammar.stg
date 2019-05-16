@@ -187,6 +187,7 @@ testWhen1() ::= <<
         case a > b: task { "a": "b" }
     }
 >>
+
 testWhen2() ::= <<
     when {
         @Label("abc") case a > b: task { "a": "b" }
@@ -197,6 +198,7 @@ testWhen2() ::= <<
         else d = 10;
     }
 >>
+
 testWhen3() ::= <<
     when {
         case a > b: task { "a": "b" }
@@ -255,22 +257,18 @@ parallel3() ::= <<
 >>
 
 trycatch1() ::= <<
-    try a = 5; catch("b") d = 3;
->>
-
-trycatch2() ::= <<
     try a = 5; catch("b") { d = 3; }
 >>
 
-trycatch3() ::= <<
+trycatch2() ::= <<
     try a = 5; catch("b") { output -> d = 3; }
 >>
 
-trycatch4() ::= <<
+trycatch3() ::= <<
     try a = 5; catch("b") { output -> d = 3; c = 10; }
 >>
 
-trycatch5() ::= <<
+trycatch4() ::= <<
     try {
         a = 5;
         b = 10;
