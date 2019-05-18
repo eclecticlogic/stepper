@@ -16,17 +16,47 @@ limitations under the License.
 
 package com.eclecticlogic.stepper;
 
+import com.beust.jcommander.JCommander;
+import com.beust.jcommander.Parameter;
 import com.eclecticlogic.stepper.antlr.StepperLexer;
 import com.eclecticlogic.stepper.antlr.StepperParser;
 import com.eclecticlogic.stepper.visitor.StepperVisitor;
+import com.google.common.collect.Lists;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
+import org.yaml.snakeyaml.Yaml;
+import software.amazon.awssdk.auth.credentials.AwsCredentialsProvider;
+import software.amazon.awssdk.auth.credentials.DefaultCredentialsProvider;
+import software.amazon.awssdk.core.SdkBytes;
+import software.amazon.awssdk.services.lambda.LambdaClient;
+import software.amazon.awssdk.services.lambda.model.*;
+import software.amazon.awssdk.services.lambda.model.Runtime;
+import software.amazon.awssdk.services.sfn.SfnClient;
+import software.amazon.awssdk.services.sfn.model.CreateStateMachineRequest;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.ByteBuffer;
+import java.nio.channels.ByteChannel;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.zip.ZipOutputStream;
 
 public class Stepper {
 
-    public static void main(String[] args) throws Exception {
-        CharStream input = CharStreams.fromFileName(args[0]);
+    @Parameter(names = {"-i", "--install"}, description = "Compiles and installs Step Function ASL and Lambda using information provided in yaml file.")
+    String install;
+
+    @Parameter(description = "Stepper program file", required = true)
+    String stepperProgramFile;
+
+
+    void run() throws IOException {
+        CharStream input = CharStreams.fromFileName(stepperProgramFile);
         StepperLexer lexer = new StepperLexer(input);
         CommonTokenStream tokens = new CommonTokenStream(lexer);
         StepperParser parser = new StepperParser(tokens);
@@ -34,7 +64,43 @@ public class Stepper {
         StepperVisitor visitor = new StepperVisitor();
         StateMachine machine = visitor.visitProgram(parser.program());
 
-        System.out.println(machine.getAsl());
-        System.out.println(machine.getLambda());
+        if (install == null) {
+            Path parent = Paths.get(stepperProgramFile).getParent();
+            Path asl = parent.resolve(machine.getName() + ".asl");
+            Path lambda = parent.resolve(machine.getName() + ".js");
+            Files.write(asl, Lists.newArrayList(machine.getAsl()));
+            Files.write(lambda, Lists.newArrayList(machine.getLambda()));
+            System.out.println("Wrote asl to " + asl + ", lambda to " + lambda);
+        } else {
+            Yaml yaml = new Yaml();
+            String yamlData = String.join("\n", Files.readAllLines(Paths.get(install)));
+            yaml.load(yamlData);
+
+            LambdaInstaller lambdaInstaller = new LambdaInstaller(machine, yaml);
+            String lambdaArn = lambdaInstaller.install();
+
+            AwsCredentialsProvider credentialsProvider = DefaultCredentialsProvider.create();
+
+            SfnClient client = SfnClient.builder().credentialsProvider(DefaultCredentialsProvider.create()).build();
+            CreateStateMachineRequest.builder().name(machine.getName()).definition(machine.getAsl());
+
+        }
     }
+
+
+    public static void main(String[] args) {
+        Stepper stepper = new Stepper();
+        JCommander commander = JCommander
+                .newBuilder()
+                .addObject(stepper)
+                .build();
+        commander.setProgramName("stepper");
+        commander.parse(args);
+        try {
+            stepper.run();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
 }

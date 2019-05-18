@@ -28,10 +28,17 @@ sourceSets {
 
 dependencies {
     antlr ("org.antlr", "antlr4", "4.7.2")
+
+    implementation(platform("software.amazon.awssdk:bom:2.5.45"))
+    implementation("software.amazon.awssdk", "sfn")
+    implementation("software.amazon.awssdk", "lambda")
+
     implementation ("org.antlr", "ST4", "4.1")
     implementation("com.google.guava", "guava", "27.0.1-jre")
     implementation ("com.google.code.gson", "gson", "2.8.5")
     implementation("com.jayway.jsonpath", "json-path", "2.4.0")
+    implementation("com.beust", "jcommander", "1.72")
+    implementation("org.yaml", "snakeyaml", "1.21")
 
     testCompile("junit", "junit", "4.12")
     testCompile("org.codehaus.groovy", "groovy-all", "2.5.6")
