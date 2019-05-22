@@ -9,7 +9,7 @@ plugins {
     signing
     id("io.codearte.nexus-staging") version "0.20.0"
     id("org.springframework.boot") version "2.1.3.RELEASE"
-}
+} 
 
 
 repositories {
