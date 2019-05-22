@@ -14,9 +14,9 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package com.eclecticlogic.stepper;
+package com.eclecticlogic.stepper.install;
 
-import org.yaml.snakeyaml.Yaml;
+import com.eclecticlogic.stepper.StateMachine;
 import software.amazon.awssdk.auth.credentials.DefaultCredentialsProvider;
 import software.amazon.awssdk.core.SdkBytes;
 import software.amazon.awssdk.services.lambda.LambdaClient;
@@ -35,29 +35,37 @@ public class LambdaInstaller {
     private final static String LAMBDA_NAME_SUFFIX = "_stepperLambda";
 
     private final StateMachine machine;
-    private final Yaml yaml;
+    private final InstallConfig config;
     private final LambdaClient lambdaClient;
 
 
-    public LambdaInstaller(StateMachine machine, Yaml yaml) {
+    public LambdaInstaller(StateMachine machine, InstallConfig config) {
         this.machine = machine;
-        this.yaml = yaml;
+        this.config = config;
         lambdaClient = LambdaClient.builder().credentialsProvider(DefaultCredentialsProvider.create()).build();
+    }
+
+
+    public String getLambdaName() {
+        return machine.getName() + LAMBDA_NAME_SUFFIX;
     }
 
 
     boolean isLambdaExists() {
         try {
-            lambdaClient.getFunction(b -> b.functionName(machine.getName() + LAMBDA_NAME_SUFFIX));
+            lambdaClient.getFunction(b -> b.functionName(getLambdaName()));
             return true;
-        } catch (ResourceNotFoundException e) {
+        } catch (ResourceConflictException e) {
             return false;
         }
     }
 
 
+    /**
+     * TODO: Check if we can update instead.
+     */
     void deleteLambda() {
-
+        lambdaClient.deleteFunction(b -> b.functionName(getLambdaName()));
     }
 
 
@@ -75,7 +83,10 @@ public class LambdaInstaller {
             byte[] data = machine.getLambda().getBytes();
             out.write(data, 0, data.length);
             out.closeEntry();
-
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        try {
             return FunctionCode.builder().zipFile(SdkBytes.fromByteArray(Files.readAllBytes(zipFile))).build();
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -93,7 +104,7 @@ public class LambdaInstaller {
                 .code(createZippedLambdaCode())
                 .handler("index.handler")
                 .runtime(Runtime.NODEJS10_X)
-                .role("arn:aws:iam::account-id:role/lambda_basic_execution");
+                .role(config.getLambda().getExecutionRole());
         CreateFunctionResponse response = lambdaClient.createFunction(lambdaBuilder.build());
         return response.functionArn();
     }

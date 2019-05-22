@@ -20,31 +20,25 @@ import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
 import com.eclecticlogic.stepper.antlr.StepperLexer;
 import com.eclecticlogic.stepper.antlr.StepperParser;
+import com.eclecticlogic.stepper.install.InstallConfig;
+import com.eclecticlogic.stepper.install.LambdaInstaller;
+import com.eclecticlogic.stepper.install.StepFunctionInstaller;
 import com.eclecticlogic.stepper.visitor.StepperVisitor;
 import com.google.common.collect.Lists;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.yaml.snakeyaml.Yaml;
+import org.yaml.snakeyaml.constructor.Constructor;
 import software.amazon.awssdk.auth.credentials.AwsCredentialsProvider;
 import software.amazon.awssdk.auth.credentials.DefaultCredentialsProvider;
-import software.amazon.awssdk.core.SdkBytes;
-import software.amazon.awssdk.services.lambda.LambdaClient;
-import software.amazon.awssdk.services.lambda.model.*;
-import software.amazon.awssdk.services.lambda.model.Runtime;
 import software.amazon.awssdk.services.sfn.SfnClient;
 import software.amazon.awssdk.services.sfn.model.CreateStateMachineRequest;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.nio.ByteBuffer;
-import java.nio.channels.ByteChannel;
-import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.zip.ZipOutputStream;
 
 public class Stepper {
 
@@ -72,18 +66,16 @@ public class Stepper {
             Files.write(lambda, Lists.newArrayList(machine.getLambda()));
             System.out.println("Wrote asl to " + asl + ", lambda to " + lambda);
         } else {
-            Yaml yaml = new Yaml();
+            Yaml yaml = new Yaml(new Constructor(InstallConfig.class));
             String yamlData = String.join("\n", Files.readAllLines(Paths.get(install)));
-            yaml.load(yamlData);
+            InstallConfig installConfig = yaml.load(yamlData);
 
-            LambdaInstaller lambdaInstaller = new LambdaInstaller(machine, yaml);
+            LambdaInstaller lambdaInstaller = new LambdaInstaller(machine, installConfig);
             String lambdaArn = lambdaInstaller.install();
 
-            AwsCredentialsProvider credentialsProvider = DefaultCredentialsProvider.create();
-
-            SfnClient client = SfnClient.builder().credentialsProvider(DefaultCredentialsProvider.create()).build();
-            CreateStateMachineRequest.builder().name(machine.getName()).definition(machine.getAsl());
-
+            StepFunctionInstaller sfInstaller = new StepFunctionInstaller(machine, installConfig);
+            String arn = sfInstaller.install(lambdaArn);
+            System.out.println("Lambda installed. Arn = " + arn);
         }
     }
 

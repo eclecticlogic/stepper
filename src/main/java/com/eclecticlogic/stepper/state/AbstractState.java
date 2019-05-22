@@ -19,6 +19,8 @@ package com.eclecticlogic.stepper.state;
 import com.eclecticlogic.stepper.state.observer.StateObserver;
 import com.google.gson.JsonObject;
 
+import static com.eclecticlogic.stepper.etc.Constants.LAMBDA_ARN_PLACEHOLDER;
+
 public abstract class AbstractState implements State {
 
     private String stateName;
@@ -55,7 +57,7 @@ public abstract class AbstractState implements State {
 
 
     public void setupLambdaHelper() {
-        json.addProperty("Resource", "@@@lambda_helper_arn@@@");
+        json.addProperty("Resource", LAMBDA_ARN_PLACEHOLDER);
     }
 
 
