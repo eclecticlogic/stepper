@@ -111,7 +111,7 @@ publishing {
 
             groupId = "com.eclecticlogic"
             artifactId = "stepper"
-            version = "0.1"
+            version = "0.2"
 
             from(components["java"])
             artifact(tasks["sourcesJar"])
