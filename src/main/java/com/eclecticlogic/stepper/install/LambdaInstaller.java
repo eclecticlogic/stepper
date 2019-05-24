@@ -51,25 +51,27 @@ public class LambdaInstaller {
     }
 
 
-    boolean isLambdaExists() {
+    /**
+     * @return arn if lambda exists, otherwise null
+     */
+    String getExistingLambdaArn() {
         try {
-            lambdaClient.getFunction(b -> b.functionName(getLambdaName()));
-            return true;
+            return lambdaClient.getFunction(b -> b.functionName(getLambdaName())).configuration().functionArn();
         } catch (ResourceConflictException e) {
-            return false;
+            return null;
         }
     }
 
 
-    /**
-     * TODO: Check if we can update instead.
-     */
-    void deleteLambda() {
-        lambdaClient.deleteFunction(b -> b.functionName(getLambdaName()));
+    void updateLambda(String arn) {
+        lambdaClient.updateFunctionCode(b -> b.functionName(getLambdaName())
+                .zipFile(createSdkBytesForCode()));
+        lambdaClient.updateFunctionConfiguration(b -> b.functionName(getLambdaName())
+                .role(config.getLambda().getExecutionRole()));
     }
 
 
-    FunctionCode createZippedLambdaCode() {
+    SdkBytes createSdkBytesForCode() {
         Path zipFile;
         try {
             zipFile = Files.createTempFile("stepper", ".zip");
@@ -87,25 +89,34 @@ public class LambdaInstaller {
             throw new RuntimeException(e);
         }
         try {
-            return FunctionCode.builder().zipFile(SdkBytes.fromByteArray(Files.readAllBytes(zipFile))).build();
+            return SdkBytes.fromByteArray(Files.readAllBytes(zipFile));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
 
+    FunctionCode createZippedLambdaCode() {
+        return FunctionCode.builder().zipFile(createSdkBytesForCode()).build();
+
+    }
+
+
     public String install() {
-        if (isLambdaExists()) {
-            deleteLambda();
+        String arn = getExistingLambdaArn();
+        if (arn != null) {
+            updateLambda(arn);
+        } else {
+            CreateFunctionRequest.Builder lambdaBuilder = CreateFunctionRequest.builder()
+                    .functionName(machine.getName() + LAMBDA_NAME_SUFFIX)
+                    .code(createZippedLambdaCode())
+                    .handler("index.handler")
+                    .runtime(Runtime.NODEJS10_X)
+                    .role(config.getLambda().getExecutionRole());
+            CreateFunctionResponse response = lambdaClient.createFunction(lambdaBuilder.build());
+            arn = response.functionArn();
         }
 
-        CreateFunctionRequest.Builder lambdaBuilder = CreateFunctionRequest.builder()
-                .functionName(machine.getName() + LAMBDA_NAME_SUFFIX)
-                .code(createZippedLambdaCode())
-                .handler("index.handler")
-                .runtime(Runtime.NODEJS10_X)
-                .role(config.getLambda().getExecutionRole());
-        CreateFunctionResponse response = lambdaClient.createFunction(lambdaBuilder.build());
-        return response.functionArn();
+        return arn;
     }
 }
