@@ -111,11 +111,12 @@ publishing {
 
             groupId = "com.eclecticlogic"
             artifactId = "stepper"
-            version = "0.2"
+            version = "0.2.1"
 
             from(components["java"])
             artifact(tasks["sourcesJar"])
             artifact(tasks["javadocJar"])
+            artifact(tasks["stepperShade"])
         }
 
         repositories {
@@ -141,3 +142,9 @@ signing {
 nexusStaging {
     packageGroup = "com.eclecticlogic"
 }
+
+/*
+ How to publish:
+ gradlew publish
+ gradlew closeAndReleaseRepository
+ /*
