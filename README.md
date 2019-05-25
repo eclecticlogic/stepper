@@ -1,7 +1,41 @@
 Stepper
 ====
 
-Stepper is a framework to create AWS Step Function state machines using a programmatic language 
+Stepper to Step Functions = High level language to Assembly.
+ 
+By using Stepper, you can write Step Functions with modern programming constructs such as `if else` branching, `for` 
+and `while` loops, `try catch` for error handling and natural expressions such as `a = arr.length + 1`. 
+Here is the proverbial Hello World in Stepper.
+
+```Javascript
+
+stepper HelloWorld {
+    output = "Hello World";
+}
+
+```
+   
+Stepper will compile the code above into the following Step Function state machine.
+
+```json
+{
+  "StartAt": "HelloWorld000",
+  "States": {
+    "HelloWorld000": {
+      "Type": "Pass",
+      "Result": "Hello World",
+      "ResultPath": "$.output",
+      "Next": "HelloWorld.Success"
+    },
+    "HelloWorld.Success": {
+      "Type": "Succeed"
+    }
+  }
+}
+```
+<img src="etc/helloworld.png"/>
+
+a framework to create AWS Step Function state machines using a programmatic language 
 (the Stepper language) instead of JSON. It allows you to author Step Functions using familiar programming constructs
 such as `if then else `, `for` and `while` loops and natural expressions `if (arr.length > 1)` 
 and generates the appropriate ASL state machine JSON along with a supporting lambda that handles 

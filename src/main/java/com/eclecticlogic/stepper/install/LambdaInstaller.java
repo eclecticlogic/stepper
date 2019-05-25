@@ -57,7 +57,7 @@ public class LambdaInstaller {
     String getExistingLambdaArn() {
         try {
             return lambdaClient.getFunction(b -> b.functionName(getLambdaName())).configuration().functionArn();
-        } catch (ResourceConflictException e) {
+        } catch (ResourceNotFoundException e) {
             return null;
         }
     }
