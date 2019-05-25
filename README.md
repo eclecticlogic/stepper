@@ -33,7 +33,7 @@ Stepper will compile the code above into the following Step Function state machi
   }
 }
 ```
-<img src="etc/helloworld.png"/>
+<img style="float: right;" src="etc/helloworld.png"/>
 
 a framework to create AWS Step Function state machines using a programmatic language 
 (the Stepper language) instead of JSON. It allows you to author Step Functions using familiar programming constructs
