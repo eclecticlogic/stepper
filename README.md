@@ -5,160 +5,206 @@ Stepper to Step Functions = High level language to Assembly.
  
 By using Stepper, you can write Step Functions with modern programming constructs such as `if else` branching, `for` 
 and `while` loops, `try catch` for error handling and natural expressions such as `a = arr.length + 1`. 
-Here is the proverbial Hello World in Stepper.
+To illustrate, lets create a step-function that generates the first 10 Fibonnaci numbers and stores them into an SQS 
+queue. The first two values of the series are hardcoded and the rest of the series is then generated. 
 
 ```Javascript
 
-stepper HelloWorld {
-    output = "Hello World";
+@Comment("Generate Fibonnaci numbers")
+@TimeoutSeconds(120)
+@Version("1.0")
+stepper Fibonnaci {
+	// first two fibonnaci are static
+	 task {
+        "Resource": "arn:aws:states:::sqs:sendMessage",
+      	"Parameters": {
+        	"MessageBody": "0",
+        	"QueueUrl": "https://sqs.us-east-1.amazonaws.com/1570xxx/fibo"
+      	}
+    }
+	task {
+        "Resource": "arn:aws:states:::sqs:sendMessage",
+      	"Parameters": {
+        	"MessageBody": "1",
+        	"QueueUrl": "https://sqs.us-east-1.amazonaws.com/1570xxx/fibo"
+      	}
+    }
+	previous = 0;
+	current = 1;
+	count = 2;
+	while (count < 10) {
+		fib = previous + current;
+		previous = current;
+		current = fib;
+		entry = fib + "";
+		// write to queue
+		sqs = task {
+            "Resource": "arn:aws:states:::sqs:sendMessage",
+	      	"Parameters": {
+	        	"MessageBody.$": "$.entry",
+	        	"QueueUrl": "https://sqs.us-east-1.amazonaws.com/1570xxx/fibo"
+	      	}
+        }
+        count = count + 1;
+	}
 }
 
 ```
    
 Stepper will compile the code above into the following Step Function state machine.
 
+<details>
+    <summary>JSON for Fibonnaci step function
+        ```json
+        {
+          "Comment": "Generate Fibonnaci numbers",
+          "TimeoutSeconds": 120,
+          "Version": "1.0",
+          "StartAt": "Fibonnaci000",
+        ```
+    </summary>
+    
 ```json
 {
-  "StartAt": "HelloWorld000",
+  "Comment": "Generate Fibonnaci numbers",
+  "TimeoutSeconds": 120,
+  "Version": "1.0",
+  "StartAt": "Fibonnaci000",
   "States": {
-    "HelloWorld000": {
-      "Type": "Pass",
-      "Result": "Hello World",
-      "ResultPath": "$.output",
-      "Next": "HelloWorld.Success"
+    "Fibonnaci000": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::sqs:sendMessage",
+      "Parameters": {
+        "MessageBody": "0",
+        "QueueUrl": "https://sqs.us-east-1.amazonaws.com/1570xxx/fibo"
+      },
+      "ResultPath": "$.Fibonnaci000",
+      "Next": "Fibonnaci001"
     },
-    "HelloWorld.Success": {
+    "Fibonnaci001": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::sqs:sendMessage",
+      "Parameters": {
+        "MessageBody": "1",
+        "QueueUrl": "https://sqs.us-east-1.amazonaws.com/1570xxx/fibo"
+      },
+      "ResultPath": "$.Fibonnaci001",
+      "Next": "Fibonnaci002"
+    },
+    "Fibonnaci002": {
+      "Type": "Pass",
+      "Result": 0,
+      "ResultPath": "$.previous",
+      "Next": "Fibonnaci003"
+    },
+    "Fibonnaci003": {
+      "Type": "Pass",
+      "Result": 1,
+      "ResultPath": "$.current",
+      "Next": "Fibonnaci004"
+    },
+    "Fibonnaci004": {
+      "Type": "Pass",
+      "Result": 2,
+      "ResultPath": "$.count",
+      "Next": "Fibonnaci005"
+    },
+    "Fibonnaci005": {
+      "Type": "Task",
+      "Parameters": {
+        "cmd__sm": "Fibonnaci005",
+        "count.$": "$.count"
+      },
+      "Resource": "arn:aws:lambda:us-east-1:1570xxx:function:Fibonnaci_stepperLambda",
+      "ResultPath": "$.Fibonnacivar__000",
+      "Next": "Fibonnaci006"
+    },
+    "Fibonnaci006": {
+      "Type": "Choice",
+      "Choices": [
+        {
+          "Variable": "$.Fibonnacivar__000",
+          "BooleanEquals": true,
+          "Next": "Fibonnaci007"
+        },
+        {
+          "Variable": "$.Fibonnacivar__000",
+          "BooleanEquals": false,
+          "Next": "Fibonnaci.Success"
+        }
+      ]
+    },
+    "Fibonnaci007": {
+      "Type": "Task",
+      "Parameters": {
+        "cmd__sm": "Fibonnaci007",
+        "current.$": "$.current",
+        "previous.$": "$.previous"
+      },
+      "ResultPath": "$.fib",
+      "Resource": "arn:aws:lambda:us-east-1:1570xxx:function:Fibonnaci_stepperLambda",
+      "Next": "Fibonnaci008"
+    },
+    "Fibonnaci008": {
+      "Type": "Task",
+      "Parameters": {
+        "cmd__sm": "Fibonnaci008",
+        "current.$": "$.current"
+      },
+      "ResultPath": "$.previous",
+      "Resource": "arn:aws:lambda:us-east-1:1570xxx:function:Fibonnaci_stepperLambda",
+      "Next": "Fibonnaci009"
+    },
+    "Fibonnaci009": {
+      "Type": "Task",
+      "Parameters": {
+        "cmd__sm": "Fibonnaci009",
+        "fib.$": "$.fib"
+      },
+      "ResultPath": "$.current",
+      "Resource": "arn:aws:lambda:us-east-1:1570xxx:function:Fibonnaci_stepperLambda",
+      "Next": "Fibonnaci010"
+    },
+    "Fibonnaci010": {
+      "Type": "Task",
+      "Parameters": {
+        "cmd__sm": "Fibonnaci010",
+        "fib.$": "$.fib"
+      },
+      "ResultPath": "$.entry",
+      "Resource": "arn:aws:lambda:us-east-1:1570xxx:function:Fibonnaci_stepperLambda",
+      "Next": "Fibonnaci011"
+    },
+    "Fibonnaci011": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::sqs:sendMessage",
+      "Parameters": {
+        "MessageBody.$": "$.entry",
+        "QueueUrl": "https://sqs.us-east-1.amazonaws.com/1570xxx/fibo"
+      },
+      "ResultPath": "$.sqs",
+      "Next": "Fibonnaci012"
+    },
+    "Fibonnaci012": {
+      "Type": "Task",
+      "Next": "Fibonnaci005",
+      "Parameters": {
+        "cmd__sm": "Fibonnaci012",
+        "count.$": "$.count"
+      },
+      "ResultPath": "$.count",
+      "Resource": "arn:aws:lambda:us-east-1:1570xxx:function:Fibonnaci_stepperLambda"
+    },
+    "Fibonnaci.Success": {
       "Type": "Succeed"
     }
   }
 }
 ```
-<img style="float: right;" src="etc/helloworld.png"/>
+</details>
 
-a framework to create AWS Step Function state machines using a programmatic language 
-(the Stepper language) instead of JSON. It allows you to author Step Functions using familiar programming constructs
-such as `if then else `, `for` and `while` loops and natural expressions `if (arr.length > 1)` 
-and generates the appropriate ASL state machine JSON along with a supporting lambda that handles 
-complex expressions. You can use any Javascript compliant expression on your data elements.
+<img src="etc/helloworld.png"/>
 
-Here is an example. Given the following Stepper language:
-
-```Javascript
-state MyState {
-
-	array1 = ["banana", "apples", "oranges"]
-
-	if (array1.length >= 5) {
-		middle = array1[array1.length / 2].toUpperCase();
-
-		task {
-			"Parameters": {
-        		"MessageBody.$": "$.middle",
-        		"QueueUrl": "https://sqs.us-east-1.amazonaws.com/157023xxxxxx/stepqueue1"
-      		},
-			"Resource": "arn:aws:states:::sqs:sendMessage"
-		}
-	} else {
-		middle = array1[0].toUpperCase();
-
-		task {
-			"Parameters": {
-        		"MessageBody.$": "$.middle",
-        		"QueueUrl": "https://sqs.us-east-1.amazonaws.com/157023xxxxxx/stepqueue2"
-      		},
-			"Resource": "arn:aws:states:::sqs:sendMessage"
-		}
-	}
-}
-
-```    
-
-the stepper framework generates the following State Machine ASL JSON:
-
-```json
-{
-    "StartAt": "state000",
-    "States": {
-            "state000": {
-              "Type": "Pass",
-              "Result": [
-                "banana",
-                "apples",
-                "oranges"
-              ],
-              "ResultPath": "$.array1",
-              "Next": "state001"
-            }
-            , "state001": {
-              "Type": "Task",
-              "Parameters": {
-                "cmd__sm": "state001",
-                "array1.$": "$.array1"
-              },
-              "Resource": "arn:aws:lambda:us-east-1:157023xxxxxx:function:testInput",
-              "ResultPath": "$.var__000",
-              "Next": "state002"
-            }
-            , "state002": {
-              "Type": "Choice",
-              "Choices": [
-                {
-                  "Variable": "$.var__000",
-                  "BooleanEquals": true,
-                  "Next": "state003"
-                },
-                {
-                  "Variable": "$.var__000",
-                  "BooleanEquals": false,
-                  "Next": "state005"
-                }
-              ]
-            }
-            , "state003": {
-              "Type": "Task",
-              "ResultPath": "$.middle",
-              "Parameters": {
-                "cmd__sm": "state003",
-                "array1.$": "$.array1"
-              },
-              "Resource": "arn:aws:lambda:us-east-1:157023xxxxxx:function:testInput",
-              "Next": "state004"
-            }
-            , "state004": {
-              "Type": "Task",
-              "Parameters": {
-                "MessageBody.$": "$.middle",
-                "QueueUrl": "https://sqs.us-east-1.amazonaws.com/157023xxxxxx/stepqueue1"
-              },
-              "Resource": "arn:aws:states:::sqs:sendMessage",
-              "Next": "state007"
-            }
-            , "state005": {
-              "Type": "Task",
-              "ResultPath": "$.middle",
-              "Parameters": {
-                "cmd__sm": "state005",
-                "array1.$": "$.array1"
-              },
-              "Resource": "arn:aws:lambda:us-east-1:157023xxxxxx:function:testInput",
-              "Next": "state006"
-            }
-            , "state006": {
-              "Type": "Task",
-              "Parameters": {
-                "MessageBody.$": "$.middle",
-                "QueueUrl": "https://sqs.us-east-1.amazonaws.com/157023xxxxxx/stepqueue2"
-              },
-              "Resource": "arn:aws:states:::sqs:sendMessage",
-              "Next": "state007"
-            }
-            , "state007": {
-              "Type": "Succeed"
-            }
-
-    }
-}
-```
 
 The ASL produced has a placeholder `Resource` reference for the Lambda helper required. In a future release
 the lambda could be auto-registered and the arn populated. For now, the framework produces the lambda code
