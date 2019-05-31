@@ -3,10 +3,10 @@ Stepper
 
 Stepper to Step Functions = High level language to Assembly.
  
-By using Stepper, you can write Step Functions with modern programming constructs such as `if else` branching, `for` 
+Stepper allows you to write AWS Step Functions using modern programming constructs such as `if else` branching, `for` 
 and `while` loops, `try catch` for error handling and natural expressions such as `a = arr.length + 1`. 
-To illustrate, lets create a step-function that generates the first 10 Fibonnaci numbers and stores them into an SQS 
-queue. The first two values of the series are hardcoded and the rest of the series is then generated. 
+To illustrate, let us create a step function that generates the first 10 Fibonnaci numbers and stores them into an SQS 
+queue. The first two values of the series are hardcoded and the rest of the series is then computed. 
 
 ```Javascript
 
@@ -51,10 +51,13 @@ stepper Fibonnaci {
 
 ```
    
-Stepper will compile the code above into the following Step Function state machine.
+As you can see, the above code feels like a modern programming language (Stepper seeks compatibility with Javascript 
+expression syntax and built-in functions). The Stepper compiler turns the variables used into ASL json attributes and 
+then creates a supporting Lambda function to evaluate expressions used. Stepper will compile the code above into the 
+following state machine.
 
 <details>
-    <summary>JSON for Fibonnaci step function ...</summary>
+    <summary>JSON for Fibonnaci step function ... (click to expand).</summary>
     
 ```json
 {
@@ -197,9 +200,20 @@ Stepper will compile the code above into the following Step Function state machi
 
 <img src="etc/fibonacci.png"/>
 
-As you can see Stepper automatically created a placeholder Lambda function to handle any "computation" needs to simplify
-the construction of the state machine. Stepper can automatically register the Lambda and create the Step Function or 
-it can output the code for those pieces and you can manually register them. 
+Stepper can automatically register the Lambda and create the Step Function or it can output the code for those pieces 
+and you can manually register them. Stepper supports:
+
+- variable assignments and expressions
+- if/else branching
+- for loops over range with step and looping over collections
+- while loops
+- "when" which is a variation of the traditional switch statement for multi-predicate branching
+- task ASL state for calling activities, accessing queues, etc. 
+- wait and fail construct
+- annotation driver retry logic
+- parallel state that simply includes other stepper programs to be run concurrently
+- goto statement for complex logic
+- try/catch construct for error handling.
 
 To learn how to get started with Stepper, head over to the Getting Started page of the wiki. The language reference is
 also accessible from the wiki pages. 
