@@ -54,15 +54,7 @@ stepper Fibonnaci {
 Stepper will compile the code above into the following Step Function state machine.
 
 <details>
-    <summary>JSON for Fibonnaci step function
-        ```json
-        {
-          "Comment": "Generate Fibonnaci numbers",
-          "TimeoutSeconds": 120,
-          "Version": "1.0",
-          "StartAt": "Fibonnaci000",
-        ```
-    </summary>
+    <summary>JSON for Fibonnaci step function ...</summary>
     
 ```json
 {
