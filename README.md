@@ -195,71 +195,11 @@ Stepper will compile the code above into the following Step Function state machi
 ```
 </details>
 
-<img src="etc/helloworld.png"/>
+<img src="etc/fibonacci.png"/>
 
+As you can see Stepper automatically created a placeholder Lambda function to handle any "computation" needs to simplify
+the construction of the state machine. Stepper can automatically register the Lambda and create the Step Function or 
+it can output the code for those pieces and you can manually register them. 
 
-The ASL produced has a placeholder `Resource` reference for the Lambda helper required. In a future release
-the lambda could be auto-registered and the arn populated. For now, the framework produces the lambda code
-as shown below and you have to register and populate the reference. 
-
-```Javascript
-
-exports.handler = async (event) => {
-
-        if (event.cmd__sm == "state001") {
-
-            var array1 = event.array1;
-
-            const response = array1.length>=5;
-            return response;
-        }
-
-        if (event.cmd__sm == "state003") {
-
-            var array1 = event.array1;
-
-            const response = array1[array1.length/2].toUpperCase();
-            return response;
-        }
-
-        if (event.cmd__sm == "state005") {
-
-            var array1 = event.array1;
-
-            const response = array1[0].toUpperCase();
-            return response;
-        }
-
-    else return {"error": "no branch matched"};
-};
-
-
-```
-The code is at `0.1-SNAPSHOT` version and currently only supports `tasks`, `if` statement and assignment expressions. 
-The plan is to add the following features for the 1.0 release:
-
-* control structures
-    - `while`, `for` control statements
-    - iterator for collections
-    - `switch` with patttern matching
-* `task` state name control
-* `wait` and other state types.
-* `parallel` task execution 
-
-It would be great to see Stepper grow to a point where it is supported natively in State Functions. 
-This will allow even more advanced constructs (dynamic number of parallel tasks for example).
-
-Getting Started
----
-     
-In the very crude 0.1 version, clone and build the code using gradle. Run `com.eclecticlogic.stepper.Stepper` as your 
-main Java class and pass in a reference to the file containing your stepper language. The ASL and supporting 
-json will be printed to console.
-
-Next Steps
----
-
-* Unit tests for stepper language grammar
-* Release to maven repo
-* Create executable jar
-* Add support for language constructs to achieve 1.0 release. 
+To learn how to get started with Stepper, head over to the Getting Started page of the wiki. The language reference is
+also accessible from the wiki pages. 
