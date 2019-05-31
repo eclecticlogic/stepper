@@ -211,7 +211,8 @@ and you can manually register them. Stepper supports:
 - "when" which is a variation of the traditional switch statement for multi-predicate branching
 - task ASL state for calling activities, accessing queues, etc. 
 - wait and fail construct
-- annotation driver retry logic
+- annotation driven retry logic
+- control over state names
 - parallel state that simply includes other stepper programs to be run concurrently
 - goto statement for complex logic
 - try/catch construct for error handling.
