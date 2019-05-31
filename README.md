@@ -29,16 +29,17 @@ stepper Fibonnaci {
             "QueueUrl": "https://sqs.us-east-1.amazonaws.com/1570xxx/fibo"
         }
     }
-	previous = 0;
-	current = 1;
-	count = 2;
-	while (count < 10) {
-		fib = previous + current;
-		previous = current;
-		current = fib;
-		entry = fib + "";
-		// write to queue
-		sqs = task {
+
+    previous = 0;
+    current = 1;
+    count = 2;
+    while (count < 10) {
+        fib = previous + current;
+        previous = current;
+        current = fib;
+        entry = fib + "";
+        // write to queue
+        sqs = task {
             "Resource": "arn:aws:states:::sqs:sendMessage",
             "Parameters": {
                 "MessageBody.$": "$.entry",
@@ -46,7 +47,7 @@ stepper Fibonnaci {
             }
         }
         count = count + 1;
-	}
+    }
 }
 
 ```
