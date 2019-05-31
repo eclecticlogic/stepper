@@ -14,20 +14,20 @@ queue. The first two values of the series are hardcoded and the rest of the seri
 @TimeoutSeconds(120)
 @Version("1.0")
 stepper Fibonnaci {
-	// first two fibonnaci are static
-	 task {
+    // first two fibonnaci are static
+    task {
         "Resource": "arn:aws:states:::sqs:sendMessage",
-      	"Parameters": {
-        	"MessageBody": "0",
-        	"QueueUrl": "https://sqs.us-east-1.amazonaws.com/1570xxx/fibo"
-      	}
+        "Parameters": {
+            "MessageBody": "0",
+            "QueueUrl": "https://sqs.us-east-1.amazonaws.com/1570xxx/fibo"
+        }
     }
-	task {
+    task {
         "Resource": "arn:aws:states:::sqs:sendMessage",
-      	"Parameters": {
-        	"MessageBody": "1",
-        	"QueueUrl": "https://sqs.us-east-1.amazonaws.com/1570xxx/fibo"
-      	}
+        "Parameters": {
+            "MessageBody": "1",
+            "QueueUrl": "https://sqs.us-east-1.amazonaws.com/1570xxx/fibo"
+        }
     }
 	previous = 0;
 	current = 1;
@@ -40,10 +40,10 @@ stepper Fibonnaci {
 		// write to queue
 		sqs = task {
             "Resource": "arn:aws:states:::sqs:sendMessage",
-	      	"Parameters": {
-	        	"MessageBody.$": "$.entry",
-	        	"QueueUrl": "https://sqs.us-east-1.amazonaws.com/1570xxx/fibo"
-	      	}
+            "Parameters": {
+                "MessageBody.$": "$.entry",
+                "QueueUrl": "https://sqs.us-east-1.amazonaws.com/1570xxx/fibo"
+            }
         }
         count = count + 1;
 	}
