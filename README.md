@@ -208,7 +208,7 @@ and you can manually register them. Stepper supports:
 - if/else branching
 - for loops over range with step and looping over collections
 - while loops
-- "when" which is a variation of the traditional switch statement for multi-predicate branching
+- "when" statement, a variation of the traditional switch statement for multi-predicate branching
 - task ASL state for calling activities, accessing queues, etc. 
 - wait and fail construct
 - annotation driven retry logic
@@ -217,5 +217,5 @@ and you can manually register them. Stepper supports:
 - goto statement for complex logic
 - try/catch construct for error handling.
 
-To learn how to get started with Stepper, head over to the Getting Started page of the wiki. The language reference is
-also accessible from the wiki pages. 
+To learn how to get started with Stepper, head over to the Getting Started page of the wiki. The language reference 
+provides syntax details along with examples.  

@@ -41,6 +41,7 @@ public class StatementVisitor extends AbstractVisitor<Construct> {
         JsonObjectVisitor jsonObjectVisitor = new JsonObjectVisitor(task);
         jsonObjectVisitor.visit(ctx.task().jsonObject());
 
+        task.setResultPath("$." + task.getName(), false);
         return new StateConstruct<>(task);
     }
 
@@ -197,4 +198,5 @@ public class StatementVisitor extends AbstractVisitor<Construct> {
         });
         return construct;
     }
+
 }

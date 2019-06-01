@@ -28,11 +28,6 @@ public abstract class AbstractState implements State {
     JsonObject json = new JsonObject();
 
 
-    AbstractState() {
-        this(null);
-    }
-
-
     AbstractState(String stateName) {
         this.stateName = stateName == null ? NameProvider.getName() : stateName;
         StateObserver.event(this);
@@ -62,7 +57,14 @@ public abstract class AbstractState implements State {
 
 
     public void setResultPath(String value) {
-        json.addProperty("ResultPath", value);
+        setResultPath(value, true);
+    }
+
+
+    public void setResultPath(String value, boolean overwrite) {
+        if (overwrite || json.get("ResultPath") == null) {
+            json.addProperty("ResultPath", value);
+        }
     }
 
 

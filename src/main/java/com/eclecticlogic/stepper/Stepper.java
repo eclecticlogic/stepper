@@ -25,15 +25,9 @@ import com.eclecticlogic.stepper.install.LambdaInstaller;
 import com.eclecticlogic.stepper.install.StepFunctionInstaller;
 import com.eclecticlogic.stepper.visitor.StepperVisitor;
 import com.google.common.collect.Lists;
-import org.antlr.v4.runtime.CharStream;
-import org.antlr.v4.runtime.CharStreams;
-import org.antlr.v4.runtime.CommonTokenStream;
+import org.antlr.v4.runtime.*;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
-import software.amazon.awssdk.auth.credentials.AwsCredentialsProvider;
-import software.amazon.awssdk.auth.credentials.DefaultCredentialsProvider;
-import software.amazon.awssdk.services.sfn.SfnClient;
-import software.amazon.awssdk.services.sfn.model.CreateStateMachineRequest;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -49,11 +43,23 @@ public class Stepper {
     String stepperProgramFile;
 
 
-    void run() throws IOException {
-        CharStream input = CharStreams.fromFileName(stepperProgramFile);
+    public static StepperParser createParser(CharStream input) {
         StepperLexer lexer = new StepperLexer(input);
         CommonTokenStream tokens = new CommonTokenStream(lexer);
         StepperParser parser = new StepperParser(tokens);
+        parser.removeErrorListeners();
+        parser.addErrorListener(new BaseErrorListener() {
+            @Override
+            public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol, int line, int charPositionInLine, String msg, RecognitionException e) {
+                throw new StepperParseException(offendingSymbol, line, charPositionInLine, msg, e);
+            }
+        });
+        return parser;
+    }
+
+
+    void run() throws IOException {
+        StepperParser parser = createParser(CharStreams.fromFileName(stepperProgramFile));
 
         StepperVisitor visitor = new StepperVisitor();
         StateMachine machine = visitor.visitProgram(parser.program());
@@ -94,5 +100,4 @@ public class Stepper {
             e.printStackTrace();
         }
     }
-
 }

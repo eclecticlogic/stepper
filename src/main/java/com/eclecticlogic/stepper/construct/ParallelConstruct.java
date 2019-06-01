@@ -17,15 +17,12 @@ limitations under the License.
 package com.eclecticlogic.stepper.construct;
 
 import com.eclecticlogic.stepper.StateMachine;
-import com.eclecticlogic.stepper.antlr.StepperLexer;
+import com.eclecticlogic.stepper.Stepper;
 import com.eclecticlogic.stepper.antlr.StepperParser;
 import com.eclecticlogic.stepper.etc.WeaveContext;
 import com.eclecticlogic.stepper.state.Parallel;
-import com.eclecticlogic.stepper.state.observer.StateObserver;
 import com.eclecticlogic.stepper.visitor.StepperVisitor;
-import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
-import org.antlr.v4.runtime.CommonTokenStream;
 import org.stringtemplate.v4.ST;
 import org.stringtemplate.v4.STGroup;
 import org.stringtemplate.v4.STGroupFile;
@@ -89,13 +86,7 @@ public class ParallelConstruct extends StateConstruct<Parallel> {
         state.captureAttribute("Branches");
         state.handleArray(() -> {
             for (String reference : references) {
-                String text = getText(reference);
-
-                CharStream input = CharStreams.fromString(text);
-                StepperLexer lexer = new StepperLexer(input);
-                CommonTokenStream tokens = new CommonTokenStream(lexer);
-                StepperParser parser = new StepperParser(tokens);
-
+                StepperParser parser = Stepper.createParser(CharStreams.fromString(getText(reference)));
                 StepperVisitor visitor = new StepperVisitor(context);
                 visitor.setSuppressAnnotations(true);
                 StateMachine machine = visitor.visitProgram(parser.program());
