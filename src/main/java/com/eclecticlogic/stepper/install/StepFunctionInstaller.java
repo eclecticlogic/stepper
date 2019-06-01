@@ -61,14 +61,16 @@ public class StepFunctionInstaller {
             item = getStateMachineMatch(response);
         }
 
+        String code = lambdaArn == null ?
+                machine.getAsl() : machine.getAsl().replaceAll(LAMBDA_ARN_PLACEHOLDER, lambdaArn);
+
         if (item.isPresent()) {
             String arn = item.get().stateMachineArn();
-            client.updateStateMachine(b -> b.stateMachineArn(arn)
-                    .definition(machine.getAsl().replaceAll(LAMBDA_ARN_PLACEHOLDER, lambdaArn)));
+            client.updateStateMachine(b -> b.stateMachineArn(arn).definition(code));
             return arn;
         } else {
             CreateStateMachineResponse cr = client.createStateMachine(b -> b.name(machine.getName())
-                    .definition(machine.getAsl().replaceAll(LAMBDA_ARN_PLACEHOLDER, lambdaArn))
+                    .definition(code)
                     .roleArn(config.getStepFunction().getExecutionRole()));
             return cr.stateMachineArn();
         }

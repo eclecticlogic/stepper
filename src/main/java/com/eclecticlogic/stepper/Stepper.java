@@ -18,6 +18,7 @@ package com.eclecticlogic.stepper;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
+import com.beust.jcommander.ParameterException;
 import com.eclecticlogic.stepper.antlr.StepperLexer;
 import com.eclecticlogic.stepper.antlr.StepperParser;
 import com.eclecticlogic.stepper.install.InstallConfig;
@@ -65,23 +66,40 @@ public class Stepper {
         StateMachine machine = visitor.visitProgram(parser.program());
 
         if (install == null) {
-            Path parent = Paths.get(stepperProgramFile).getParent();
-            Path asl = parent.resolve(machine.getName() + ".asl");
-            Path lambda = parent.resolve(machine.getName() + ".js");
-            Files.write(asl, Lists.newArrayList(machine.getAsl()));
+            manualSetup(machine);
+        } else {
+            autoSetup(machine);
+        }
+    }
+
+
+    void autoSetup(StateMachine machine) throws IOException {
+        Yaml yaml = new Yaml(new Constructor(InstallConfig.class));
+        String yamlData = String.join("\n", Files.readAllLines(Paths.get(install)));
+        InstallConfig installConfig = yaml.load(yamlData);
+
+        String lambdaArn = null;
+        if (machine.isLambdaRequired()) {
+            LambdaInstaller lambdaInstaller = new LambdaInstaller(machine, installConfig);
+            lambdaArn = lambdaInstaller.install();
+        }
+
+        StepFunctionInstaller sfInstaller = new StepFunctionInstaller(machine, installConfig);
+        String arn = sfInstaller.install(lambdaArn);
+        System.out.println("Lambda installed. Arn = " + arn);
+    }
+
+
+    void manualSetup(StateMachine machine) throws IOException {
+        Path asl = Paths.get(stepperProgramFile).resolveSibling(machine.getName() + ".asl");
+        Files.write(asl, Lists.newArrayList(machine.getAsl()));
+
+        if (machine.isLambdaRequired()) {
+            Path lambda = Paths.get(stepperProgramFile).resolveSibling(machine.getName() + ".js");
             Files.write(lambda, Lists.newArrayList(machine.getLambda()));
             System.out.println("Wrote asl to " + asl + ", lambda to " + lambda);
         } else {
-            Yaml yaml = new Yaml(new Constructor(InstallConfig.class));
-            String yamlData = String.join("\n", Files.readAllLines(Paths.get(install)));
-            InstallConfig installConfig = yaml.load(yamlData);
-
-            LambdaInstaller lambdaInstaller = new LambdaInstaller(machine, installConfig);
-            String lambdaArn = lambdaInstaller.install();
-
-            StepFunctionInstaller sfInstaller = new StepFunctionInstaller(machine, installConfig);
-            String arn = sfInstaller.install(lambdaArn);
-            System.out.println("Lambda installed. Arn = " + arn);
+            System.out.println("Wrote asl to " + asl);
         }
     }
 
@@ -93,9 +111,12 @@ public class Stepper {
                 .addObject(stepper)
                 .build();
         commander.setProgramName("stepper");
-        commander.parse(args);
         try {
+            commander.parse(args);
             stepper.run();
+        } catch (ParameterException e) {
+            System.err.println(e.getMessage());
+            commander.usage();
         } catch (IOException e) {
             e.printStackTrace();
         }

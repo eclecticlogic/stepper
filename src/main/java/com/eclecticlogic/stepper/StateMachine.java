@@ -44,6 +44,11 @@ public class StateMachine {
     }
 
 
+    public boolean isLambdaRequired() {
+        return !program.getContext().getLambdaHelper().getBranches().isEmpty();
+    }
+
+
     public String getLambda() {
         STGroup group = new STGroupFile("stepper/template/lambda.stg");
         ST st = group.getInstanceOf("scaffolding");

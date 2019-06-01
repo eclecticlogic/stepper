@@ -12,6 +12,7 @@ public class DereferenceListener extends StepperBaseListener {
 
     private final Set<String> references = Sets.newHashSet();
 
+    private final Set<String> exclusions = Sets.newHashSet("Math", "Number");
 
     List<String> getReferences() {
         return Lists.newArrayList(references);
@@ -20,6 +21,9 @@ public class DereferenceListener extends StepperBaseListener {
 
     @Override
     public void enterDereference(StepperParser.DereferenceContext ctx) {
-        references.add(ctx.ID(0).getText());
+        String ref = ctx.ID(0).getText();
+        if (!exclusions.contains(ref)) {
+            references.add(ctx.ID(0).getText());
+        }
     }
 }
