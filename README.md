@@ -1,7 +1,7 @@
 Stepper
 ====
 
-Stepper to Step Functions = High level language to Assembly.
+Stepper is to Step Functions = High level language is to Assembly.
  
 Stepper allows you to write AWS Step Functions using modern programming constructs such as `if else` branching, `for` 
 and `while` loops, `try catch` for error handling and natural expressions such as `a = arr.length + 1`. 
@@ -204,18 +204,18 @@ following state machine.
 Stepper can automatically register the Lambda and create the Step Function or it can output the code for those pieces 
 and you can manually register them. Stepper supports:
 
-- variable assignments and expressions
-- if/else branching
-- for loops over range with step and looping over collections
-- while loops
-- "when" statement, a variation of the traditional switch statement for multi-predicate branching
-- task ASL state for calling activities, accessing queues, etc. 
-- wait and fail construct
+- [variables, assignments and expressions](Language-Reference#variables)
+- [if/else](Language-Reference#branching) branching
+- for [loops]((Language-Reference#loops)) over range with step and looping over collections
+- [while loops](Language-Reference#while)
+- "[when](Language-Reference#when)" statement, a variation of the traditional switch statement for multi-predicate branching
+- [task](Language-Reference#tasks) ASL state for calling activities, accessing queues, etc. 
+- [wait and fail](Language-Reference#errors) construct
 - annotation driven retry logic
 - control over state names
-- parallel state that simply includes other stepper programs to be run concurrently
-- goto statement for complex logic
-- try/catch construct for error handling.
+- [parallel](Language-Reference#parallel) state that simply includes other stepper programs to be run concurrently
+- [goto](Language-Reference#goto) statement for complex logic
+- [try/catch](Language-Reference#trycatch) construct for error handling.
 
-To learn how to get started with Stepper, head over to the Getting Started page of the wiki. The language reference 
-provides syntax details along with examples.  
+To learn how to get started with Stepper, head over to the [Getting Started](Getting-Started) page of the wiki. The [language reference](Language-Reference) is
+also accessible from the wiki pages. 
