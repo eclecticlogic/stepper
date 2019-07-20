@@ -204,18 +204,18 @@ following state machine.
 Stepper can automatically register the Lambda and create the Step Function or it can output the code for those pieces 
 and you can manually register them. Stepper supports:
 
-- [variables, assignments and expressions](Language-Reference#variables)
-- [if/else](Language-Reference#branching) branching
-- for [loops]((Language-Reference#loops)) over range with step and looping over collections
-- [while loops](Language-Reference#while)
-- "[when](Language-Reference#when)" statement, a variation of the traditional switch statement for multi-predicate branching
-- [task](Language-Reference#tasks) ASL state for calling activities, accessing queues, etc. 
-- [wait and fail](Language-Reference#errors) construct
+- [variables, assignments and expressions](../../wiki/Language-Reference#variables)
+- [if/else](../../wiki/Language-Reference#branching) branching
+- for [loops](../../wiki/Language-Reference#loops) over range with step and looping over collections
+- [while loops](../../wiki/Language-Reference#while)
+- "[when](../../wiki/Language-Reference#when)" statement, a variation of the traditional switch statement for multi-predicate branching
+- [task](../../wiki/Language-Reference#tasks) ASL state for calling activities, accessing queues, etc. 
+- [wait and fail](../../wiki/Language-Reference#errors) construct
 - annotation driven retry logic
 - control over state names
-- [parallel](Language-Reference#parallel) state that simply includes other stepper programs to be run concurrently
-- [goto](Language-Reference#goto) statement for complex logic
-- [try/catch](Language-Reference#trycatch) construct for error handling.
+- [parallel](../../wiki/Language-Reference#parallel) state that simply includes other stepper programs to be run concurrently
+- [goto](../../wiki/Language-Reference#goto) statement for complex logic
+- [try/catch](../../wiki/Language-Reference#trycatch) construct for error handling.
 
-To learn how to get started with Stepper, head over to the [Getting Started](../../wiki/Getting-Started) page of the wiki. The [language reference](Language-Reference) is
+To learn how to get started with Stepper, head over to the [Getting Started](../../wiki/Getting-Started) page of the wiki. The [language reference](../../wiki/Language-Reference) is
 also accessible from the wiki pages. 
