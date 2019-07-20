@@ -217,5 +217,5 @@ and you can manually register them. Stepper supports:
 - [goto](Language-Reference#goto) statement for complex logic
 - [try/catch](Language-Reference#trycatch) construct for error handling.
 
-To learn how to get started with Stepper, head over to the [Getting Started](Getting-Started) page of the wiki. The [language reference](Language-Reference) is
+To learn how to get started with Stepper, head over to the [Getting Started](../../wiki/Getting-Started) page of the wiki. The [language reference](Language-Reference) is
 also accessible from the wiki pages. 
