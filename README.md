@@ -14,26 +14,23 @@ queue.
 @TimeoutSeconds(120)
 @Version("1.0")
 stepper Fibonnaci {
-	// first two fibonnaci are static
-	
-	previous = 1;
-	fib = 0;
-	
-	for (c = 1 to 10) {
-		// queue message must be a string
-		body = fib + "";
-		// write to queue
-		sqs = task {
-            "Resource": "arn:aws:states:::sqs:sendMessage",
-	      	"Parameters": {
-	        	"MessageBody.$": "$.body",
-	        	"QueueUrl": "https://sqs.us-east-1.amazonaws.com/1570xxxx/fibo"
-	      	}
-        }
-        temp = fib;
-		fib += previous;
-		previous = temp;
-	}
+  
+  previous = 1;
+  fib = 0;
+  
+  for (c = 1 to 10) {
+    body = fib + ""; // queue message must be a string
+    sqs = task { // write to queue
+      "Resource": "arn:aws:states:::sqs:sendMessage",
+      "Parameters": {
+        "MessageBody.$": "$.body",
+        "QueueUrl": "https://sqs.us-east-1.amazonaws.com/1570xxxx/fibo"
+      }
+    }
+    temp = fib;
+    fib += previous;
+    previous = temp;
+  }
 }
 
 ```
